@@ -105,4 +105,6 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="kmh">km/h</string>
     <string name="milesh">miles/h</string>
 
+
+
 </resources>

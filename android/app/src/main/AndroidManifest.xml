@@ -51,12 +51,6 @@
 
         </activity>
         <activity android:name=".MainActivity" />
-        <fragment android:name=".AboutFragment" />
-        <fragment android:name=".DiscountFragment" />
-        <fragment android:name=".EventsFragment" />
-        <fragment android:name=".ReportFragment" />
-        <fragment android:name=".ToursFragment" />
-        <fragment android:name=".RideHistoryFragment" />
         <activity android:name=".EndRideActivity" />
         <activity
             android:name=".LoginActivity"
