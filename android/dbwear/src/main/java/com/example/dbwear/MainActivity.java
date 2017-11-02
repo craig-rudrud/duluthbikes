@@ -8,7 +8,7 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 
     private TextView mTextView;
-
+    int lol;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
