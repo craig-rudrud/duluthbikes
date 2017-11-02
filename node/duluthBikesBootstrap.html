@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
 
-    <title>Starter Template for Bootstrap</title>
+    <title>Duluth Bikes App Dashboard</title>
 
     <!-- Bootstrap core CSS -->
     <link href="dist/css/bootstrap.min.css" rel="stylesheet">
@@ -42,7 +42,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="#">Duluth Bikes Dashboard</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -55,67 +55,79 @@
     </nav>
 
     <div class="container">
-
-      <div id="wrapper">
-        
-          <div id="main">
+      <div id="main">
           
           <div id="border">
-          <h1 class="haha"><a href="http://duluthbikes.org">Duluth Bikes</a><br/>App Dashboard</h1>
+            <h1 class="title"><a href="http://duluthbikes.org">Duluth Bikes</a><br/>App Dashboard</h1>
           </div>
         
+          <!-- frame containing content -->
+          <!--
           <div>
-          <iframe id="map" src='http://127.0.0.1/maps'></iframe>
+            <iframe id="map" src='http://127.0.0.1/maps'></iframe>
+          </div>
+          -->
+          <!-- 16:9 aspect ratio -->
+          <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="http://127.0.0.1/maps"></iframe>
           </div>
           
+          <!-- buttons -->
           <div>
-          <button onClick="changeContent('http://127.0.0.1/maps')">
-          Heat Map</button>
-          <button id="RB" onClick="changeContent('http://127.0.0.1/fullride')">
-            R Rides</button>
-          <button onClick="changeContent('http://127.0.0.1/rides')">
-          Polyline</button>
-          <button id="RB" onClick="changeContent('http://127.0.0.1/raw')">
-          R Points</button>
-          <button onClick="changeContent('http://127.0.0.1/heatmaps')">
-          Heat GMap</button>
-          <button id="RB" onClick="changeContent('http://127.0.0.1/fulllatlng')">
-          R LatLng</button>
-          <button onClick="changeContent('http://127.0.0.1/pictures')">
-          Pictures </button>
-          <button id="RB" onClick="changeContent('http://127.0.0.1/usernames')">
-          Users </button>
-          </div>
-        
-          </div>
-        </div>
-        <script src="/heatmapfiles"></script>
-        <script>
-        var heat = h337.create({
-          container:document.querySelector('.haha'),
-          radius: 10,
-          opacity:.5,
-          blur:1
-          
-        });
-        document.querySelector('.haha').onmousemove = function(e){
-        
-          heat.addData({
-            x: e.layerX,
-            y: e.layerY,
-            value: 1
-        });
-        };
-        
-        </script>
-        <script>
-          function changeContent(theSRC){
-            document.getElementById('map').src = theSRC;
-          }
-          </script>
+            <!--
+            <button onClick="changeContent('http://127.0.0.1/maps')">
+            Heat Map</button>
+            <button id="RB" onClick="changeContent('http://127.0.0.1/fullride')">
+              R Rides</button>
+            <button onClick="changeContent('http://127.0.0.1/rides')">
+            Polyline</button>
+            <button id="RB" onClick="changeContent('http://127.0.0.1/raw')">
+            R Points</button>
+            <button onClick="changeContent('http://127.0.0.1/heatmaps')">
+            Heat GMap</button>
+            <button id="RB" onClick="changeContent('http://127.0.0.1/fulllatlng')">
+            R LatLng</button>
+            <button onClick="changeContent('http://127.0.0.1/pictures')">
+            Pictures </button>
+            <button id="RB" onClick="changeContent('http://127.0.0.1/usernames')">
+            Users </button> -->
 
-    </div><!-- /.container -->
+            <div class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-default">Left</button>
+              <button type="button" class="btn btn-default">Middle</button>
+              <button type="button" class="btn btn-default">Right</button>
+            </div>
+          </div>
 
+      </div>
+    </div>
+    <!-- /.container -->
+
+    <!-- inline Javascript -->
+    <script src="/heatmapfiles"></script>
+    <script>
+    var heat = h337.create({
+      container:document.querySelector('.haha'),
+      radius: 10,
+      opacity:.5,
+      blur:1
+      
+    });
+    document.querySelector('.haha').onmousemove = function(e){
+    
+      heat.addData({
+        x: e.layerX,
+        y: e.layerY,
+        value: 1
+    });
+    };
+    </script>
+
+    <script>
+      function changeContent(theSRC){
+        document.getElementById('map').src = theSRC;
+      }
+    </script>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
