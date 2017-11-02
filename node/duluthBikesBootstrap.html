@@ -56,10 +56,63 @@
 
     <div class="container">
 
-      <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
+      <div id="wrapper">
+        
+          <div id="main">
+          
+          <div id="border">
+          <h1 class="haha"><a href="http://duluthbikes.org">Duluth Bikes</a><br/>App Dashboard</h1>
+          </div>
+        
+          <div>
+          <iframe id="map" src='http://127.0.0.1/maps'></iframe>
+          </div>
+          
+          <div>
+          <button onClick="changeContent('http://127.0.0.1/maps')">
+          Heat Map</button>
+          <button id="RB" onClick="changeContent('http://127.0.0.1/fullride')">
+            R Rides</button>
+          <button onClick="changeContent('http://127.0.0.1/rides')">
+          Polyline</button>
+          <button id="RB" onClick="changeContent('http://127.0.0.1/raw')">
+          R Points</button>
+          <button onClick="changeContent('http://127.0.0.1/heatmaps')">
+          Heat GMap</button>
+          <button id="RB" onClick="changeContent('http://127.0.0.1/fulllatlng')">
+          R LatLng</button>
+          <button onClick="changeContent('http://127.0.0.1/pictures')">
+          Pictures </button>
+          <button id="RB" onClick="changeContent('http://127.0.0.1/usernames')">
+          Users </button>
+          </div>
+        
+          </div>
+        </div>
+        <script src="/heatmapfiles"></script>
+        <script>
+        var heat = h337.create({
+          container:document.querySelector('.haha'),
+          radius: 10,
+          opacity:.5,
+          blur:1
+          
+        });
+        document.querySelector('.haha').onmousemove = function(e){
+        
+          heat.addData({
+            x: e.layerX,
+            y: e.layerY,
+            value: 1
+        });
+        };
+        
+        </script>
+        <script>
+          function changeContent(theSRC){
+            document.getElementById('map').src = theSRC;
+          }
+          </script>
 
     </div><!-- /.container -->
 
