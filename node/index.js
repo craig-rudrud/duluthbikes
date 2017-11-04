@@ -37,6 +37,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 //********MangoDB*******
 // Connect to the mongo module
 var mongodb = require('./mongoDB.js')();
+console.log(mongodb);
 
 app.get('/heatmapfiles',function(req,res){
 	res.sendFile(__dirname + '/node_modules/heatmap.js/build/heatmap.js');
@@ -153,7 +154,7 @@ app.get('/usernames', function(req,res){
 app.post('/postusername', function(req,res){
 	if(!req.body)return res.sendStatus(400);
 
-	var userObj = { 'user':req.body.userName
+	var userObj = { 'user':req.body.userName,
 					'pass':req.body.passWord };
 	insertUsername(userObj);
 	console.log('Post Username');
