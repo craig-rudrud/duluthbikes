@@ -1,6 +1,7 @@
 
 //database url
 //var url = 'mongodb://127.0.0.1:50432/db'; 
+
 var url = 'mongodb://127.0.0.1:23406/db';
 var collections = ['rides', 'users', 'RideHistory', 'FullRidesRecorded'];
 
@@ -8,6 +9,7 @@ var mongojs = require('mongojs');
 var assert = require('assert');
 
 console.log("MongoDB is active.");
+
 
 module.exports = function () {
     var mongodb = mongojs(url, collections); //creation of the mongo connection
