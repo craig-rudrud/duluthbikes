@@ -104,8 +104,5 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="miles">miles</string>
     <string name="kmh">km/h</string>
     <string name="milesh">miles/h</string>
-    <string name="title_activity_wear">WearActivity</string>
-    <string name="hello_round">Hello Round World!</string>
-    <string name="hello_square">Hello Square World!</string>
 
 </resources>
