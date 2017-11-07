@@ -66,12 +66,7 @@
             "An inline frame is used to embed another document within
              the current HTML document."
           ***********************-->
-          <!-- OLD VERSIOM
-          <div>
-            <iframe id="map" src='http://127.0.0.1/maps'></iframe>
-          </div>
-          -->
-          <!-- NEW VERSION - not the use of the 16:8 aspect ratio-->
+
           <div class="embed-responsive embed-responsive-16by9">
             <iframe id="map" class="embed-responsive-item" src='http://ukko.d.umn.edu:23405/maps'></iframe>
           </div>
@@ -103,15 +98,42 @@
 
             <!-- NEW VERSION -->
             <!-- this needs to be finished -->
-            <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-default" onClick="changeContent('http://ukko.d.umn.edu:23405/fulllatlng')">R LatLng</button>
-              <button type="button" class="btn btn-default" onClick="changeContent('http://ukko.d.umn.edu:23405/pictures')">Pictures</button>
-              <button type="button" class="btn btn-default" onClick="changeContent('http://ukko.d.umn.edu:23405/usernames')">Users</button>
+            <div class="btn-group btn-group-justified" role="group" aria-label="...">         
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" onClick="changeContent('http://ukko.d.umn.edu:23405/maps')">Heat Map</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" onClick="changeContent('http://ukko.d.umn.edu:23405/fullride')">R Rides</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" onClick="changeContent('http://ukko.d.umn.edu:23405/rides')">Polyline</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" onClick="changeContent('http://ukko.d.umn.edu:23405/raw')">R Points</button>
+              </div>
             </div>
-          </div>
+            <div class="btn-group btn-group-justified" role="group" aria-label="...">
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" onClick="changeContent('http://ukko.d.umn.edu:23405/heatmaps')">Heat GMap</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" onClick="changeContent('http://ukko.d.umn.edu:23405/fulllatlng')">R LatLng</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" onClick="changeContent('http://ukko.d.umn.edu:23405/pictures')">Pictures</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" onClick="changeContent('http://ukko.d.umn.edu:23405/usernames')">Users</button>
+              </div>
+            </div>
 
+          <!-- end main -->
+          </div>
       </div>
     </div>
+  <br>
+  <br>
+  <br>
     <!-- /.container -->
 
     <!-- inline Javascript -->
