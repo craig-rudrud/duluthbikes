@@ -5,6 +5,7 @@ import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 /**
  * Created by pfan on 11/6/17.
@@ -39,12 +40,12 @@ public class Presenter implements MVP.Presenter {
 
     @Override
     public void updateMapLocation(){
-        mView.locationChanged(mModel.getLocation());
+        //mView.locationChanged(mModel.getLocation());
     }
 
     @Override
     public void clickStart(){
-        mModel = new Model(mContext,mActivity,this);
+        mModel = new Model(mContext, mActivity,this);
     }
 
     @Override
@@ -76,12 +77,13 @@ public class Presenter implements MVP.Presenter {
 
     @Override
     public void setOurClient(GoogleApiClient googleApiClient) {
-        mView.setClient(googleApiClient);
+        //mView.setClient(googleApiClient);
     }
 
-    @Override
+    /*@Override
     public GoogleApiClient getOurClient() {
-        return mView.getClient();
-    }
+        //return mView.getClient();
+
+    }*/
 
 }

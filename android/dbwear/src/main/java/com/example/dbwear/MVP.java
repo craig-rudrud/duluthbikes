@@ -60,7 +60,7 @@ public interface MVP {
 
         void setOurClient(GoogleApiClient googleApiClient);
 
-        GoogleApiClient getOurClient();
+        //GoogleApiClient getOurClient();
 
     }
 
