@@ -1,7 +1,7 @@
 
 //database url
-//var url = 'mongodb://127.0.0.1:50432/db'; 
-var url = 'mongodb://127.0.0.1:27017/db'; 
+var url = 'mongodb://127.0.0.1:50432/db'; 
+//var url = 'mongodb://127.0.0.1:27017/db'; 
 var collections = ['rides']; 
 
 var mongojs = require('mongojs');
