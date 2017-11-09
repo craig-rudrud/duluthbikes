@@ -28,6 +28,7 @@ public class MapsActivity extends WearableActivity implements OnMapReadyCallback
      */
     private GoogleMap mMap;
     private int mRequestCode;
+    private Presenter mPresenter;
 
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -94,17 +95,9 @@ public class MapsActivity extends WearableActivity implements OnMapReadyCallback
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    //mRequestCode);
-            mMap.setMyLocationEnabled(true);
-
-            //return;
-        }
-
         //Adds a marker in Sydney, Australia and moves the camera.
-        LatLng sydney = new LatLng(-34, 151);
+        /*LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
     }
 }
