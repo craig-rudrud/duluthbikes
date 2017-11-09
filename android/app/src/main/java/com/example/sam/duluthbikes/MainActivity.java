@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,7 +59,9 @@ public class MainActivity extends FragmentActivity
     private TextView tvDistance;
     private FrameLayout linearLayout;
     private LinearLayout greyScreen;
-
+    EditText question;
+    Button yes;
+    Button no;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +152,29 @@ public class MainActivity extends FragmentActivity
         Intent i = new Intent(this,MenuActivity.class);
         startActivity(i);
     }
+
+    public void isitARide() {question = (EditText) findViewById(R.id.questions);yes = (Button) findViewById(R.id.butyes);
+    no = (Button) findViewById(R.id.butno);
+    question.setVisibility(View.VISIBLE);
+    yes.setVisibility(View.VISIBLE);
+    no.setVisibility(View.VISIBLE);
+    }
+
+    public void sendMessage(View view) {
+        endRide();
+        question.setVisibility(View.INVISIBLE);
+        yes.setVisibility(View.INVISIBLE);
+        no.setVisibility(View.INVISIBLE);
+    }
+
+    public void sendMessage2(View view) {
+
+        question.setVisibility(View.INVISIBLE);
+        yes.setVisibility(View.INVISIBLE);
+        no.setVisibility(View.INVISIBLE);
+    }
+
+
 
     public void endRide(View view) {
         mPresenter.finishRideButton();

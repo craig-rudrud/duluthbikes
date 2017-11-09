@@ -43,6 +43,36 @@
                 android:textSize="18dp"
                 android:text="@string/IntroMessage"/>
 
+        <EditText
+            android:id="@+id/questions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/startImage"
+            android:layout_marginTop="62dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Was this a bike ride?" />
+
+        <Button
+            android:id="@+id/butyes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/startImage"
+            android:layout_below="@+id/questions"
+            android:layout_marginTop="26dp"
+            android:onClick="sendMessage"
+            android:text="Yes" />
+
+        <Button
+            android:id="@+id/butno"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/butyes"
+            android:layout_alignBottom="@+id/butyes"
+            android:layout_alignEnd="@+id/questions"
+            android:onClick="sendMessage2"
+            android:text="No" />
 
 
     </RelativeLayout>
