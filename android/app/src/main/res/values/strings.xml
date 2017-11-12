@@ -14,7 +14,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="settings">Settings</string>
     <string name="settings2">Settings2</string>
     <string name="settings3">Settings3</string>
 
@@ -104,5 +103,12 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="miles">miles</string>
     <string name="kmh">km/h</string>
     <string name="milesh">miles/h</string>
+
+    <!-- strings related to settings -->
+    <string name="settings">Settings</string>
+    <string name="resetStats">Reset Stats</string>
+    <string name="dialog_reset_confirmation">Tap \'Yes\' if you would like to reset your local stats.</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

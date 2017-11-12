@@ -4,6 +4,7 @@ package com.example.sam.duluthbikes;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -131,10 +132,20 @@ public class MenuActivity extends AppCompatActivity
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new AboutFragment())
                     .commit();
+        } else if (id == R.id.nav_settings) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new SettingsFragment())
+                    .commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void resetStatsClick(View view) {
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FireResetStatsDialogFragment resetDialog = new FireResetStatsDialogFragment();
+        resetDialog.show(fragmentManager, "test");
     }
 
 }

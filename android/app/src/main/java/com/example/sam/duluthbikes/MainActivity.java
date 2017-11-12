@@ -211,6 +211,7 @@ public class MainActivity extends FragmentActivity
 
     }
 
+
     /**
      * Required by OnMapReadyCallback interface
      * Called when the map is ready to be used.
