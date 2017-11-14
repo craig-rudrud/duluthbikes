@@ -161,7 +161,7 @@ public class MainActivity extends FragmentActivity
     }
 
     public void sendMessage(View view) {
-        endRide();
+        endRide(view);
         question.setVisibility(View.INVISIBLE);
         yes.setVisibility(View.INVISIBLE);
         no.setVisibility(View.INVISIBLE);
