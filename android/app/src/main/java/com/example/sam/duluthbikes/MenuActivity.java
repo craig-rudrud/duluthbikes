@@ -148,4 +148,9 @@ public class MenuActivity extends AppCompatActivity
         resetDialog.show(fragmentManager, "test");
     }
 
+    public void signOutClick(View view) {
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FireSignOutFragment signOutDialog = new FireSignOutFragment();
+        signOutDialog.show(fragmentManager, "");
+    }
 }

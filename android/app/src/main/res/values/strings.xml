@@ -110,5 +110,7 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="dialog_reset_confirmation">Tap \'Yes\' if you would like to reset your local stats.</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
+    <string name="sign_out_button">Sign Out</string>
+    <string name="dialog_sign_out_confirmation">Are you sure you would like to sign out?</string>
 
 </resources>
