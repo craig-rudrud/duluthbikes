@@ -5,6 +5,7 @@ package com.example.sam.duluthbikes;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -17,14 +18,34 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Polyline;
+
+import java.text.DecimalFormat;
+
 /**
  * Home screen
  */
 
 public class MenuActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, ModelViewPresenterComponents.View
+        {
 
     private int mRequestCode;
+    Location mLastLocation;
+    float speed;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +76,16 @@ public class MenuActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        
+        Presenter mPresenter = new Presenter(this.getApplicationContext(), this, this);
+        mPresenter.clickStart();
+        
+
 
     }
 
-    public void startMainActivity(View view){
-        Intent intent = new Intent(this,MainActivity.class);
+    public void startMainActivity(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
@@ -137,4 +163,47 @@ public class MenuActivity extends AppCompatActivity
         return true;
     }
 
-}
+            public Location getLastLocation(){ return mLastLocation; }
+            public void setLastLocation(Location curr) { mLastLocation = curr; }
+
+            @Override
+            public void locationChanged(Location location) {
+                if(location!=null) {
+                    setLastLocation(location);
+                    LatLng latLng =
+                            new LatLng(getLastLocation().getLatitude(), getLastLocation().getLongitude());
+                    LocationData locationData = null;
+                    locationData.getOurInstance(this.getBaseContext()).addPoint(latLng, location);
+                    LatLngBounds.Builder bounds = LocationData.getOurInstance(this.getBaseContext()).getBuilder();
+                    float time = (mLastLocation.getTime() - location.getTime()) / 1000;
+                    float speed = location.distanceTo(mLastLocation) / time;
+                    location.setSpeed(speed);
+                    if(location.getSpeed() > 0 ){
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            }
+
+            @Override
+            public void userResults(String results) {
+
+            }
+
+            @Override
+            public void setClient(GoogleApiClient googleApiClient) {
+                LocationData.getOurInstance(this).setGoogleClient(googleApiClient);
+
+            }
+
+            @Override
+            public GoogleApiClient getClient() {
+                return LocationData.getOurInstance(this).getGoogleClient();
+            }
+
+
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+
+            }
+        }
