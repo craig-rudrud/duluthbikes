@@ -73,19 +73,18 @@ public class LoginActivity extends AppCompatActivity
 
         mPresenter = new Presenter(this.getBaseContext(), this, this);
 
-
-
         requestStoragePermission();
         final File file = new File("sdcard/Profile.txt");
         if (file.exists()) {
-            Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
-            startActivity(menu);
+            //Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
+            //startActivity(menu);
         }
         try {
             file.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         // Set up the login form.
         mUserView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);

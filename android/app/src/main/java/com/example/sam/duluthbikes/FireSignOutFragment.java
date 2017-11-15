@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.view.Menu;
 
 /**
  * Created by Mackenzie'River' on 11/14/2017.
@@ -36,7 +37,8 @@ public class FireSignOutFragment extends DialogFragment {
     }
 
     private void logOut() {
-        Intent intent = new Intent(this.getContext(), LoginActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), LoginActivity.class);
+        getActivity().startActivity(intent);
     }
 }

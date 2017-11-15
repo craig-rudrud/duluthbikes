@@ -8,8 +8,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -123,6 +127,7 @@ public class MainActivity extends FragmentActivity
         linearLayout.setVisibility(View.GONE);
         greyScreen = (LinearLayout)findViewById(R.id.cancelGrey);
         greyScreen.setVisibility(View.GONE);
+
     }
 
     private void addListenerOnToggle() {
