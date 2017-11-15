@@ -22,6 +22,7 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
 
     public Presenter(){mModel = new Model();}
 
+
     public Presenter(Context context, FragmentActivity activity,ModelViewPresenterComponents.View view){
         mView = view;
         mContext = context;
