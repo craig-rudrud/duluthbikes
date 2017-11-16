@@ -256,7 +256,6 @@ public class MainActivity extends FragmentActivity
     @Override
     public void locationChanged(Location location) {
         if(location!=null) {
-            setLastLocation(location);
             LatLng latLng =
                     new LatLng(getLastLocation().getLatitude(), getLastLocation().getLongitude());
             points.add(latLng);
@@ -287,6 +286,7 @@ public class MainActivity extends FragmentActivity
             tvSpeed.setText(sd+" KM/H");
             sd = df.format(locationData.getOurInstance(this.getBaseContext()).getDistance()/1000);
             tvDistance.setText(sd+" KM");
+            setLastLocation(location);
         }
     }
 

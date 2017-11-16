@@ -169,7 +169,6 @@ public class MenuActivity extends AppCompatActivity
             @Override
             public void locationChanged(Location location) {
                 if(location!=null) {
-                    setLastLocation(location);
                     LatLng latLng =
                             new LatLng(getLastLocation().getLatitude(), getLastLocation().getLongitude());
                     LocationData locationData = null;
@@ -183,6 +182,7 @@ public class MenuActivity extends AppCompatActivity
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
                     }
+                    setLastLocation(location);
                 }
             }
 
