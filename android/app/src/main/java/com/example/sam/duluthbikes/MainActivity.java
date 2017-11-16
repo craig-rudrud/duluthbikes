@@ -281,7 +281,8 @@ public class MainActivity extends FragmentActivity
             float time = (mLastLocation.getTime() - location.getTime()) / 1000;
             time = 1;
             float speed = location.distanceTo(mLastLocation) / time;
-            location.setSpeed(speed);
+            double sp = Math.sqrt(Math.pow(location.getLongitude() - mLastLocation.getLongitude(),2) + Math.pow(location.getLatitude() - mLastLocation.getLatitude(),2)) / (location.getTime() - this.mLastLocation.getTime());
+            location.setSpeed((float)sp);
             String sd = df.format(location.getSpeed()*3.6);
             tvSpeed.setText(sd+" KM/H");
             sd = df.format(locationData.getOurInstance(this.getBaseContext()).getDistance()/1000);

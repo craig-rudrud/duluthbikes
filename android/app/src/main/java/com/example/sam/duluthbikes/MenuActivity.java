@@ -177,7 +177,8 @@ public class MenuActivity extends AppCompatActivity
                     LatLngBounds.Builder bounds = LocationData.getOurInstance(this.getBaseContext()).getBuilder();
                     float time = (mLastLocation.getTime() - location.getTime()) / 1000;
                     float speed = location.distanceTo(mLastLocation) / time;
-                    location.setSpeed(speed);
+                    double sp = Math.sqrt(Math.pow(location.getLongitude() - mLastLocation.getLongitude(),2) + Math.pow(location.getLatitude() - mLastLocation.getLatitude(),2)) / (location.getTime() - this.mLastLocation.getTime());
+                    location.setSpeed((float)sp);
                     if(location.getSpeed() > 0 ){
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
