@@ -79,10 +79,12 @@ public class LoginActivity extends AppCompatActivity
             //Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
             //startActivity(menu);
         }
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+        else {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         // Set up the login form.
