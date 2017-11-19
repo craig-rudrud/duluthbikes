@@ -137,6 +137,11 @@ public class MenuActivity extends AppCompatActivity
                     .replace(R.id.content_frame, new SettingsFragment())
                     .commit();
         }
+        else if (id == R.id.nav_leaderboard) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new LeaderboardFragment())
+                    .commit();
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

@@ -99,6 +99,7 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="lifetimeStats_totDist">totalDistance</string>
     <string name="lifetimeStats_totTime">totalTime</string>
     <string name="lifetimeStats_rideNumber">rideNumber</string>
+    <string name="lifetimeStats_date">date</string>
     <string name="km">km</string>
     <string name="miles">miles</string>
     <string name="kmh">km/h</string>
@@ -112,5 +113,11 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="cancel">Cancel</string>
     <string name="sign_out_button">Sign Out</string>
     <string name="dialog_sign_out_confirmation">Are you sure you would like to sign out?</string>
+
+    <!-- strings related to leaderboard -->
+    <string name="leaderboard">Leaderboard</string>
+    <string name="localLeaderboard">Your Leaderboard</string>
+    <string name="globalLeaderboard">Local Leaderboard</string>
+    <string name="rank">Rank</string>
 
 </resources>

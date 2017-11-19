@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -163,7 +164,10 @@ public class MainActivity extends FragmentActivity
         Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
         Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
 
-        updateTotals(distance, endTime-startTime);
+        SimpleDateFormat datef = new SimpleDateFormat("MM-dd-yyyy");
+        String sDate = datef.format(thisDate.getTime());
+
+        updateTotals(distance, endTime-startTime, sDate);
 
         endIntent.putExtra("dis",distance);
         endIntent.putExtra("startTime", startTime);
@@ -192,7 +196,7 @@ public class MainActivity extends FragmentActivity
 
     }
 
-    private void updateTotals(Double distance, Long timelapse){
+    private void updateTotals(Double distance, Long timelapse, String date){
 
         SharedPreferences totalstats = getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
         Float totDistance = totalstats.getFloat(getString(R.string.lifetimeStats_totDist), 0) +
@@ -209,6 +213,7 @@ public class MainActivity extends FragmentActivity
         editor.putFloat(getString(R.string.lifetimeStats_totDist), totDistance);
         editor.putLong(getString(R.string.lifetimeStats_totTime), totTime);
         editor.putInt(getString(R.string.lifetimeStats_rideNumber), rideNumber);
+        editor.putString(getString(R.string.lifetimeStats_date), date);
         editor.putFloat(newRideDistance, distance.floatValue());
         editor.putLong(newRideTime, timelapse);
 

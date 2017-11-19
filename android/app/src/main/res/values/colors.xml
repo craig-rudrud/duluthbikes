@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00717E</color>
+    <color name="colorPrimary">#00717e</color>
     <color name="colorPrimaryDark">#777777</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
     <color name="finishButtoncolor">#ff5000</color>
     <color name="colorCancelButton">#66FF0000</color>
     <color name="greyOpacityScreen">#55000000</color>
