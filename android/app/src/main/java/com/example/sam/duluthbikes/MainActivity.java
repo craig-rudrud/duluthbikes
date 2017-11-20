@@ -280,11 +280,7 @@ public class MainActivity extends FragmentActivity
 
             DecimalFormat df = new DecimalFormat("0.00");
             Polyline p = mMap.addPolyline(polylineOptions);
-            float time = (mLastLocation.getTime() - location.getTime()) / 1000;
-            time = 1;
-            float speed = location.distanceTo(mLastLocation) / time;
-            //double sp = Math.sqrt(Math.pow(location.getLongitude() - mLastLocation.getLongitude(),2) + Math.pow(location.getLatitude() - mLastLocation.getLatitude(),2)) / (location.getTime() - mLastLocation.getTime());
-            double sp = locationData.getOurInstance(this.getBaseContext()).getDistance()/(location.getTime() - mLastLocation.getTime());
+            double sp = Math.sqrt(Math.pow(location.getLongitude() - mLastLocation.getLongitude(),2) + Math.pow(location.getLatitude() - mLastLocation.getLatitude(),2)) / (location.getTime() - this.mLastLocation.getTime());
             location.setSpeed((float)sp);
             String sd = df.format(location.getSpeed()*3.6);
             tvSpeed.setText(sd+" KM/H");
