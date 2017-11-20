@@ -256,6 +256,9 @@ public class MainActivity extends FragmentActivity
     @Override
     public void locationChanged(Location location) {
         if(location!=null) {
+            if (mLastLocation == null){
+                setLastLocation(location);
+            }
             LatLng latLng =
                     new LatLng(getLastLocation().getLatitude(), getLastLocation().getLongitude());
             points.add(latLng);

@@ -169,6 +169,9 @@ public class MenuActivity extends AppCompatActivity
             @Override
             public void locationChanged(Location location) {
                 if(location!=null) {
+                    if (mLastLocation == null){
+                        setLastLocation(location);
+                    }
                     LatLng latLng =
                             new LatLng(getLastLocation().getLatitude(), getLastLocation().getLongitude());
                     LocationData locationData = null;
