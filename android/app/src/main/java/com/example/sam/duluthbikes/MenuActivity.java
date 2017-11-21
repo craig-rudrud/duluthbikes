@@ -158,4 +158,16 @@ public class MenuActivity extends AppCompatActivity
         FireSignOutFragment signOutDialog = new FireSignOutFragment();
         signOutDialog.show(fragmentManager, "");
     }
+
+    /** Created by Mackenzie Fulton
+     *
+     * Function to bring you to the notification settings activity and notification settings view
+     *
+     * @param view the current view
+     */
+    public void notificationMenuClick(View view) {
+        Intent intent = new Intent();
+        intent.setClass(getApplicationContext(), NotificationsSettingsActivity.class);
+        startActivity(intent);
+    }
 }

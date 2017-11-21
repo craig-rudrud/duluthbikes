@@ -70,8 +70,8 @@ public class MainActivity extends FragmentActivity
 
         CharSequence text ="Must click finish to end location tracking! Make sure location is enabled on your device.";
         Toast toast = Toast.makeText(
-                getApplicationContext(), text,Toast.LENGTH_LONG
-        );
+                getApplicationContext(), text,Toast.LENGTH_LONG);
+
         toast.show();
         points = new ArrayList<>();
         polylineOptions = new PolylineOptions()

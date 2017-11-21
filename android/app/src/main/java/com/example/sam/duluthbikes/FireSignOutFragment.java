@@ -13,7 +13,8 @@ import android.view.Menu;
  */
 
 /**
- *
+ *  This class initiates the logout process of bringing the user back to
+ *  the login screen.
  */
 public class FireSignOutFragment extends DialogFragment {
 
