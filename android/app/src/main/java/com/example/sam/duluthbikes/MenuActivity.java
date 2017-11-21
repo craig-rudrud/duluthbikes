@@ -172,6 +172,7 @@ public class MenuActivity extends AppCompatActivity
                     if (mLastLocation == null){
                         setLastLocation(location);
                     }
+                    int counter = 0;
                     LatLng latLng =
                             new LatLng(getLastLocation().getLatitude(), getLastLocation().getLongitude());
                     LocationData locationData = null;
@@ -179,10 +180,9 @@ public class MenuActivity extends AppCompatActivity
                     LatLngBounds.Builder bounds = LocationData.getOurInstance(this.getBaseContext()).getBuilder();
                     float time = (mLastLocation.getTime() - location.getTime()) / 1000;
                     float speed = location.distanceTo(mLastLocation) / time;
-                    //double sp = Math.sqrt(Math.pow(location.getLongitude() - mLastLocation.getLongitude(),2) + Math.pow(location.getLatitude() - mLastLocation.getLatitude(),2)) / (location.getTime() - mLastLocation.getTime());
-                    double sp = locationData.getOurInstance(this.getBaseContext()).getDistance()/(location.getTime() - mLastLocation.getTime());
-                    location.setSpeed((float)sp);
-                    if(location.getSpeed() > 0 ){
+                    location.setSpeed(speed);
+                    if(speed > 5) ++counter;
+                    if(counter > 5 ){
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
                     }
