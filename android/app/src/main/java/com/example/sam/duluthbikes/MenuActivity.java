@@ -166,8 +166,7 @@ public class MenuActivity extends AppCompatActivity
      * @param view the current view
      */
     public void notificationMenuClick(View view) {
-        Intent intent = new Intent();
-        intent.setClass(getApplicationContext(), NotificationsSettingsActivity.class);
+        Intent intent = new Intent(getApplicationContext(), NotificationsSettingsActivity.class);
         startActivity(intent);
     }
 }
