@@ -4,6 +4,7 @@ package com.example.sam.duluthbikes;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
@@ -43,14 +46,21 @@ public class MenuActivity extends AppCompatActivity
         {
 
     private int mRequestCode;
-    Location mLastLocation;
-    float speed;
-
+    EditText question;
+    Button yes;
+    Button no;
+    Bundle data;
+    Float totDistance;
+    Long totTime;
+   // Button yes = (Button) findViewById(R.id.butyes);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_activity);
+        no = (Button) findViewById(R.id.butno);
+        yes = (Button) findViewById(R.id.butyes);
+        question = (EditText) findViewById(R.id.questions);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new HomeFragment()).commit();
         }
@@ -76,17 +86,54 @@ public class MenuActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        
-        Presenter mPresenter = new Presenter(this.getApplicationContext(), this, this);
-        mPresenter.clickStart();
-        
+        Button yes = (Button) findViewById(R.id.butyes);
 
+        //isitARide();
 
     }
 
-    public void startMainActivity(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+    public void startMainActivity(View view){
+        Intent intent = new Intent(this,MainActivity.class);
+        intent.putExtra("value", false);
         startActivity(intent);
+    }
+
+
+    public void isitARide() {
+        yes.setVisibility(View.VISIBLE);
+        no.setVisibility(View.VISIBLE);
+    }
+
+    public void sendMessage(View view) {
+        //endRide(view);
+        no = (Button) findViewById(R.id.butno);
+        yes = (Button) findViewById(R.id.butyes);
+        yes.setVisibility(View.INVISIBLE);
+        no.setVisibility(View.INVISIBLE);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("value", true);
+        startActivity(intent);
+
+        //System.out.println("Hi");
+//        question.setVisibility(View.INVISIBLE);
+      //  yes.setVisibility(View.INVISIBLE);
+//        no.setVisibility(View.INVISIBLE);
+    }
+
+    public void sendMessage2(View view) {
+        no = (Button) findViewById(R.id.butno);
+        yes = (Button) findViewById(R.id.butyes);
+        yes.setVisibility(View.INVISIBLE);
+        no.setVisibility(View.INVISIBLE);
+        SharedPreferences totalstats = getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
+        totDistance = totalstats.getFloat(getString(R.string.lifetimeStats_totDist), 0);
+        totTime = totalstats.getLong(getString(R.string.lifetimeStats_totTime), 0);
+        Intent intent = new Intent(this,MainActivity.class);
+        intent.putExtra("value", false);
+        startActivity(intent);
+       // question.setVisibility(View.INVISIBLE);
+        //yes.setVisibility(View.INVISIBLE);
+       // no.setVisibility(View.INVISIBLE);
     }
 
     @Override

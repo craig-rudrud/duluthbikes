@@ -66,7 +66,12 @@ public class MainActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Boolean isaRide = getIntent().getExtras().getBoolean("value");
+       /* if (isaRide == true)
+        { Button finishride;
+        finishride = (Button) findViewById(R.id.finish);
+        finishride.performClick();
+        } */
         CharSequence text ="Must click finish to end location tracking! Make sure location is enabled on your device.";
         Toast toast = Toast.makeText(
                 getApplicationContext(), text,Toast.LENGTH_LONG
@@ -127,6 +132,11 @@ public class MainActivity extends FragmentActivity
         linearLayout.setVisibility(View.GONE);
         greyScreen = (LinearLayout)findViewById(R.id.cancelGrey);
         greyScreen.setVisibility(View.GONE);
+        if (isaRide == true)
+        { Button finishride;
+            finishride = (Button) findViewById(R.id.finish);
+            finishride.performClick();
+        }
     }
 
     private void addListenerOnToggle() {
@@ -153,7 +163,7 @@ public class MainActivity extends FragmentActivity
         startActivity(i);
     }
 
-    public void isitARide() {question = (EditText) findViewById(R.id.questions);yes = (Button) findViewById(R.id.butyes);
+ /*   public void isitARide() {question = (EditText) findViewById(R.id.questions);yes = (Button) findViewById(R.id.butyes);
     no = (Button) findViewById(R.id.butno);
     question.setVisibility(View.VISIBLE);
     yes.setVisibility(View.VISIBLE);
@@ -172,7 +182,7 @@ public class MainActivity extends FragmentActivity
         question.setVisibility(View.INVISIBLE);
         yes.setVisibility(View.INVISIBLE);
         no.setVisibility(View.INVISIBLE);
-    }
+    } */
 
 
 
