@@ -141,6 +141,23 @@ app.post('/postgloballeaderboard', function(request,response) {
     response.sendStatus(200);
 });
 
+app.post('/postlocalleaderboard', function(request,response) {
+
+	if (!request.body) return response.sendStatus(400);
+
+	var position = {
+		'pos':request.body.pos
+	}
+	var statData = {
+		'date':request.body.date,
+		'distance':request.body.distance,
+		'time':request.body.time
+	}
+	insertLocalLeaderboard(position,statData);
+	console.log('Post Request: postlocalleaderboard');
+	response.sendStatus(200);
+});
+
 app.post('/postroute', function(request, response) {
 
     if (!request.body)return response.sendStatus(400);
@@ -189,6 +206,7 @@ app.get('/usernames', function(req,res){
 });
 
 app.get('/localleaderboard', function(req, res) {
+
     var users = printLocalLeaderboard('localLeaderboard',function(result){
 	res.write(JSON.stringify(result));
 	res.send();
@@ -310,8 +328,6 @@ app.get('/resetGlobalLeaderboard',function(res,req){
 	else console.log("didnt work");
     });
 });
-
-
 
 
 io.on('connection',function(socket){

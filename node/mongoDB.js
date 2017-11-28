@@ -1,6 +1,7 @@
 
 //database url
 
+
 //var url = 'mongodb://127.0.0.1:50432/db'; 
 
 var url = 'mongodb://127.0.0.1:23406/db';
@@ -10,6 +11,7 @@ var mongojs = require('mongojs');
 var assert = require('assert');
 
 console.log("MongoDB is active.");
+
 
 
 module.exports = function () {
