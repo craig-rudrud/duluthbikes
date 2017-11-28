@@ -104,6 +104,23 @@ app.get('/',function(req,res){
 	res.sendFile(__dirname + '/duluthbikes.html');
 });
 
+app.post('/postlocalleaderboard', function(request,response) {
+
+	if (!request.body) return response.sendStatus(400);
+
+	var position = {
+		'pos':request.body.pos
+	}
+	var statData = {
+		'date':request.body.date,
+		'distance':request.body.distance,
+		'time':request.body.time
+	}
+	insertLocalLeaderboard(position,statData);
+	console.log('Post Request: postlocalleaderboard');
+	response.sendStatus(200);
+});
+
 app.post('/postroute', function(request, response) {
 
 	if (!request.body)return response.sendStatus(400);
@@ -151,9 +168,16 @@ app.get('/usernames', function(req,res){
     console.log('users request');
 });
 
+app.get('/localleaderboard', function(req, res) {
+	var users = printLocalLeaderboard('localLeaderboard',function(result){
+		   res.write(JSON.stringify(result));
+		   res.send();
+	   });
+   console.log('local leaderboard request');
+});
+
 app.post('/postusername', function(req,res){
 	if(!req.body)return res.sendStatus(400);
-
 	var userObj = { 'user':req.body.userName,
 					'pass':req.body.passWord };
 	insertUsername(userObj);
@@ -205,6 +229,15 @@ app.get('/deletealltherides',function(res,req){
 	console.log('deleted all rides atempt');
 	
 	deleteAll('FullLatLngsRecorded',function(result){
+		if(result==true)console.log("deleted all");
+		else console.log("didnt work");
+		});
+});
+
+app.get('/deleteAllUsers',function(res,req){
+	console.log('deleted all users atempt');
+	
+	deleteAll('UsersSaved',function(result){
 		if(result==true)console.log("deleted all");
 		else console.log("didnt work");
 		});
