@@ -68,7 +68,7 @@ public class MainActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        autoStart = getIntent().getBooleanExtra("autoTracking");
+        autoStart = getIntent().getExtras().getBoolean("autoTracking");
         CharSequence text ="Must click finish to end location tracking! Make sure location is enabled on your device.";
         Toast toast = Toast.makeText(
                 getApplicationContext(), text,Toast.LENGTH_LONG
