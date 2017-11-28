@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -19,6 +20,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.wearable.Wearable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +49,7 @@ public class Model implements MVP.Model,
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Context mContext;
-    private FragmentActivity mActivity;
+    private WearableActivity mActivity;
     private int mRequestCode;
     private boolean mode;
 
@@ -71,7 +73,7 @@ public class Model implements MVP.Model,
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-    public Model(Context context, FragmentActivity activity, Presenter presenter) {
+    public Model(Context context, WearableActivity activity, Presenter presenter) {
         mContext = context;
         mActivity = activity;
         mPresenter = presenter;

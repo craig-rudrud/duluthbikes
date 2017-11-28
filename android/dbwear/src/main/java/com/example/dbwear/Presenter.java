@@ -3,9 +3,11 @@ package com.example.dbwear;
 import android.content.Context;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
+import android.support.wearable.activity.WearableActivity;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.wearable.Wearable;
 
 /**
  * Created by pfan on 11/6/17.
@@ -16,13 +18,13 @@ public class Presenter implements MVP.Presenter {
     private MVP.View mView;
     private MVP.Model mModel;
     private Context mContext;
-    private FragmentActivity mActivity;
+    private WearableActivity mActivity;
 
     public Presenter() {
         mModel = new Model();
     }
 
-    public Presenter(Context context, FragmentActivity activity, MVP.View view) {
+    public Presenter(Context context, WearableActivity activity, MVP.View view) {
         mView = view;
         mActivity = activity;
         mContext = context;
@@ -35,12 +37,12 @@ public class Presenter implements MVP.Presenter {
         ////// DOES NOT WORK BECAUSE MODEL HAS NOT STARTED. NO MAPS HACE STARTEd.
         //mModel = new Model(mContext,mActivity,this);
         Location loc = mModel.getLocation();
-        return  loc;
+        return loc;
     }
 
     @Override
     public void updateMapLocation(){
-        //mView.locationChanged(mModel.getLocation());
+        mView.locationChanged(mModel.getLocation());
     }
 
     @Override
@@ -77,13 +79,13 @@ public class Presenter implements MVP.Presenter {
 
     @Override
     public void setOurClient(GoogleApiClient googleApiClient) {
-        //mView.setClient(googleApiClient);
+        mView.setClient(googleApiClient);
     }
 
-    /*@Override
+    @Override
     public GoogleApiClient getOurClient() {
-        //return mView.getClient();
+        return mView.getClient();
 
-    }*/
+    }
 
 }

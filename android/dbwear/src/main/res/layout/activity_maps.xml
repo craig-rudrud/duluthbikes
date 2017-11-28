@@ -19,5 +19,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="@string/start_a_ride" />
+
+        <ToggleButton
+            android:id="@+id/toggleButton2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pause_and_resume" />
+
     </FrameLayout>
+
 </android.support.wear.widget.SwipeDismissFrameLayout>

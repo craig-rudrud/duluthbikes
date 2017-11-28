@@ -13,6 +13,12 @@ import org.json.JSONArray;
 public interface MVP {
     interface View {
 
+        void locationChanged(Location location);
+
+        void setClient(GoogleApiClient googleApiClient);
+
+        GoogleApiClient getClient();
+
     }
 
     interface Model {
@@ -60,7 +66,7 @@ public interface MVP {
 
         void setOurClient(GoogleApiClient googleApiClient);
 
-        //GoogleApiClient getOurClient();
+        GoogleApiClient getOurClient();
 
     }
 
