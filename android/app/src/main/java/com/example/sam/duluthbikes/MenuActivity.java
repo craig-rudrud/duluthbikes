@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
@@ -36,6 +37,8 @@ import com.google.android.gms.maps.model.Polyline;
 
 import java.text.DecimalFormat;
 
+import static java.lang.Math.abs;
+
 /**
  * Home screen
  */
@@ -46,13 +49,11 @@ public class MenuActivity extends AppCompatActivity
 
     private int mRequestCode;
     Location mLastLocation;
-    float speed;
-    private Button start;
+    private boolean automaticTracking;
     private int counter = 0;
 
 
-
-    @Override
+            @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_activity);
@@ -84,18 +85,11 @@ public class MenuActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        Button yes = (Button) findViewById(R.id.butyes);
+        
+        Presenter mPresenter = new Presenter(this.getApplicationContext(), this, this);
+        mPresenter.clickStart();
 
-        //isitARide();
-
-    }
-
-    public void startMainActivity(View view){
-        Intent intent = new Intent(this,MainActivity.class);
-        intent.putExtra("value", false);
-        startActivity(intent);
-    }
-
+        automaticTracking = false;
 
     public void isitARide() {
         yes.setVisibility(View.VISIBLE);
@@ -109,7 +103,7 @@ public class MenuActivity extends AppCompatActivity
         yes.setVisibility(View.INVISIBLE);
         no.setVisibility(View.INVISIBLE);
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("value", true);
+        intent.putExtra("autoTracking", automaticTracking);
         startActivity(intent);
 
         //System.out.println("Hi");
@@ -214,9 +208,8 @@ public class MenuActivity extends AppCompatActivity
 
             @Override
             public void locationChanged(Location location) {
-                if(location!=null) {
-                    start = (Button) findViewById(R.id.start);
-                    if (mLastLocation == null){
+                if (location != null) {
+                    if (mLastLocation == null) {
                         setLastLocation(location);
                     }
                     LatLng latLng =
@@ -226,11 +219,15 @@ public class MenuActivity extends AppCompatActivity
                     LatLngBounds.Builder bounds = LocationData.getOurInstance(this.getBaseContext()).getBuilder();
                     float time = (mLastLocation.getTime() - location.getTime()) / 1000;
                     float speed = location.distanceTo(mLastLocation) / time;
+                    speed = Math.abs(speed);
                     location.setSpeed(speed);
                     setLastLocation(location);
-                    if(speed*3.6 > 10) ++counter;
-                    if(counter > 4 ){
-                        start.performClick();
+                    if(speed > 0){counter++;
+                    }
+                    if((speed > 0) && (automaticTracking) && (counter == 4)){
+                        Intent intent = new Intent(this, MainActivity.class);
+                        intent.putExtra("autoTracking", automaticTracking);
+                        startActivity(intent);
                     }
                 }
             }
@@ -256,4 +253,11 @@ public class MenuActivity extends AppCompatActivity
             public void onMapReady(GoogleMap googleMap) {
 
             }
-        }
+
+
+            public void toggleAutoTracking(View view){
+                automaticTracking = !automaticTracking;
+                }
+            }
+
+

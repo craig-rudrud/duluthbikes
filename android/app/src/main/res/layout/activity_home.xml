@@ -41,41 +41,29 @@
                 android:paddingRight="10dp"
                 android:textColor="@color/navyBlue"
                 android:textSize="18dp"
-                android:text="@string/IntroMessage"/>
+                android:text="@string/IntroMessage"
+                android:id="@+id/textView2" />
 
-        <EditText
-            android:id="@+id/questions"
+        <ToggleButton
+            android:id="@+id/automatic_tracking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/startImage"
-            android:layout_marginTop="62dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Was this a bike ride?"
-            android:visibility="visible" />
+            android:layout_alignEnd="@+id/start"
+            android:layout_below="@+id/textView2"
+            android:layout_marginTop="13dp"
+            android:onClick="toggleAutoTracking"
+           />
 
-        <Button
-            android:id="@+id/butyes"
+        <TextView
+            android:id="@+id/editText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/startImage"
-            android:layout_below="@+id/questions"
-            android:layout_marginTop="26dp"
-            android:onClick="sendMessage"
-            android:text="Yes"
-            android:visibility="visible" />
-
-        <Button
-            android:id="@+id/butno"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/butyes"
-            android:layout_alignBottom="@+id/butyes"
-            android:layout_alignEnd="@+id/questions"
-            android:onClick="sendMessage2"
-            android:text="No"
-            android:visibility="visible" />
+            android:layout_alignBaseline="@+id/automatic_tracking"
+            android:layout_alignBottom="@+id/automatic_tracking"
+            android:layout_alignStart="@+id/start"
+            android:layout_marginStart="7dp"
+            android:text="Automatic Tracking: "
+            android:textSize="24sp" />
 
 
     </RelativeLayout>

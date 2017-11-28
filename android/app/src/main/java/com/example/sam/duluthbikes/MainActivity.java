@@ -33,6 +33,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static java.lang.Math.abs;
+
 /**
  * Main Activity Class
  * Displays a map with your current location and allows to start tracking
@@ -288,6 +290,7 @@ public class MainActivity extends FragmentActivity
             Polyline p = mMap.addPolyline(polylineOptions);
             float time = (mLastLocation.getTime() - location.getTime()) / 1000;
             float speed = location.distanceTo(mLastLocation) / time;
+            speed = abs(speed);
             location.setSpeed(speed);
             String sd = df.format(location.getSpeed()*3.6);
             tvSpeed.setText(sd+" KM/H");
