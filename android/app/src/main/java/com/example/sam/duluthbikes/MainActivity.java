@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -52,6 +51,7 @@ public class MainActivity extends FragmentActivity
     private LocationData locationData;
     private boolean animate;
     private ToggleButton pauseToggle;
+    private int counter = 0;
 
     private LinearLayout tv;
     private SupportMapFragment mapFragment;
@@ -59,19 +59,14 @@ public class MainActivity extends FragmentActivity
     private TextView tvDistance;
     private FrameLayout linearLayout;
     private LinearLayout greyScreen;
-    EditText question;
-    Button yes;
-    Button no;
+    private Button stop;
+    private boolean autoStart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Boolean isaRide = getIntent().getExtras().getBoolean("value");
-       /* if (isaRide == true)
-        { Button finishride;
-        finishride = (Button) findViewById(R.id.finish);
-        finishride.performClick();
-        } */
+        autoStart = getIntent().getBooleanExtra("autoTracking");
         CharSequence text ="Must click finish to end location tracking! Make sure location is enabled on your device.";
         Toast toast = Toast.makeText(
                 getApplicationContext(), text,Toast.LENGTH_LONG
@@ -85,7 +80,7 @@ public class MainActivity extends FragmentActivity
         mPresenter = new Presenter(this.getApplicationContext(),this,this);
         mPresenter.clickStart();
         animate = true;
-
+        stop = (Button)findViewById(R.id.finish);
         //toggle button initializer
         addListenerOnToggle();
 
@@ -207,6 +202,7 @@ public class MainActivity extends FragmentActivity
         startActivity(endIntent);
     }
 
+
     public void changeUI(View view){
         if(tv.getVisibility()==View.GONE){
             tv.setVisibility(View.VISIBLE);
@@ -298,6 +294,13 @@ public class MainActivity extends FragmentActivity
             sd = df.format(locationData.getOurInstance(this.getBaseContext()).getDistance()/1000);
             tvDistance.setText(sd+" KM");
             setLastLocation(location);
+            if(speed*3.6 < 10.25 && autoStart){
+                counter++;
+            }
+            else counter = 0;
+            if(counter > 20){
+                stop.performClick();
+            }
         }
     }
 

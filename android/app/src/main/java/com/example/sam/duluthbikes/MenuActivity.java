@@ -19,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
@@ -46,13 +45,12 @@ public class MenuActivity extends AppCompatActivity
         {
 
     private int mRequestCode;
-    EditText question;
-    Button yes;
-    Button no;
-    Bundle data;
-    Float totDistance;
-    Long totTime;
-   // Button yes = (Button) findViewById(R.id.butyes);
+    Location mLastLocation;
+    float speed;
+    private Button start;
+    private int counter = 0;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +134,7 @@ public class MenuActivity extends AppCompatActivity
        // no.setVisibility(View.INVISIBLE);
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -216,10 +215,10 @@ public class MenuActivity extends AppCompatActivity
             @Override
             public void locationChanged(Location location) {
                 if(location!=null) {
+                    start = (Button) findViewById(R.id.start);
                     if (mLastLocation == null){
                         setLastLocation(location);
                     }
-                    int counter = 0;
                     LatLng latLng =
                             new LatLng(getLastLocation().getLatitude(), getLastLocation().getLongitude());
                     LocationData locationData = null;
@@ -228,12 +227,11 @@ public class MenuActivity extends AppCompatActivity
                     float time = (mLastLocation.getTime() - location.getTime()) / 1000;
                     float speed = location.distanceTo(mLastLocation) / time;
                     location.setSpeed(speed);
-                    if(speed > 5) ++counter;
-                    if(counter > 5 ){
-                        Intent intent = new Intent(this, MainActivity.class);
-                        startActivity(intent);
-                    }
                     setLastLocation(location);
+                    if(speed*3.6 > 10) ++counter;
+                    if(counter > 4 ){
+                        start.performClick();
+                    }
                 }
             }
 
