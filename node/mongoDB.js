@@ -79,7 +79,7 @@ module.exports = function () {
 	insertLocalLeaderboard = function (pos, stats) {
 		var posInt = pos.pos //pos is an array of key value pairs, pos is the key value for the position
 		if (posInt >= 1 && posInt <= 3) {
-			mongodb.collection('localLeaderboard').save(
+			mongodb.collection('localLeaderboard').update(
 				{
 					position: pos,
 					date: stats.date,
@@ -92,6 +92,25 @@ module.exports = function () {
 		}
 		else {
 			console.log('invalid pos passed to insertLocalLeaderboard!');
+		}
+	}
+
+	insertGlobalLeaderboard = function (pos, stats) {
+		var posInt = pos.pos //pos is an array of key value pairs, pos is the key value for the position
+		if (posInt >= 1 && posInt <= 3) {
+			mongodb.collection('globalLeaderboard').update(
+				{
+					position: pos,
+					date: stats.date,
+					time: stats.time,
+					distance: stats.distance
+				}, function (err, result) {
+					if (err || !result) console.log("global leaderboard data not saved");
+					else console.log("data saved to globalLeaderboard");
+				});
+		}
+		else {
+			console.log('invalid pos passed to insertGlobalLeaderboard!');
 		}
 	}
 
@@ -140,6 +159,19 @@ module.exports = function () {
 		});
 
 	};
+
+	printGlobalLeaderboard = function (collectionName, callback) {
+		
+				var cursor = mongodb.collection(collectionName).find(function (err, docs) {
+					if (err || !docs) {
+						console.log("Cannot print database or database is empty\n");
+					}
+					else {
+						callback(docs);
+					}
+				});
+		
+			};
 
 	insertPicture = function (pic) {
 		mongodb.collection('PicturesSaved').save(

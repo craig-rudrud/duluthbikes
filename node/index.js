@@ -121,6 +121,23 @@ app.post('/postlocalleaderboard', function(request,response) {
 	response.sendStatus(200);
 });
 
+app.post('/postgloballeaderboard', function(request,response) {
+	
+		if (!request.body) return response.sendStatus(400);
+	
+		var position = {
+			'pos':request.body.pos
+		}
+		var statData = {
+			'date':request.body.date,
+			'distance':request.body.distance,
+			'time':request.body.time
+		}
+		insertGlobalLeaderboard(position,statData);
+		console.log('Post Request: postgloballeaderboard');
+		response.sendStatus(200);
+	});
+
 app.post('/postroute', function(request, response) {
 
 	if (!request.body)return response.sendStatus(400);
@@ -174,6 +191,14 @@ app.get('/localleaderboard', function(req, res) {
 		   res.send();
 	   });
    console.log('local leaderboard request');
+});
+
+app.get('/globalleaderboard', function(req, res) {
+	var users = printLocalLeaderboard('globalLeaderboard',function(result){
+		   res.write(JSON.stringify(result));
+		   res.send();
+	   });
+   console.log('global leaderboard request');
 });
 
 app.post('/postusername', function(req,res){
@@ -238,6 +263,24 @@ app.get('/deleteAllUsers',function(res,req){
 	console.log('deleted all users atempt');
 	
 	deleteAll('UsersSaved',function(result){
+		if(result==true)console.log("deleted all");
+		else console.log("didnt work");
+		});
+});
+
+app.get('/resetLocalLeaderboard',function(res,req){
+	console.log('deleted all local leaderboard atempt');
+	
+	deleteAll('localLeaderboard',function(result){
+		if(result==true)console.log("deleted all");
+		else console.log("didnt work");
+		});
+});
+
+app.get('/resetGlobalLeaderboard',function(res,req){
+	console.log('deleted all global leaderboard atempt');
+	
+	deleteAll('globalLeaderboard',function(result){
 		if(result==true)console.log("deleted all");
 		else console.log("didnt work");
 		});
