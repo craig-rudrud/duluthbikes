@@ -298,7 +298,7 @@ public class LoginActivity extends AppCompatActivity
             Toast toast = Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT);
             toast.show();
 
-                ActivityCompat.requestPermissions(this,
+            ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
 

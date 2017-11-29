@@ -120,5 +120,6 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="localLeaderboard">Your Leaderboard</string>
     <string name="globalLeaderboard">Local Leaderboard</string>
     <string name="rank">Rank</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
 
 </resources>
