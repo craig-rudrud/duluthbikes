@@ -44,7 +44,6 @@
                 android:text="@string/IntroMessage"/>
 
 
-
     </RelativeLayout>
 
 </RelativeLayout>

@@ -194,6 +194,7 @@ public class MenuActivity extends AppCompatActivity
         resetDialog.show(fragmentManager, "test");
     }
 
+
     public void signOutClick(View view) {
         Intent intent = new Intent(this, LoginScreenActivity.class);
         startActivity(intent);
