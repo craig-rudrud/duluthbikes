@@ -222,13 +222,15 @@ public class MenuActivity extends AppCompatActivity
                     speed = Math.abs(speed);
                     location.setSpeed(speed);
                     setLastLocation(location);
-                    if(speed > 0){counter++;
+                    if(automaticTracking){
+                        if(speed*3.6 > 0){counter++;}
+                        if((speed > 0) && (counter == 4)){
+                            Intent intent = new Intent(this, MainActivity.class);
+                            intent.putExtra("autoTracking", automaticTracking);
+                            startActivity(intent);
+                        }
                     }
-                    if((speed > 0) && (automaticTracking) && (counter == 4)){
-                        Intent intent = new Intent(this, MainActivity.class);
-                        intent.putExtra("autoTracking", automaticTracking);
-                        startActivity(intent);
-                    }
+
                 }
             }
 

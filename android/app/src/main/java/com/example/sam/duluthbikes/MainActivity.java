@@ -61,7 +61,6 @@ public class MainActivity extends FragmentActivity
     private TextView tvDistance;
     private FrameLayout linearLayout;
     private LinearLayout greyScreen;
-    private Button stop;
     private boolean autoStart;
 
     @Override
@@ -82,7 +81,7 @@ public class MainActivity extends FragmentActivity
         mPresenter = new Presenter(this.getApplicationContext(),this,this);
         mPresenter.clickStart();
         animate = true;
-        stop = (Button)findViewById(R.id.finish);
+
         //toggle button initializer
         addListenerOnToggle();
 
@@ -297,12 +296,32 @@ public class MainActivity extends FragmentActivity
             sd = df.format(locationData.getOurInstance(this.getBaseContext()).getDistance()/1000);
             tvDistance.setText(sd+" KM");
             setLastLocation(location);
-            if(speed*3.6 < 10.25 && autoStart){
-                counter++;
-            }
-            else counter = 0;
-            if(counter > 20){
-                stop.performClick();
+            if(autoStart){
+                if(speed*3.6 < 10){
+                    counter++;
+                }
+                else counter = 0;
+                if(counter == 20 && speed*3.6 < 10){
+                    mPresenter.finishRideButton();
+                    Intent endIntent = new Intent(this.getApplicationContext(),EndRideActivity.class);
+                    Date thisDate = new Date();
+
+                    Long endTime = thisDate.getTime();
+                    Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
+                    Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
+
+                    updateTotals(distance, endTime-startTime);
+
+                    endIntent.putExtra("dis",distance);
+                    endIntent.putExtra("startTime", startTime);
+                    endIntent.putExtra("endTime", endTime);
+
+                    mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
+                            locationData.getOurInstance(this.getBaseContext()).getLatlng());
+                    LocationData.getOurInstance(this.getBaseContext()).resetData();
+                    startActivity(endIntent);
+                }
+                else counter = 0;
             }
         }
     }
