@@ -21,7 +21,7 @@ var io = require('socket.io')(http);
 var routeHistory = [];
 
 // setting the port for the app system to use
-app.set("port",23405);
+app.set("port",23401);
 
 // this section tells the body parser what type of data to expect
 // for now it is mainly json

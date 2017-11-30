@@ -194,7 +194,6 @@ module.exports = function () {
     };
 
     printPictures = function (collectionName, callback) {
-
 	var cursor = mongodb.collection(collectionName).find(function (err, docs) {
 
 	    if (err || !docs) {
