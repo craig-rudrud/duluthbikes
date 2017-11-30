@@ -12,6 +12,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -47,15 +50,18 @@ public class Model
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApi;
     private Context mContext;
     private FragmentActivity mActivity;
     private int mRequestCode;
     private boolean mode;
 
+
     public Model(){}
 
     public Model(Context context, Presenter presenter){
         mContext = context;
+        //mGSO = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         if(mGoogleApiClient==null) {
             mGoogleApiClient = new GoogleApiClient.Builder(mContext)
                     .addConnectionCallbacks(this)
@@ -175,6 +181,16 @@ public class Model
      */
     public Location getLocation() { return mLastLocation; }
     public void setLocation(Location curr) { mLastLocation = curr; }
+
+    @Override
+    public GoogleApiClient getGoogleApi() {
+        return mGoogleApi;
+    }
+
+    @Override
+    public void setGoogleApi(GoogleApiClient mGoogleApiClient) {
+        mGoogleApi = mGoogleApiClient;
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

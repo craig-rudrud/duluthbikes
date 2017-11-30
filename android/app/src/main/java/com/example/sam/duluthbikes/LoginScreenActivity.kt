@@ -13,29 +13,32 @@ import android.provider.ContactsContract
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.widget.Toast
+import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 
 import kotlinx.android.synthetic.main.activity_login_screen.skip_sign_in_button
 import kotlinx.android.synthetic.main.activity_login_screen.google_sign_in_button
+//import kotlinx.android.synthetic.main.activity_login_screen
 
-class LoginScreenActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor>, ModelViewPresenterComponents.View {
+class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedListener, ModelViewPresenterComponents.View, MVPLogin.loginView {
 
-    private var mPresenter : ModelViewPresenterComponents.PresenterContract? = null
+    private var mPresenter : Presenter? = null
+    private var mGoogleApiClient : GoogleApiClient? = null
 
-    private val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE : Int = 1
-
-    public var duplicateCode = 400
+    private var REQ_CODE = 5566
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_screen)
 
-        mPresenter = Presenter(this.baseContext, this, this)
-
         var mGSO = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build()
-        var mGoogleSignInClient = GoogleSignIn.getClient(this, mGSO)
+        mGoogleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, mGSO).build()
+
+        mPresenter = Presenter(this.baseContext, this, this)
 
         skip_sign_in_button.setOnClickListener {
             val intent = Intent(applicationContext, MenuActivity::class.java)
@@ -43,53 +46,45 @@ class LoginScreenActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<C
         }
 
         google_sign_in_button.setOnClickListener {
-            TODO("not yet implemented")
+            val intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
+            startActivityForResult(intent, REQ_CODE)
         }
 
     }
 
     override fun getClient(): GoogleApiClient? {
-        return null
+        return mGoogleApiClient
     }
 
     override fun locationChanged(location: Location?) {
-        TODO("no implementation planned")
+
     }
 
     override fun setClient(googleApiClient: GoogleApiClient?) {
-        TODO("no implementation planned")
+
     }
 
     override fun userResults(results: String?) {
-        if (results == "good") duplicateCode = 200
-        else if (results == "bad") duplicateCode = 300
-    }
-
-    override fun onCreateLoader(p0: Int, p1: Bundle?): Loader<Cursor> {
-        TODO("not yet implemented")
-    }
-
-    override fun onLoadFinished(cursorLoader: Loader<Cursor>, cursor: Cursor) {
-
-        TODO("idk what this does")
 
     }
 
-    override fun onLoaderReset(p0: Loader<Cursor>?) {
-        TODO("no implementation planned")
+    override fun onConnectionFailed(p0: ConnectionResult) {
+
     }
 
-    private fun requestStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this.baseContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-            val text : CharSequence = "To create a user you must allow storage permissions to store user on phone."
-            val toast : Toast = Toast.makeText(baseContext, text, Toast.LENGTH_SHORT)
-            toast.show()
+        if (requestCode == REQ_CODE) {
+            var result : GoogleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+            handleResult(result)
+        }
+    }
 
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE)
-
+    private fun handleResult(result : GoogleSignInResult) {
+        if (result.isSuccess) {
+            val intent = Intent(applicationContext, MenuActivity::class.java)
+            startActivity(intent)
         }
     }
 

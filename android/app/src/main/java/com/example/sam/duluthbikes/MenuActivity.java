@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+
 /**
  * Home screen
  */
@@ -27,10 +32,13 @@ public class MenuActivity extends AppCompatActivity
 
     private int mRequestCode;
 
+    private Presenter mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_activity);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new HomeFragment()).commit();
         }
@@ -154,9 +162,8 @@ public class MenuActivity extends AppCompatActivity
     }
 
     public void signOutClick(View view) {
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        FireSignOutFragment signOutDialog = new FireSignOutFragment();
-        signOutDialog.show(fragmentManager, "");
+        Intent intent = new Intent(getApplicationContext(), LoginScreenActivity.class);
+        startActivity(intent);
     }
 
     /** Created by Mackenzie Fulton

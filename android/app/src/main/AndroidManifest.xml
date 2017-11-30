@@ -55,7 +55,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".EndRideActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".LoginScreenActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,7 +64,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".NotificationsSettingsActivity" />
-        <activity android:name=".LoginScreenActivity"></activity>
     </application>
 
 </manifest>

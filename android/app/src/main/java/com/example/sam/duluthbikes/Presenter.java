@@ -84,4 +84,14 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
     public GoogleApiClient getOurClient() {
         return mView.getClient();
     }
+
+    @Override
+    public GoogleApiClient getClient() {
+        return mModel.getGoogleApi();
+    }
+
+    @Override
+    public void setClient(GoogleApiClient c) {
+        mModel.setGoogleApi(c);
+    }
 }

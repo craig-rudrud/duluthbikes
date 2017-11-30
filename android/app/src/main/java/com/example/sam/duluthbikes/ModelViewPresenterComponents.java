@@ -25,6 +25,8 @@ public interface ModelViewPresenterComponents {
 
     interface PresenterContract {
 
+        void setClient(GoogleApiClient c);
+
         Location getLocationForCamera();
 
         void updateMapLocation();
@@ -48,9 +50,13 @@ public interface ModelViewPresenterComponents {
         void setOurClient(GoogleApiClient googleApiClient);
 
         GoogleApiClient getOurClient();
+
+        GoogleApiClient getClient();
     }
 
     interface Model {
+
+        void setGoogleApi(GoogleApiClient mGoogleApiClient);
 
         //Set Location
         void setLocation(Location curr);
@@ -70,6 +76,8 @@ public interface ModelViewPresenterComponents {
         void loginAttempt(String user,String pass);
 
         void sendPicture(String loc, String description, String encodedImage);
+
+        GoogleApiClient getGoogleApi();
     }
 }
 
