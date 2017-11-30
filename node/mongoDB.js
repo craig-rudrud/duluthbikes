@@ -80,15 +80,15 @@ module.exports = function () {
 		var posInt = pos.pos //pos is an array of key value pairs, pos is the key value for the position
 		if (posInt >= 1 && posInt <= 3) {
 			mongodb.collection('localLeaderboard').update(
+				{ position: pos }, //'find' query
 				{
-					position: pos,
+					position: pos,	//update these (or insert)
 					date: stats.date,
 					time: stats.time,
 					distance: stats.distance
-				}, function (err, result) {
-					if (err || !result) console.log("local leaderboard data not saved");
-					else console.log("data saved to localLeaderboard");
-				});
+				},
+				{ upsert: true } //insert if not found
+			 )
 		}
 		else {
 			console.log('invalid pos passed to insertLocalLeaderboard!');
@@ -99,15 +99,15 @@ module.exports = function () {
 		var posInt = pos.pos //pos is an array of key value pairs, pos is the key value for the position
 		if (posInt >= 1 && posInt <= 3) {
 			mongodb.collection('globalLeaderboard').update(
+				{ position: pos }, //'find' query
 				{
-					position: pos,
+					position: pos,	//update these (or insert)
 					date: stats.date,
 					time: stats.time,
 					distance: stats.distance
-				}, function (err, result) {
-					if (err || !result) console.log("global leaderboard data not saved");
-					else console.log("data saved to globalLeaderboard");
-				});
+				},
+				{ upsert: true } //insert if not found
+			 )
 		}
 		else {
 			console.log('invalid pos passed to insertGlobalLeaderboard!');
