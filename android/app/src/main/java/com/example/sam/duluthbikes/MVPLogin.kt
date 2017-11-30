@@ -1,5 +1,7 @@
 package com.example.sam.duluthbikes
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.GoogleApiClient
 
 /**
@@ -12,11 +14,17 @@ interface MVPLogin {
     }
 
     interface loginModel {
-        fun setGoogleApiClient(client : GoogleApiClient)
+        fun setGoogleSignInClient(client : GoogleSignInClient)
+
+        fun getGoogleSignInClient() : GoogleSignInClient
     }
 
     interface loginPresenter {
+        fun setGoogleSignInClient(client : GoogleSignInClient)
 
+        fun getGoogleSignInClient() : GoogleSignInClient
+
+        fun getView() : MVPLogin.loginView
     }
 
 }

@@ -36,10 +36,22 @@
                 android:id="@+id/google_sign_in_button"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginTop="70dp"
+                android:layout_marginTop="35dp"
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
                 />
+
+            <Button
+                android:id="@+id/sign_out_button"
+                style="@android:style/Widget.DeviceDefault.Button.Small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/common_google_signin_btn_text_light"
+                android:text="Sign Out"
+                android:textAppearance="@style/NavDrawerTextStyle" />
 
 
         </LinearLayout>
