@@ -101,7 +101,7 @@ app.get('/maps',function(req,res){
 });
 
 app.get('/',function(req,res){
-	res.sendFile(__dirname + '/duluthbikes.html');
+	res.sendFile(__dirname + '/duluthBikesBootstrap.html');
 });
 
 app.post('/postlocalleaderboard', function(request,response) {
