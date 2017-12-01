@@ -102,6 +102,7 @@ app.get('/maps',function(req,res){
 });
 
 app.get('/',function(req,res){
+
     res.sendFile(__dirname + '/public/duluthBikesBootstrap.html');
 });
 
