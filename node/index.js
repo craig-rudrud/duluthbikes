@@ -32,10 +32,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json({limit: '50mb'}));
 
-//Include the asset/dist files so we can serve them
-app.use(express.static(__dirname + '/assets'));
-app.use(express.static(__dirname + '/dist'));
-app.use(express.static('./'));
+//Include all files in the public folder to serve to the website
+app.use(express.static('public'));
 
 //********MangoDB*******
 // Connect to the mongo module
@@ -43,11 +41,11 @@ var mongodb = require('./mongoDB.js')();
 console.log(mongodb);
 
 app.get('/heatmapfiles',function(req,res){
-	res.sendFile(__dirname + '/node_modules/heatmap.js/build/heatmap.js');
+	res.sendFile(__dirname + '/public/node_modules/heatmap.js/build/heatmap.js');
 });
 
 app.get('/heatmapfilesgmaps',function(req,res){
-  res.sendFile(__dirname + '/node_modules/heatmap.js/plugins/gmaps-heatmap/gmaps-heatmap.js');
+  res.sendFile(__dirname + '/public/node_modules/heatmap.js/plugins/gmaps-heatmap/gmaps-heatmap.js');
 });
 
 app.get('/fullRide',function(req,res){
@@ -90,21 +88,21 @@ app.get('/raw', function(request, response) {
 });
 
 app.get('/rides',function(request,response){
-	response.sendFile(__dirname +'/ride.html');
+	response.sendFile(__dirname +'/public/ride.html');
 	printRides('FullRidesRecorded',function(doc){
         io.emit('FullRidesRecorded',doc);
         });
 });
 
 app.get('/maps',function(req,res){
-	res.sendFile(__dirname + '/maps.html');
+	res.sendFile(__dirname + '/public/maps.html');
 	printRides('FullRidesRecorded',function(doc){
 	io.emit('FullRidesRecorded',doc);
 	});
 });
 
 app.get('/',function(req,res){
-	res.sendFile(__dirname + '/duluthBikesBootstrap.html');
+	res.sendFile(__dirname + '/public/duluthBikesBootstrap.html');
 });
 
 app.post('/postlocalleaderboard', function(request,response) {
@@ -228,7 +226,7 @@ app.post('/postpicture', function(req,res){
 app.get('/pictures',function(req,res){
 	
 	// 1.// THE FOLLOWING IS FOR ACCESSING DB. ( CURRENTLY DOES NOT ACCESS - PICS HARDCODED.)
-	res.sendFile(__dirname +'/threepics.html'); // Will try and use if we can use Canvas element - HTML5
+	res.sendFile(__dirname +'/public/threepics.html'); // Will try and use if we can use Canvas element - HTML5
 	printPictures('PicturesSaved',function(doc){
 	io.emit('PicturesSaved',doc);
 	});
