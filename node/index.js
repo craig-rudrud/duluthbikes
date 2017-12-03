@@ -32,6 +32,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json({limit: '50mb'}));
 
+
 //Include all files in the public folder to serve to the website
 app.use(express.static('public'));
 
