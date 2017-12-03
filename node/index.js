@@ -32,7 +32,10 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json({limit: '50mb'}));
 
-
+//Include the asset/dist files so we can serve them
+app.use(express.static(__dirname + '/assets'));
+app.use(express.static(__dirname + '/dist'));
+app.use(express.static('./'));
 
 //********MangoDB*******
 // Connect to the mongo module
