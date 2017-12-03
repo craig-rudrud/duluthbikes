@@ -42,6 +42,7 @@ var mongodb = require('./mongoDB.js')();
 console.log(mongodb);
 
 app.get('/heatmapfiles',function(req,res){
+
     res.sendFile(__dirname + '/public/node_modules/heatmap.js/build/heatmap.js');
 });
 
@@ -89,6 +90,7 @@ app.get('/raw', function(request, response) {
 });
 
 app.get('/rides',function(request,response){
+
     response.sendFile(__dirname +'/public/ride.html');
     printRides('FullRidesRecorded',function(doc){
         io.emit('FullRidesRecorded',doc);
@@ -96,6 +98,7 @@ app.get('/rides',function(request,response){
 });
 
 app.get('/maps',function(req,res){
+
     res.sendFile(__dirname + '/public/maps.html');
     printRides('FullRidesRecorded',function(doc){
 	io.emit('FullRidesRecorded',doc);
@@ -103,6 +106,7 @@ app.get('/maps',function(req,res){
 });
 
 app.get('/',function(req,res){
+
 
     res.sendFile(__dirname + '/public/duluthBikesBootstrap.html');
 });
@@ -286,10 +290,12 @@ app.post('/postpicture', function(req,res){
 });
 
 app.get('/pictures',function(req,res){
+
     
     // 1.// THE FOLLOWING IS FOR ACCESSING DB. ( CURRENTLY DOES NOT ACCESS - PICS HARDCODED.)
     res.sendFile(__dirname +'/public/threepics.html'); // Will try and use if we can use Canvas element - HTML5
     printPictures('PicturesSaved',function(doc){
+or use in website
 	io.emit('PicturesSaved',doc);
     });
 
