@@ -116,7 +116,10 @@ The main goal is to collect information about rides and use that data for cyclin
 
     <!-- strings related to notifications settings -->
     <string name="notifications">Notifications</string>
-    <string name="about_notifications">Set the time you would like a notification to go off every day to remind you to go on a bike ride:</string>
+    <string name="about_notifications">Set the time you would like a notification to go off every day to remind you to go on a bike ride.</string>
+    <string name="set_time">Set</string>
+    <string name="notifications_active">Notifications are active</string>
+    <string name="notifications_inactive">Notifications are inactive</string>
 
     <!-- strings related to leaderboard -->
     <string name="leaderboard">Leaderboard</string>

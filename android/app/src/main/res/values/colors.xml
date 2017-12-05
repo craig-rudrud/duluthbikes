@@ -6,8 +6,8 @@
     <color name="finishButtoncolor">#ff5000</color>
     <color name="colorCancelButton">#66FF0000</color>
     <color name="greyOpacityScreen">#55000000</color>
-    <color name="duluthBikesLightGreen">#7EC252</color>
-    <color name="duluthBikesDarkBlue">#00727F</color>
+    <color name="duluthBikesLightGreen">#7ec252</color>
+    <color name="duluthBikesDarkBlue">#00727f</color>
     <color name="navyBlue">#074c56</color>
     <color name="orage">#ffaa00</color>
     <color name="red">#FFFF0400</color>

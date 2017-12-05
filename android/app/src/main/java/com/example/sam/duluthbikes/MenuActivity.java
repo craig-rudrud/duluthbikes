@@ -193,12 +193,14 @@ public class MenuActivity extends AppCompatActivity
 
     /** Created by Mackenzie Fulton
      *
-     * Function to bring you to the notification settings activity and notification settings view
+     * Function to bring you to the notification settings fragment and notification settings view
      *
      * @param view the current view
      */
     public void notificationMenuClick(View view) {
-        Intent intent = new Intent(getApplicationContext(), NotificationsSettingsActivity.class);
-        startActivity(intent);
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, new NotificationsSettingsFragment())
+                .commit();
     }
 }
