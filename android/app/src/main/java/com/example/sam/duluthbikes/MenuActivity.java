@@ -1,14 +1,11 @@
 package com.example.sam.duluthbikes;
 
 
-
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -17,19 +14,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.gson.Gson;
-
+import com.bumptech.glide.Glide;
 /**
  * Home screen
  */
@@ -40,6 +31,9 @@ public class MenuActivity extends AppCompatActivity
     private int mRequestCode;
 
     private LoginPresenter mPresenter;
+
+    private String name = "";
+    private String email = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +58,13 @@ public class MenuActivity extends AppCompatActivity
                     mRequestCode);
             return;
         }
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            name = extras.getString("name");
+            email = extras.getString("email");
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -72,6 +73,23 @@ public class MenuActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View hView = navigationView.getHeaderView(0);
+
+        TextView Name = (TextView) hView.findViewById(R.id.studentEmail);
+        TextView Email = (TextView) hView.findViewById(R.id.userName);
+
+        Name.setText(name);
+        Email.setText(email);
+
+        ImageView img = (ImageView) hView.findViewById(R.id.imageView);
+        Uri fileURL = getIntent().getData();
+
+        if (null != fileURL) {
+            Glide.with(getApplicationContext())
+                    .load(fileURL)
+                    .into(img);
+        }
 
     }
 
@@ -170,19 +188,7 @@ public class MenuActivity extends AppCompatActivity
     }
 
     public void signOutClick(View view) {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Attention");
-        alertDialog.setMessage("You will be redirected to the logout screen.");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Huzzah!",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Intent intent = new Intent(MenuActivity.super.getBaseContext(), LoginScreenActivity.class);
-                        startActivity(intent);
-                    }
-                });
-        alertDialog.show();
-
+        finish();
     }
 
     /** Created by Mackenzie Fulton
