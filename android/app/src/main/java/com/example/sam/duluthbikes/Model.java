@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Sam on 3/26/2017.
@@ -166,6 +167,46 @@ public class Model
         }
         new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/postpicture","POST",pictureObj.toString());
         //mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public void sendToLocalLeaderboard(JSONObject data) {
+
+    }
+
+    @Override
+    public void sendToGlobalLeaderboard(JSONObject data) {
+
+    }
+
+    @Override
+    public JSONObject getLocalLeaderboard() {
+        String data = null;
+        JSONObject result = new JSONObject();
+        try {
+            data = new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/localleaderboard","GET").get();
+        } catch (Exception e) {
+            Log.d("DEBUG GET REQUEST",
+                    "Timed out waiting for response from http://akka.d.umn.edu:23401/localleaderboard");
+        }
+        System.out.println(data);
+
+        return result;
+    }
+
+    @Override
+    public JSONObject getGlobalLeaderboard() {
+        String data = null;
+        JSONObject result = new JSONObject();
+        try {
+            data = new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/globalleaderboard","GET").get();
+        } catch (Exception e) {
+            Log.d("DEBUG GET REQUEST",
+                    "Timed out waiting for response from http://akka.d.umn.edu:23401/globalleaderboard");
+        }
+        System.out.println(data);
+
+        return result;
     }
 
     protected void createLocationRequest() {

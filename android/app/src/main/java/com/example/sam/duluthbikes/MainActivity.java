@@ -283,4 +283,5 @@ public class MainActivity extends FragmentActivity
     public GoogleApiClient getClient() {
         return LocationData.getOurInstance(this).getGoogleClient();
     }
+
 }

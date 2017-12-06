@@ -17,11 +17,15 @@ public class LdrBoardPageAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: //case local leaderboard
-                LeaderboardTab userTabFragment = new LeaderboardTab();
-                return userTabFragment; // return a local leaderboard fragment
+                LeaderboardTab localLeaderboard = new LeaderboardTab();
+                localLeaderboard.setType(ModelViewPresenterComponents.LOCAL);
+                return localLeaderboard;
+
             case 1: //case global leaderboard
-                LeaderboardTab heatTabFragment = new LeaderboardTab();
-                return heatTabFragment; // return a global leaderboard fragment
+                LeaderboardTab globalLeaderboard = new LeaderboardTab();
+                globalLeaderboard.setType(ModelViewPresenterComponents.GLOBAL);
+                return globalLeaderboard;
+
             default:
                 return null;
         }
@@ -31,4 +35,5 @@ public class LdrBoardPageAdapter extends FragmentStatePagerAdapter {
     public int getCount(){
         return mNumberOfTabs;
     }
+
 }

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 public class LeaderboardFragment extends Fragment {
 
     View myView;
+    String type;
 
     @Nullable
     @Override

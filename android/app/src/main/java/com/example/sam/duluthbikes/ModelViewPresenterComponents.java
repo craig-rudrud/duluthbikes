@@ -5,12 +5,16 @@ import android.location.Location;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Created by Sam on 3/26/2017.
  */
 
 public interface ModelViewPresenterComponents {
+
+    static String GLOBAL = "GLOBAL";
+    static String LOCAL = "LOCAL";
 
     interface View {
 
@@ -45,6 +49,10 @@ public interface ModelViewPresenterComponents {
 
         void sendPictureToServer(String loc, String description, String encodedImage);
 
+        void sendLeaderboardToServer(String type, JSONObject data);
+
+        JSONObject getLeaderboardFromServer(String type);
+
         void returnLogin(String result);
 
         void setOurClient(GoogleApiClient googleApiClient);
@@ -64,6 +72,13 @@ public interface ModelViewPresenterComponents {
         //Get Location
         Location getLocation();
 
+        void sendToLocalLeaderboard(JSONObject data);
+
+        void sendToGlobalLeaderboard(JSONObject data);
+
+        JSONObject getLocalLeaderboard();
+
+        JSONObject getGlobalLeaderboard();
 
         void stopLocationUpdates();
 
@@ -79,5 +94,6 @@ public interface ModelViewPresenterComponents {
 
         GoogleApiClient getGoogleApi();
     }
+
 }
 

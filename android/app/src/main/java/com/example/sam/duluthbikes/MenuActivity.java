@@ -29,6 +29,7 @@ public class MenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MVPLogin.loginView {
 
     private int mRequestCode;
+    private Presenter mPresenter;
 
     private LoginPresenter mPresenter;
 
@@ -203,4 +204,38 @@ public class MenuActivity extends AppCompatActivity
                 .replace(R.id.content_frame, new NotificationsSettingsFragment())
                 .commit();
     }
+
+    public void onGetLocalLeaderboard(View view) {
+        JSONObject data = mPresenter.getLeaderboardFromServer(ModelViewPresenterComponents.LOCAL);
+    }
+
+    public void onGetGlobalLeaderboard(View view) {
+        JSONObject data = mPresenter.getLeaderboardFromServer(ModelViewPresenterComponents.GLOBAL);
+    }
+
+    /*
+    These below functions are required to implement to consider this class a View, as defined in
+    ModelViewPresenterComponents
+     */
+
+    @Override
+    public void locationChanged(Location location) {
+
+    }
+
+    @Override
+    public void userResults(String results) {
+
+    }
+
+    @Override
+    public void setClient(GoogleApiClient googleApiClient) {
+
+    }
+
+    @Override
+    public GoogleApiClient getClient() {
+        return null;
+    }
+
 }

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
 
@@ -26,6 +27,15 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
         mView = view;
         mContext = context;
         mActivity = activity;
+    }
+
+    public Presenter(Context context, FragmentActivity activity,ModelViewPresenterComponents.View view, boolean createModel){
+        mView = view;
+        mContext = context;
+        mActivity = activity;
+        if (createModel) {
+            mModel = new Model();
+        }
     }
 
     @Override
@@ -70,6 +80,30 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
     public void sendPictureToServer(String location, String description, String encodedImage) {
         //mModel = new Model(mContext);
         mModel.sendPicture(location, description, encodedImage);
+    }
+
+    @Override
+    public void sendLeaderboardToServer(String type, JSONObject data) {
+
+    }
+
+    @Override
+    public JSONObject getLeaderboardFromServer(String type) {
+
+        JSONObject data = null;
+
+        switch (type) {
+            case ModelViewPresenterComponents.GLOBAL :
+                data = mModel.getGlobalLeaderboard();
+                break;
+            case ModelViewPresenterComponents.LOCAL :
+                data = mModel.getLocalLeaderboard();
+                break;
+            default:
+                System.out.println("Should never reach here.");
+                break;
+        }
+        return data;
     }
 
     @Override
