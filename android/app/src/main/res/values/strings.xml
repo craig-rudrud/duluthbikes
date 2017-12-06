@@ -121,6 +121,7 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="notifications_toggle">Notifications Toggle</string>
     <string name="notifications_active">Notifications are active</string>
     <string name="notifications_inactive">Notifications are inactive</string>
+    <string name="bike_time">It\'s time for your bike ride!</string>
 
     <!-- strings related to leaderboard -->
     <string name="leaderboard">Leaderboard</string>

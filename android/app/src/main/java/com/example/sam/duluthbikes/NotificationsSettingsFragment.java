@@ -1,6 +1,12 @@
 package com.example.sam.duluthbikes;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -29,6 +35,9 @@ public class NotificationsSettingsFragment extends Fragment {
     private ToggleButton toggleNotifications;
     private TimePicker timePicker;
     private Button setTime;
+    private int hour;
+    private int minute;
+    private Context context;
 
     @Nullable
     @Override
@@ -44,6 +53,15 @@ public class NotificationsSettingsFragment extends Fragment {
         timePicker = (TimePicker) myView.findViewById(R.id.time_picker);
 
         setTime = (Button) myView.findViewById(R.id.set_time);
+
+        context = getActivity().getApplicationContext();
+
+        setTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setNotifications();
+            }
+        });
 
         determineSetTimeState();
 
@@ -68,5 +86,34 @@ public class NotificationsSettingsFragment extends Fragment {
             setTime.setEnabled(true);
             timePicker.setEnabled(true);
         }
+    }
+
+    /* Sets the notification to go off at the determined time
+
+    UNDER CONSTRUCTION:  Currently trying to get it to output a test notification
+     */
+    private void setNotifications() {
+        hour = timePicker.getHour();
+        minute = timePicker.getMinute();
+
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        Intent intent = new Intent();
+
+        PendingIntent pendingIntent = PendingIntent
+                .getActivity(context, 0, intent, 0);
+
+        Notification bikeTime = new Notification.Builder(getContext())
+                .setContentTitle(getResources().getString(R.string.app_name))
+                .setContentText(getResources().getString(R.string.bike_time))
+                .setSmallIcon(R.drawable.ic_action_logo)
+                .setContentIntent(pendingIntent)
+                .setSound(soundUri)
+                .setVibrate(new long[] {0, 1000, 500, 250}).build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, bikeTime);
     }
 }
