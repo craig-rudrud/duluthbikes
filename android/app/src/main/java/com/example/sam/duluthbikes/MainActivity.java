@@ -185,8 +185,11 @@ public class MainActivity extends FragmentActivity
     }
 
     public void endRide(View view) {
-        mPresenter.finishRideButton();
-        endSession();
+        if(autoStart){autoEnd();}
+        else {
+            mPresenter.finishRideButton();
+            endSession();
+        }
     }
 
     public void autoEnd(){
