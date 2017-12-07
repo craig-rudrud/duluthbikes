@@ -196,7 +196,8 @@ public class MainActivity extends FragmentActivity
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
-                            saveRide = true;
+                            View view = null;
+                            autoEnd(view);
                         }
                     });
 
@@ -211,25 +212,7 @@ public class MainActivity extends FragmentActivity
 
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
-            if(saveRide){
-                Intent endIntent = new Intent(this.getApplicationContext(),EndRideActivity.class);
-                Date thisDate = new Date();
 
-                Long endTime = thisDate.getTime();
-                Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
-                Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
-
-                updateTotals(distance, endTime-startTime);
-
-                endIntent.putExtra("dis",distance);
-                endIntent.putExtra("startTime", startTime);
-                endIntent.putExtra("endTime", endTime);
-
-                mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
-                        locationData.getOurInstance(this.getBaseContext()).getLatlng());
-                LocationData.getOurInstance(this.getBaseContext()).resetData();
-                startActivity(endIntent);
-            }
         }
         else {
             Intent endIntent = new Intent(this.getApplicationContext(), EndRideActivity.class);
@@ -253,6 +236,25 @@ public class MainActivity extends FragmentActivity
     }
 
 
+    public void autoEnd(View view){
+        Intent endIntent = new Intent(this.getApplicationContext(),EndRideActivity.class);
+        Date thisDate = new Date();
+
+        Long endTime = thisDate.getTime();
+        Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
+        Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
+
+        updateTotals(distance, endTime-startTime);
+
+        endIntent.putExtra("dis",distance);
+        endIntent.putExtra("startTime", startTime);
+        endIntent.putExtra("endTime", endTime);
+
+        mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
+                locationData.getOurInstance(this.getBaseContext()).getLatlng());
+        LocationData.getOurInstance(this.getBaseContext()).resetData();
+        startActivity(endIntent);
+    }
     public void changeUI(View view){
         if(tv.getVisibility()==View.GONE){
             tv.setVisibility(View.VISIBLE);
