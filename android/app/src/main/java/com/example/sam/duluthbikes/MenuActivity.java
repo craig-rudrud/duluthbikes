@@ -84,12 +84,12 @@ public class MenuActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        //isitARide();
-
         Presenter mPresenter = new Presenter(this.getApplicationContext(), this, this);
         mPresenter.clickStart();
+    }
 
-        //automaticTracking = false;
+
+
 
     public void isitARide() {
         yes.setVisibility(View.VISIBLE);

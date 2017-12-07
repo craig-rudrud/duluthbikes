@@ -2,6 +2,8 @@
 package com.example.sam.duluthbikes;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -62,12 +64,15 @@ public class MainActivity extends FragmentActivity
     private FrameLayout linearLayout;
     private LinearLayout greyScreen;
     private boolean autoStart;
+    private boolean saveRide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         autoStart = getIntent().getExtras().getBoolean("autoTracking");
+        saveRide = true;
+
         CharSequence text ="Must click finish to end location tracking! Make sure location is enabled on your device.";
         Toast toast = Toast.makeText(
                 getApplicationContext(), text,Toast.LENGTH_LONG
@@ -184,6 +189,31 @@ public class MainActivity extends FragmentActivity
 
     public void endRide(View view) {
         mPresenter.finishRideButton();
+        if(autoStart) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("Do you want to save this ride?");
+            alertDialogBuilder.setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            saveRide = true;
+                        }
+                    });
+
+            alertDialogBuilder.setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveRide = false;
+                            returnMenu();
+                        }
+                    });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+
+        if(saveRide){
         Intent endIntent = new Intent(this.getApplicationContext(),EndRideActivity.class);
         Date thisDate = new Date();
 
@@ -201,6 +231,8 @@ public class MainActivity extends FragmentActivity
                 locationData.getOurInstance(this.getBaseContext()).getLatlng());
         LocationData.getOurInstance(this.getBaseContext()).resetData();
         startActivity(endIntent);
+        }
+
     }
 
 
@@ -219,6 +251,11 @@ public class MainActivity extends FragmentActivity
         mPresenter.connectApi();
         super.onResume();
 
+    }
+
+    private void returnMenu(){
+        Intent menuIntent = new Intent(this, MenuActivity.class);
+        startActivity(menuIntent);
     }
 
     private void updateTotals(Double distance, Long timelapse){
@@ -301,30 +338,17 @@ public class MainActivity extends FragmentActivity
                     counter++;
                 }
                 else counter = 0;
-                if(counter == 20 && speed*3.6 < 10){
+                if(counter == 0 && speed*3.6 < 10){
                     mPresenter.finishRideButton();
-                    Intent endIntent = new Intent(this.getApplicationContext(),EndRideActivity.class);
-                    Date thisDate = new Date();
+                    View view = null;
+                    endRide(view);
+                }
 
-                    Long endTime = thisDate.getTime();
-                    Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
-                    Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
-
-                    updateTotals(distance, endTime-startTime);
-
-                    endIntent.putExtra("dis",distance);
-                    endIntent.putExtra("startTime", startTime);
-                    endIntent.putExtra("endTime", endTime);
-
-                    mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
-                            locationData.getOurInstance(this.getBaseContext()).getLatlng());
-                    LocationData.getOurInstance(this.getBaseContext()).resetData();
-                    startActivity(endIntent);
                 }
                 else counter = 0;
             }
         }
-    }
+
 
     @Override
     public void userResults(String results) {

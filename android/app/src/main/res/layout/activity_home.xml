@@ -44,6 +44,7 @@
                 android:text="@string/IntroMessage"
                 android:id="@+id/textView2" />
 
+
         <ToggleButton
             android:id="@+id/automatic_tracking"
             android:layout_width="wrap_content"
