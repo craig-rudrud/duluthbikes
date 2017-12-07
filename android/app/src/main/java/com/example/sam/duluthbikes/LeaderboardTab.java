@@ -34,6 +34,9 @@ public class LeaderboardTab extends Fragment {
     TextView totTime1;
     TextView totTime2;
     TextView totTime3;
+    TextView name1;
+    TextView name2;
+    TextView name3;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
@@ -47,6 +50,10 @@ public class LeaderboardTab extends Fragment {
         totTime1 = (TextView) myView.findViewById(R.id.homeTotalTime1);
         totTime2 = (TextView) myView.findViewById(R.id.homeTotalTime2);
         totTime3 = (TextView) myView.findViewById(R.id.homeTotalTime3);
+
+        name1 = (TextView) myView.findViewById(R.id.nameValue1);
+        name2 = (TextView) myView.findViewById(R.id.nameValue2);
+        name3 = (TextView) myView.findViewById(R.id.nameValue3);
 
         updateLeaderboardButton = (Button) myView.findViewById(R.id.refreshLeaderboard);
 
@@ -91,12 +98,15 @@ public class LeaderboardTab extends Fragment {
 
             totDist1.setText(jsonDataFirstRank.get("distance").toString());
             totTime1.setText(jsonDataFirstRank.get("time").toString());
+            name1.setText(jsonDataFirstRank.get("name").toString());
 
             totDist2.setText(jsonDataSecondRank.get("distance").toString());
             totTime2.setText(jsonDataSecondRank.get("time").toString());
+            name2.setText(jsonDataFirstRank.get("name").toString());
 
             totDist3.setText(jsonDataThirdRank.get("distance").toString());
             totTime3.setText(jsonDataThirdRank.get("time").toString());
+            name3.setText(jsonDataFirstRank.get("name").toString());
 
         } catch (JSONException e) {
             System.out.println("BAD JSON CALL IN updateTextViews()");
