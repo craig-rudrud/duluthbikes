@@ -49,7 +49,7 @@ public class MenuActivity extends AppCompatActivity
 
     private int mRequestCode;
     Location mLastLocation;
-    private boolean automaticTracking;
+    private boolean automaticTracking = false;
     private int counter = 0;
 
 
@@ -57,9 +57,6 @@ public class MenuActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_activity);
-        no = (Button) findViewById(R.id.butno);
-        yes = (Button) findViewById(R.id.butyes);
-        question = (EditText) findViewById(R.id.questions);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new HomeFragment()).commit();
         }
@@ -85,11 +82,14 @@ public class MenuActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        
+
+
+        //isitARide();
+
         Presenter mPresenter = new Presenter(this.getApplicationContext(), this, this);
         mPresenter.clickStart();
 
-        automaticTracking = false;
+        //automaticTracking = false;
 
     public void isitARide() {
         yes.setVisibility(View.VISIBLE);
@@ -98,8 +98,6 @@ public class MenuActivity extends AppCompatActivity
 
     public void sendMessage(View view) {
         //endRide(view);
-        no = (Button) findViewById(R.id.butno);
-        yes = (Button) findViewById(R.id.butyes);
         yes.setVisibility(View.INVISIBLE);
         no.setVisibility(View.INVISIBLE);
         Intent intent = new Intent(this, MainActivity.class);
@@ -113,8 +111,7 @@ public class MenuActivity extends AppCompatActivity
     }
 
     public void sendMessage2(View view) {
-        no = (Button) findViewById(R.id.butno);
-        yes = (Button) findViewById(R.id.butyes);
+
         yes.setVisibility(View.INVISIBLE);
         no.setVisibility(View.INVISIBLE);
         SharedPreferences totalstats = getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
@@ -220,15 +217,12 @@ public class MenuActivity extends AppCompatActivity
                     float time = (mLastLocation.getTime() - location.getTime()) / 1000;
                     float speed = location.distanceTo(mLastLocation) / time;
                     speed = Math.abs(speed);
-                    location.setSpeed(speed);
                     setLastLocation(location);
-                    if(automaticTracking){
-                        if(speed*3.6 > 10){counter++;}
-                        if((speed > 0) && (counter == 4)){
-                            Intent intent = new Intent(this, MainActivity.class);
-                            intent.putExtra("autoTracking", automaticTracking);
-                            startActivity(intent);
-                        }
+                    if(speed > 0){counter++;}
+                    if((speed > 0) && (automaticTracking) && (counter > 0)){
+                        Intent intent = new Intent(this, MainActivity.class);
+                        intent.putExtra("autoTracking", automaticTracking);
+                        startActivity(intent);
                     }
 
                 }
