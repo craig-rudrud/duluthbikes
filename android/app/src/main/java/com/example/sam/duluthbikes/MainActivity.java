@@ -71,7 +71,7 @@ public class MainActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         autoStart = getIntent().getExtras().getBoolean("autoTracking");
-        saveRide = true;
+        saveRide = false;
 
         CharSequence text ="Must click finish to end location tracking! Make sure location is enabled on your device.";
         Toast toast = Toast.makeText(
@@ -211,28 +211,45 @@ public class MainActivity extends FragmentActivity
 
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
+            if(saveRide){
+                Intent endIntent = new Intent(this.getApplicationContext(),EndRideActivity.class);
+                Date thisDate = new Date();
+
+                Long endTime = thisDate.getTime();
+                Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
+                Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
+
+                updateTotals(distance, endTime-startTime);
+
+                endIntent.putExtra("dis",distance);
+                endIntent.putExtra("startTime", startTime);
+                endIntent.putExtra("endTime", endTime);
+
+                mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
+                        locationData.getOurInstance(this.getBaseContext()).getLatlng());
+                LocationData.getOurInstance(this.getBaseContext()).resetData();
+                startActivity(endIntent);
+            }
         }
+        else {
+            Intent endIntent = new Intent(this.getApplicationContext(), EndRideActivity.class);
+            Date thisDate = new Date();
+            Long endTime = thisDate.getTime();
+            Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
+            Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
 
-        if(saveRide){
-        Intent endIntent = new Intent(this.getApplicationContext(),EndRideActivity.class);
-        Date thisDate = new Date();
+            updateTotals(distance, endTime - startTime);
 
-        Long endTime = thisDate.getTime();
-        Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
-        Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
+            endIntent.putExtra("dis", distance);
+            endIntent.putExtra("startTime", startTime);
+            endIntent.putExtra("endTime", endTime);
 
-        updateTotals(distance, endTime-startTime);
+            mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
+                    locationData.getOurInstance(this.getBaseContext()).getLatlng());
+            LocationData.getOurInstance(this.getBaseContext()).resetData();
+            startActivity(endIntent);
 
-        endIntent.putExtra("dis",distance);
-        endIntent.putExtra("startTime", startTime);
-        endIntent.putExtra("endTime", endTime);
-
-        mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
-                locationData.getOurInstance(this.getBaseContext()).getLatlng());
-        LocationData.getOurInstance(this.getBaseContext()).resetData();
-        startActivity(endIntent);
         }
-
     }
 
 
