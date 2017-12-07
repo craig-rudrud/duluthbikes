@@ -48,6 +48,13 @@ public class MenuActivity extends AppCompatActivity
         {
 
     private int mRequestCode;
+
+    EditText question;
+    Button yes;
+    Button no;
+    Bundle data;
+    Float totDistance;
+    Long totTime;
     Location mLastLocation;
     private boolean automaticTracking = false;
     private int counter = 0;
@@ -57,12 +64,11 @@ public class MenuActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_activity);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new HomeFragment()).commit();
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar); // R.id.toolbar = in menu_bar.xml
-        //setSupportActionBar(toolbar);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -74,6 +80,7 @@ public class MenuActivity extends AppCompatActivity
                     mRequestCode);
             return;
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -89,29 +96,21 @@ public class MenuActivity extends AppCompatActivity
     }
 
 
-
-
     public void isitARide() {
         yes.setVisibility(View.VISIBLE);
         no.setVisibility(View.VISIBLE);
     }
 
+
     public void sendMessage(View view) {
-        //endRide(view);
         yes.setVisibility(View.INVISIBLE);
         no.setVisibility(View.INVISIBLE);
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("autoTracking", automaticTracking);
         startActivity(intent);
-
-        //System.out.println("Hi");
-//        question.setVisibility(View.INVISIBLE);
-      //  yes.setVisibility(View.INVISIBLE);
-//        no.setVisibility(View.INVISIBLE);
     }
 
     public void sendMessage2(View view) {
-
         yes.setVisibility(View.INVISIBLE);
         no.setVisibility(View.INVISIBLE);
         SharedPreferences totalstats = getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
@@ -119,10 +118,13 @@ public class MenuActivity extends AppCompatActivity
         totTime = totalstats.getLong(getString(R.string.lifetimeStats_totTime), 0);
         Intent intent = new Intent(this,MainActivity.class);
         intent.putExtra("value", false);
+    }
+
+    public void startMainActivity(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("autoTracking", automaticTracking);
+        intent.putExtra("value", false);
         startActivity(intent);
-       // question.setVisibility(View.INVISIBLE);
-        //yes.setVisibility(View.INVISIBLE);
-       // no.setVisibility(View.INVISIBLE);
     }
 
 
@@ -132,7 +134,7 @@ public class MenuActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            //super.onBackPressed();
+            super.onBackPressed();
         }
     }
 
