@@ -87,10 +87,6 @@ public class MenuActivity extends AppCompatActivity
         ImageView img = (ImageView) hView.findViewById(R.id.imageView);
         Uri fileURL = getIntent().getData();
 
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(fileURL, "image/*");
-
-
         if (null != fileURL) {
             Glide.with(getApplicationContext())
                     .load(fileURL)
