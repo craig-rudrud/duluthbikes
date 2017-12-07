@@ -85,7 +85,8 @@ module.exports = function () {
 					position: pos,	//update these (or insert)
 					date: stats.date,
 					time: stats.time,
-					distance: stats.distance
+					distance: stats.distance,
+					name: stats.name
 				},
 				{ upsert: true } //insert if not found
 			 )
@@ -104,7 +105,8 @@ module.exports = function () {
 					position: pos,	//update these (or insert)
 					date: stats.date,
 					time: stats.time,
-					distance: stats.distance
+					distance: stats.distance,
+					name: stats.name
 				},
 				{ upsert: true } //insert if not found
 			 )

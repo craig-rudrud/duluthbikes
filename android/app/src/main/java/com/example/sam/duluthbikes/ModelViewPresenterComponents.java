@@ -49,9 +49,9 @@ public interface ModelViewPresenterComponents {
 
         void sendPictureToServer(String loc, String description, String encodedImage);
 
-        void sendLeaderboardToServer(String type, JSONObject data);
+        void sendLeaderboardToServer(String type, JSONArray data);
 
-        JSONObject getLeaderboardFromServer(String type);
+        JSONArray getLeaderboardFromServer(String type);
 
         void returnLogin(String result);
 
@@ -72,13 +72,13 @@ public interface ModelViewPresenterComponents {
         //Get Location
         Location getLocation();
 
-        void sendToLocalLeaderboard(JSONObject data);
+        void sendToLocalLeaderboard(JSONArray data);
 
-        void sendToGlobalLeaderboard(JSONObject data);
+        void sendToGlobalLeaderboard(JSONArray data);
 
-        JSONObject getLocalLeaderboard();
+        JSONArray getLocalLeaderboard();
 
-        JSONObject getGlobalLeaderboard();
+        JSONArray getGlobalLeaderboard();
 
         void stopLocationUpdates();
 

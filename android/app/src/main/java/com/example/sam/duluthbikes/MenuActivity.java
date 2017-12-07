@@ -212,12 +212,18 @@ public class MenuActivity extends AppCompatActivity
                 .commit();
     }
 
-    public void onGetLocalLeaderboard(View view) {
-        JSONObject data = mPresenter.getLeaderboardFromServer(ModelViewPresenterComponents.LOCAL);
+    /*
+    These 2 functions define the onClick functions to the buttons, and 2 public methods to call the
+    presenter mediator methods
+     */
+    public JSONArray GetLocalLeaderboard() {
+        JSONArray data = mPresenter.getLeaderboardFromServer(ModelViewPresenterComponents.LOCAL);
+        return data;
     }
 
-    public void onGetGlobalLeaderboard(View view) {
-        JSONObject data = mPresenter.getLeaderboardFromServer(ModelViewPresenterComponents.GLOBAL);
+    public JSONArray GetGlobalLeaderboard() {
+        JSONArray data = mPresenter.getLeaderboardFromServer(ModelViewPresenterComponents.GLOBAL);
+        return data;
     }
 
     /*

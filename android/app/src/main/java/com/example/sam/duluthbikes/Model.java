@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -170,41 +171,55 @@ public class Model
     }
 
     @Override
-    public void sendToLocalLeaderboard(JSONObject data) {
+    public void sendToLocalLeaderboard(JSONArray data) {
 
     }
 
     @Override
-    public void sendToGlobalLeaderboard(JSONObject data) {
+    public void sendToGlobalLeaderboard(JSONArray data) {
 
     }
 
     @Override
-    public JSONObject getLocalLeaderboard() {
+    public JSONArray getLocalLeaderboard() {
         String data = null;
-        JSONObject result = new JSONObject();
+        JSONArray result = null;
+
         try {
             data = new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/localleaderboard","GET").get();
         } catch (Exception e) {
             Log.d("DEBUG GET REQUEST",
                     "Timed out waiting for response from http://akka.d.umn.edu:23401/localleaderboard");
         }
-        System.out.println(data);
+
+        try {
+            result = new JSONArray(data);
+        } catch (JSONException e) {
+            Log.d("JSON EXCEP",
+                    "parse fails or doesn't yield a JSONObject.");
+        }
 
         return result;
     }
 
     @Override
-    public JSONObject getGlobalLeaderboard() {
+    public JSONArray getGlobalLeaderboard() {
         String data = null;
-        JSONObject result = new JSONObject();
+        JSONArray result = null;
+
         try {
             data = new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/globalleaderboard","GET").get();
         } catch (Exception e) {
             Log.d("DEBUG GET REQUEST",
-                    "Timed out waiting for response from http://akka.d.umn.edu:23401/globalleaderboard");
+                    "Timed out waiting for response from http://akka.d.umn.edu:23401/localleaderboard");
         }
-        System.out.println(data);
+
+        try {
+            result = new JSONArray(data);
+        } catch (JSONException e) {
+            Log.d("JSON EXCEP",
+                    "parse fails or doesn't yield a JSONObject.");
+        }
 
         return result;
     }

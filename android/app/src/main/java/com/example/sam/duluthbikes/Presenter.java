@@ -83,14 +83,14 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
     }
 
     @Override
-    public void sendLeaderboardToServer(String type, JSONObject data) {
+    public void sendLeaderboardToServer(String type, JSONArray data) {
 
     }
 
     @Override
-    public JSONObject getLeaderboardFromServer(String type) {
+    public JSONArray getLeaderboardFromServer(String type) {
 
-        JSONObject data = null;
+        JSONArray data = null;
 
         switch (type) {
             case ModelViewPresenterComponents.GLOBAL :
