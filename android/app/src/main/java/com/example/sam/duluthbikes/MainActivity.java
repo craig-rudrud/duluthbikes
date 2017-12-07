@@ -164,29 +164,6 @@ public class MainActivity extends FragmentActivity
         startActivity(i);
     }
 
- /*   public void isitARide() {question = (EditText) findViewById(R.id.questions);yes = (Button) findViewById(R.id.butyes);
-    no = (Button) findViewById(R.id.butno);
-    question.setVisibility(View.VISIBLE);
-    yes.setVisibility(View.VISIBLE);
-    no.setVisibility(View.VISIBLE);
-    }
-
-    public void sendMessage(View view) {
-        endRide(view);
-        question.setVisibility(View.INVISIBLE);
-        yes.setVisibility(View.INVISIBLE);
-        no.setVisibility(View.INVISIBLE);
-    }
-
-    public void sendMessage2(View view) {
-
-        question.setVisibility(View.INVISIBLE);
-        yes.setVisibility(View.INVISIBLE);
-        no.setVisibility(View.INVISIBLE);
-    } */
-
-
-
     public void endRide(View view) {
         mPresenter.finishRideButton();
         if(autoStart) {
@@ -255,6 +232,8 @@ public class MainActivity extends FragmentActivity
         LocationData.getOurInstance(this.getBaseContext()).resetData();
         startActivity(endIntent);
     }
+
+
     public void changeUI(View view){
         if(tv.getVisibility()==View.GONE){
             tv.setVisibility(View.VISIBLE);
@@ -298,7 +277,6 @@ public class MainActivity extends FragmentActivity
         editor.putLong(newRideTime, timelapse);
 
         editor.apply();
-
     }
 
     /**
