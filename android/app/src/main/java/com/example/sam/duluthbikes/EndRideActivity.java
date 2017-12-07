@@ -68,7 +68,7 @@ public class EndRideActivity extends AppCompatActivity{
         startTime.setText(timeStart);
         endTime.setText(timeFinish);
         totalDist.setText(df.format(converter.getDistInKm(totDistance.doubleValue())).toString() + " km");
-        totalTime.setText(converter.convertHoursMinSecToString(totTime));
+        totalTime.setText(converter.convertHoursMinSecToString(timelapse));
 
     }
 

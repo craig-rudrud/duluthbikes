@@ -49,12 +49,6 @@ public class MenuActivity extends AppCompatActivity
 
     private int mRequestCode;
 
-    EditText question;
-    Button yes;
-    Button no;
-    Bundle data;
-    Float totDistance;
-    Long totTime;
     Location mLastLocation;
     private boolean automaticTracking = false;
     private int counter = 0;
@@ -95,32 +89,12 @@ public class MenuActivity extends AppCompatActivity
         mPresenter.clickStart();
     }
 
-
-    public void isitARide() {
-        yes.setVisibility(View.VISIBLE);
-        no.setVisibility(View.VISIBLE);
-    }
-
-
-    public void sendMessage(View view) {
-        yes.setVisibility(View.INVISIBLE);
-        no.setVisibility(View.INVISIBLE);
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("autoTracking", automaticTracking);
-        startActivity(intent);
-    }
-
-    public void sendMessage2(View view) {
-        yes.setVisibility(View.INVISIBLE);
-        no.setVisibility(View.INVISIBLE);
-        SharedPreferences totalstats = getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
-        totDistance = totalstats.getFloat(getString(R.string.lifetimeStats_totDist), 0);
-        totTime = totalstats.getLong(getString(R.string.lifetimeStats_totTime), 0);
-        Intent intent = new Intent(this,MainActivity.class);
-        intent.putExtra("value", false);
-    }
-
     public void startMainActivity(View view) {
+        automaticTracking = false;
+        startSession();
+    }
+
+    public void startSession(){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("autoTracking", automaticTracking);
         intent.putExtra("value", false);
@@ -211,22 +185,18 @@ public class MenuActivity extends AppCompatActivity
                     if (mLastLocation == null) {
                         setLastLocation(location);
                     }
-                    LatLng latLng =
-                            new LatLng(getLastLocation().getLatitude(), getLastLocation().getLongitude());
-                    LocationData locationData = null;
-                    locationData.getOurInstance(this.getBaseContext()).addPoint(latLng, location);
-                    LatLngBounds.Builder bounds = LocationData.getOurInstance(this.getBaseContext()).getBuilder();
                     float time = (mLastLocation.getTime() - location.getTime()) / 1000;
                     float speed = location.distanceTo(mLastLocation) / time;
                     speed = Math.abs(speed);
                     setLastLocation(location);
-                    if(speed > 0){counter++;}
-                    if((speed > 0) && (automaticTracking) && (counter > 0)){
-                        Intent intent = new Intent(this, MainActivity.class);
-                        intent.putExtra("autoTracking", automaticTracking);
-                        startActivity(intent);
+                    if(automaticTracking) {
+                        if (speed*3.6 > 10) {
+                            counter++;
+                        }
+                        if ((speed*3.6 >= 10) && (counter >= 4)) {
+                            startSession();
+                        }
                     }
-
                 }
             }
 

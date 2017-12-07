@@ -63,13 +63,19 @@ public class MainActivity extends FragmentActivity
     private TextView tvDistance;
     private FrameLayout linearLayout;
     private LinearLayout greyScreen;
+
     private boolean autoStart;
     private boolean saveRide;
+    private Long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Date date = new Date();
+        startTime = date.getTime();
+
         autoStart = getIntent().getExtras().getBoolean("autoTracking");
         saveRide = false;
 
@@ -133,11 +139,6 @@ public class MainActivity extends FragmentActivity
         linearLayout.setVisibility(View.GONE);
         greyScreen = (LinearLayout)findViewById(R.id.cancelGrey);
         greyScreen.setVisibility(View.GONE);
-        if (isaRide == true)
-        { Button finishride;
-            finishride = (Button) findViewById(R.id.finish);
-            finishride.performClick();
-        }
     }
 
     private void addListenerOnToggle() {
@@ -164,61 +165,11 @@ public class MainActivity extends FragmentActivity
         startActivity(i);
     }
 
-    public void endRide(View view) {
-        mPresenter.finishRideButton();
-        if(autoStart) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setMessage("Do you want to save this ride?");
-            alertDialogBuilder.setPositiveButton("Yes",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            View view = null;
-                            autoEnd(view);
-                        }
-                    });
-
-            alertDialogBuilder.setNegativeButton("No",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            saveRide = false;
-                            returnMenu();
-                        }
-                    });
-
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-
-        }
-        else {
-            Intent endIntent = new Intent(this.getApplicationContext(), EndRideActivity.class);
-            Date thisDate = new Date();
-            Long endTime = thisDate.getTime();
-            Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
-            Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
-
-            updateTotals(distance, endTime - startTime);
-
-            endIntent.putExtra("dis", distance);
-            endIntent.putExtra("startTime", startTime);
-            endIntent.putExtra("endTime", endTime);
-
-            mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
-                    locationData.getOurInstance(this.getBaseContext()).getLatlng());
-            LocationData.getOurInstance(this.getBaseContext()).resetData();
-            startActivity(endIntent);
-
-        }
-    }
-
-
-    public void autoEnd(View view){
+    public void endSession(){
         Intent endIntent = new Intent(this.getApplicationContext(),EndRideActivity.class);
         Date thisDate = new Date();
 
         Long endTime = thisDate.getTime();
-        Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
         Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
 
         updateTotals(distance, endTime-startTime);
@@ -233,6 +184,35 @@ public class MainActivity extends FragmentActivity
         startActivity(endIntent);
     }
 
+    public void endRide(View view) {
+        mPresenter.finishRideButton();
+        endSession();
+    }
+
+    public void autoEnd(){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("Do you want to save this ride?");
+            alertDialogBuilder.setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            saveRide = true;
+                            endSession();
+                        }
+                    });
+
+            alertDialogBuilder.setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveRide = false;
+                            returnMenu();
+                        }
+                    });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+    }
 
     public void changeUI(View view){
         if(tv.getVisibility()==View.GONE){
@@ -335,14 +315,13 @@ public class MainActivity extends FragmentActivity
                     counter++;
                 }
                 else counter = 0;
-                if(counter == 0 && speed*3.6 < 10){
+                if(counter >= 20 && speed*3.6 <= 10){
                     mPresenter.finishRideButton();
-                    View view = null;
-                    endRide(view);
-                }
-
+                    autoEnd();
                 }
                 else counter = 0;
+                }
+
             }
         }
 
