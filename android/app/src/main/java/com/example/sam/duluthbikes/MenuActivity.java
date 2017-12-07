@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -21,17 +20,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
+
+//app:headerLayout="@layout/nav_header"
+
+
 /**
  * Home screen
  */
 
 public class MenuActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MVPLogin.loginView {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private int mRequestCode;
     private Presenter mPresenter;
-
-    private LoginPresenter mPresenter;
 
     private String name = "";
     private String email = "";
@@ -46,8 +49,6 @@ public class MenuActivity extends AppCompatActivity
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar); // R.id.toolbar = in menu_bar.xml
         //setSupportActionBar(toolbar);
-
-        mPresenter = new LoginPresenter(this);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -86,9 +87,14 @@ public class MenuActivity extends AppCompatActivity
         ImageView img = (ImageView) hView.findViewById(R.id.imageView);
         Uri fileURL = getIntent().getData();
 
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(fileURL, "image/*");
+
+
         if (null != fileURL) {
             Glide.with(getApplicationContext())
                     .load(fileURL)
+                    .apply(RequestOptions.circleCropTransform())
                     .into(img);
         }
 
@@ -189,7 +195,8 @@ public class MenuActivity extends AppCompatActivity
     }
 
     public void signOutClick(View view) {
-        finish();
+        Intent intent = new Intent(this, LoginScreenActivity.class);
+        startActivity(intent);
     }
 
     /** Created by Mackenzie Fulton

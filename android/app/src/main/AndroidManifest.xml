@@ -47,16 +47,22 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_maps_key"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
 
         <activity
             android:name=".MenuActivity"
-            android:label="@string/title_activity_maps" />
-        <activity android:name=".MainActivity" />
+            android:label="@string/title_activity_maps"
+            android:launchMode="singleInstance"/>
+        <activity android:name=".MainActivity"
+            android:launchMode="singleInstance"/>
         <activity android:name=".EndRideActivity" />
         <activity
             android:name=".LoginScreenActivity"
-            android:label="@string/title_activity_maps">
+            android:label="@string/title_activity_maps"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

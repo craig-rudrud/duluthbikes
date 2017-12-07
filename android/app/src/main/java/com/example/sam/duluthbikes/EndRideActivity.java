@@ -83,7 +83,7 @@ public class EndRideActivity extends AppCompatActivity{
 
 
     public void doneWithRide(View view){
-        Intent menu = new Intent(this.getApplicationContext(),MenuActivity.class);
+        Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
         startActivity(menu);
     }
 
