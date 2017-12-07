@@ -17,12 +17,9 @@ import com.twitter.sdk.android.core.*
 
 import kotlinx.android.synthetic.main.activity_login_screen.skip_sign_in_button
 import kotlinx.android.synthetic.main.activity_login_screen.google_sign_in_button
-
 import kotlinx.android.synthetic.main.activity_login_screen.sign_out_button
 import kotlinx.android.synthetic.main.activity_login_screen.facebook_login_button
-
 import kotlinx.android.synthetic.main.activity_login_screen.login_button_twitter
-import com.twitter.sdk.android.core.identity.TwitterLoginButton
 
 /**
  * @Created by Pin Fan
@@ -30,7 +27,12 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton
  * Implementations of Google Login through Google API Client, Facebook and Twitter Login through
  * their respective SDKs.
  *
+ * Extends AppCompatActivity, GoogleApiClient.OnClickFailedListener, View.OnClickListener
  *
+ * @TODO 1. Refinement of the Twitter API implementation
+ * @TODO 2. Migration of mGoogleApiClient, mCallBackManager to a MVP model to facilitate cleaner and easier readable code
+ *
+ * For future inquiries: fanxx370@d.umn.edu
  *
  */
 
@@ -43,6 +45,14 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
 
     private var REQ_CODE = 5566
     private var signInID = 2
+
+    /**
+     * @Created by Pin Fan
+     *
+     * onCreate method which initializes Facebook and Twitter APIs, and builds the API client for Google Login.
+     *
+     * @param savedInstanceState of type Bundle (null-safe)
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +73,14 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
 
     }
 
+    /**
+     * @Created by Pin Fan
+     *
+     * Function below sets the onClickListeners of these buttons to the specified context - the Activity.
+     *
+     * @param none
+     */
+
     private fun initializeButtons() {
         skip_sign_in_button.setOnClickListener(this)
         google_sign_in_button.setOnClickListener(this)
@@ -70,9 +88,23 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
         facebook_login_button.setOnClickListener(this)
     }
 
+    /**
+     * @Created by Pin Fan
+     *
+     * Function below facilitates the twitter login
+     *
+     * @param none
+     */
+
     private fun twitterSignIn() {
         signInID = 3
         login_button_twitter.callback = object : Callback<TwitterSession>() {
+
+            /**
+             * Twitter API asks the developer to override success and failure functions,
+             * called when either the sign-in is successful or fails
+             */
+
             override fun success(result: Result<TwitterSession>) {
                 var intent = Intent(baseContext, MenuActivity::class.java)
                 startActivity(intent)
@@ -91,7 +123,20 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
 
     }
 
+    /**
+     * @Created by Pin Fan
+     *
+     * Function below facilitates the facebook login
+     *
+     * @param none
+     */
+
     private fun facebookSignIn() {
+
+        /**
+         * Facebook Login requires three overrides, one when successful, one when cancelled,
+         * and one when an error occurs.
+         */
 
         mCallbackManager = CallbackManager.Factory.create()
 
@@ -129,11 +174,28 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
 
     }
 
+    /**
+     * @Created by Pin Fan
+     *
+     * Function below facilitates the google login, by creating a new intent that is then passed
+     * to the startActivityForResult fun.
+     *
+     * @param none
+     */
+
     private fun signIn() {
         val intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
         startActivityForResult(intent, REQ_CODE)
         signInID = 1
     }
+
+    /**
+     * @Created by Pin Fan
+     *
+     * Function below is called when the user signs out of Google
+     *
+     * @param none
+     */
 
     private fun signOut() {
         if (mGoogleApiClient.isConnected) {
@@ -145,6 +207,14 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
         }
     }
 
+    /**
+     * @Created by Pin Fan
+     *
+     * Function below hides or re-reveals a button.
+     *
+     * @param signedIn of type Boolean
+     */
+
     private fun updateUI(signedIn : Boolean) {
         if (signedIn) {
             google_sign_in_button.visibility = View.GONE
@@ -154,6 +224,15 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
             sign_out_button.visibility = View.GONE
         }
     }
+
+    /**
+     * @Created by Pin Fan
+     *
+     * The overridden onClick function, which features a when (switch in java) conditional that
+     * determines actions on button press.
+     *
+     * @param v of type View, which features the current view
+     */
 
     override fun onClick(v: View) {
         when (v.id) {
@@ -181,6 +260,15 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
 
     }
 
+    /**
+     * @Created by Pin Fan
+     *
+     * Overridden function below facililates actions when login is successful, dependent on which API
+     * utilized.
+     *
+     * @param requestCode of type Int, resultCode of type Int, and data of type Intent (null-safe)
+     */
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (signInID) {
             1 -> {
@@ -197,6 +285,15 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
             3 -> login_button_twitter.onActivityResult(requestCode, resultCode, data)
         }
     }
+
+    /**
+     * @Created by Pin Fan
+     *
+     * Function below handles the actions taken by Google API when login is successful;
+     * also passes user info to MenuActivity for the navigation menu.
+     *
+     * @param result of type GoogleSignInResult
+     */
 
     private fun handleResult(result : GoogleSignInResult) {
         if (result.isSuccess) {
@@ -218,3 +315,5 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
         } else updateUI(false)
     }
 }
+
+//You're welcome for the documentation. I knew how it felt looking at this project the first time.
