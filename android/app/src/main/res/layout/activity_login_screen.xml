@@ -33,6 +33,13 @@
             android:textStyle="bold"
             android:visibility="gone"/>
 
+            <com.twitter.sdk.android.core.identity.TwitterLoginButton
+                android:id="@+id/login_button_twitter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"/>
+
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/facebook_login_button"
                 android:layout_width="wrap_content"
@@ -67,7 +74,7 @@
                 android:id="@+id/imageView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 app:srcCompat="@drawable/ic_directions_bike_black_24dp" />
 
         </LinearLayout>

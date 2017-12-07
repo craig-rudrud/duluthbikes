@@ -52,6 +52,14 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
 
+        <meta-data
+            android:name="com.twitter.sdk.android.CONSUMER_KEY"
+            android:value="@string/com.twitter.sdk.android.CONSUMER_KEY" />
+
+        <meta-data
+            android:name="com.twitter.sdk.android.CONSUMER_SECRET"
+            android:value="@string/com.twitter.sdk.android.CONSUMER_SECRET" />
+
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_maps"

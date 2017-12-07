@@ -13,12 +13,26 @@ import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
+import com.twitter.sdk.android.core.*
 
 import kotlinx.android.synthetic.main.activity_login_screen.skip_sign_in_button
 import kotlinx.android.synthetic.main.activity_login_screen.google_sign_in_button
 
 import kotlinx.android.synthetic.main.activity_login_screen.sign_out_button
 import kotlinx.android.synthetic.main.activity_login_screen.facebook_login_button
+
+import kotlinx.android.synthetic.main.activity_login_screen.login_button_twitter
+import com.twitter.sdk.android.core.identity.TwitterLoginButton
+
+/**
+ * @Created by Pin Fan
+ *
+ * Implementations of Google Login through Google API Client, Facebook and Twitter Login through
+ * their respective SDKs.
+ *
+ *
+ *
+ */
 
 
 class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -33,6 +47,7 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FacebookSdk.sdkInitialize(applicationContext)
+        Twitter.initialize(this)
         setContentView(R.layout.activity_login_screen)
 
         val mGSO = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build()
@@ -42,15 +57,37 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
                 .addApi(Auth.GOOGLE_SIGN_IN_API, mGSO)
                 .build()
 
-        skip_sign_in_button.setOnClickListener(this)
-
-        google_sign_in_button.setOnClickListener(this)
-
-        sign_out_button.setOnClickListener(this)
-
-        facebook_login_button.setOnClickListener(this)
-
+        initializeButtons()
         facebookSignIn()
+        twitterSignIn()
+
+    }
+
+    private fun initializeButtons() {
+        skip_sign_in_button.setOnClickListener(this)
+        google_sign_in_button.setOnClickListener(this)
+        sign_out_button.setOnClickListener(this)
+        facebook_login_button.setOnClickListener(this)
+    }
+
+    private fun twitterSignIn() {
+        signInID = 3
+        login_button_twitter.callback = object : Callback<TwitterSession>() {
+            override fun success(result: Result<TwitterSession>) {
+                var intent = Intent(baseContext, MenuActivity::class.java)
+                startActivity(intent)
+            }
+
+            override fun failure(exception: TwitterException) {
+                val alert : AlertDialog = AlertDialog.Builder(this@LoginScreenActivity).create()
+                alert.setTitle("Twitter Login Failed")
+                alert.setMessage("Twitter Login Failed - Please try again.")
+                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Okay", DialogInterface.OnClickListener { dialogInterface, i ->
+                    dialogInterface.dismiss()
+                })
+                alert.show()
+            }
+        }
 
     }
 
@@ -70,7 +107,7 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
 
                 val alertDialog : AlertDialog = AlertDialog.Builder(this@LoginScreenActivity).create()
                 alertDialog.setTitle("Facebook Login Cancelled")
-                alertDialog.setMessage("Facebook Login Failed - please try again!")
+                alertDialog.setMessage("Facebook Login Failed - please try again.")
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Okay", DialogInterface.OnClickListener { dialogInterface, i ->
                     dialogInterface.dismiss()
                 })
@@ -156,6 +193,8 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
             }
 
             2 -> mCallbackManager.onActivityResult(requestCode, resultCode, data)
+
+            3 -> login_button_twitter.onActivityResult(requestCode, resultCode, data)
         }
     }
 

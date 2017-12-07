@@ -17,6 +17,10 @@
     <string name="settings2">Settings2</string>
     <string name="settings3">Settings3</string>
 
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">Hx7zByXJQQ20arq9CofpBthS1</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">
+        6zALqY7lSw8DthHAdugE3xwnoI4wztCM0HY3vjHyi1HRmlcxIU</string>
+
     <string name="facebook_app_id">2036926216591978</string>
 
     <string name="title_activity_login">Sign in</string>
