@@ -157,7 +157,8 @@ app.post('/postlocalleaderboard', function(request,response) {
 	var statData = {
 		'date':request.body.date,
 		'distance':request.body.distance,
-		'time':request.body.time
+		'time':request.body.time,
+		'name':request.body.name
 	}
 	insertLocalLeaderboard(position,statData);
 	console.log('Post Request: postlocalleaderboard');
@@ -174,7 +175,8 @@ app.post('/postgloballeaderboard', function(request,response) {
 		var statData = {
 			'date':request.body.date,
 			'distance':request.body.distance,
-			'time':request.body.time
+			'time':request.body.time,
+			'name':request.body.name
 		}
 		insertGlobalLeaderboard(position,statData);
 		console.log('Post Request: postgloballeaderboard');
