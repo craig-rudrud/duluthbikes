@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 
-/**
- * Created by Mackenzie'River' on 12/7/2017.
+/** Created by Mackenzie Fulton on 12/7/2017
+ * gilbe935@d.umn.edu if there are questions!
+ *
+ * Creates the notification and fires it
  */
-
 public class NotificationsReceiver extends BroadcastReceiver {
 
+    /** Class constructor; does what the class comments specify */
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationManager notificationManager =

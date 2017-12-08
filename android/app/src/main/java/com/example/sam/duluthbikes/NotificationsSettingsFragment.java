@@ -43,6 +43,8 @@ public class NotificationsSettingsFragment extends Fragment {
     private int hour;
     private int minute;
     private Context context;
+    private static PendingIntent pendingIntent;
+    private static AlarmManager alarmManager;
 
     @Nullable
     @Override
@@ -78,17 +80,19 @@ public class NotificationsSettingsFragment extends Fragment {
         return myView;
     }
 
-    // Check to see if the alarm is active when opening the app to determine the toggle state.
+    /** Check to see if the alarm is active when opening the app to determine the toggle state.
+     *
+     * @return true if the alarm is active; false if not
+     */
     private boolean isAlarmActive() {
-        return (PendingIntent.getBroadcast(context,
+        return (pendingIntent.getBroadcast(context,
                 100,
                 new Intent(getActivity(), NotificationsReceiver.class),
-                PendingIntent.FLAG_NO_CREATE) != null);
+                pendingIntent.FLAG_NO_CREATE) != null);
     }
 
-    /* If the toggle is turned on, let the user interact with the time picker and set button
-    If the toggle is turned off, cancel the ongoing alarm and disable the time picker and set button
-     */
+    /** If the toggle is turned on, let the user interact with the time picker and set button
+     *  If the toggle is turned off, cancel the ongoing alarm and disable the time picker and set button */
     private void allowSet() {
         if (!toggleNotifications.isChecked()) {
             setTime.setEnabled(false);
@@ -101,19 +105,11 @@ public class NotificationsSettingsFragment extends Fragment {
         }
     }
 
-    /**
-     * Cancels the ongoing alarm
+    /** Cancels the ongoing alarm
+     *
+     * @throws NullPointerException in AlarmManager.cancel()
      */
     private void cancelAlarm() {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent intent = new Intent(context.getApplicationContext(), NotificationsReceiver.class);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                100,
-                intent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
-
         try {
             alarmManager.cancel(pendingIntent);
         }
@@ -124,6 +120,10 @@ public class NotificationsSettingsFragment extends Fragment {
         }
     }
 
+    /** Schedules the upcoming notification
+     *
+     * @throws NullPointerException in AlarmManager.setRepeating()
+     */
     private void scheduleNotifications(View view) {
         Calendar calendar = Calendar.getInstance();
 
@@ -132,13 +132,13 @@ public class NotificationsSettingsFragment extends Fragment {
 
         Intent intent = new Intent(context.getApplicationContext(), NotificationsReceiver.class);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context.getApplicationContext(),
+        pendingIntent = PendingIntent.getBroadcast(
+                context,
                 100,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         try {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
@@ -151,6 +151,11 @@ public class NotificationsSettingsFragment extends Fragment {
             e.printStackTrace();
         }
 
+        notifyUser();
+    }
+
+    /** Notifies the user the alarm has been set */
+    private void notifyUser() {
         Toast toast = Toast.makeText(context,
                 getResources().getText(R.string.notifications_set)
                         + " "
