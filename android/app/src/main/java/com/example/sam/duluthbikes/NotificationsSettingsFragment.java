@@ -96,6 +96,10 @@ public class NotificationsSettingsFragment extends Fragment {
         hour = timePicker.getHour();
         minute = timePicker.getMinute();
 
+        activateNotifications();
+    }
+
+    private void activateNotifications() {
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         Intent intent = new Intent();
