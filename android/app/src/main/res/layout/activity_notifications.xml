@@ -42,6 +42,7 @@
             android:id="@+id/toggle_notifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checked="false"
             android:text="@string/notifications_toggle"
             android:textColorLink="@color/duluthBikesDarkBlue"
             android:textOff="@string/notifications_inactive"

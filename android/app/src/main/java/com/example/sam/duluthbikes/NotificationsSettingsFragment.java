@@ -31,6 +31,8 @@ import java.util.Calendar;
  * gilbe935@d.umn.edu if there are any questions!
  *
  * Class to handle the the inner workings of the Notifications menu
+ *
+ * @TODO Either cancelAlarm or isActive isn't working properly or something else entirely is going on
  */
 
 public class NotificationsSettingsFragment extends Fragment {
@@ -95,9 +97,9 @@ public class NotificationsSettingsFragment extends Fragment {
      *  If the toggle is turned off, cancel the ongoing alarm and disable the time picker and set button */
     private void allowSet() {
         if (!toggleNotifications.isChecked()) {
+            cancelAlarm();
             setTime.setEnabled(false);
             timePicker.setEnabled(false);
-            cancelAlarm();
         }
         else {
             setTime.setEnabled(true);
