@@ -113,7 +113,7 @@ public class NotificationsSettingsFragment extends Fragment {
                 .setSmallIcon(R.drawable.ic_action_logo)
                 .setContentIntent(pendingIntent)
                 .setSound(soundUri)
-                .setVibrate(new long[] {0, 1000, 500, 250}).build();
+                .setVibrate(new long[] {0, 1000}).build();
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
