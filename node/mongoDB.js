@@ -80,9 +80,9 @@ module.exports = function () {
 		var posInt = pos.pos //pos is an array of key value pairs, pos is the key value for the position
 		if (posInt >= 1 && posInt <= 3) {
 			mongodb.collection('localLeaderboard').update(
-				{ position: posInt }, //'find' query
+				{ position: pos }, //'find' query
 				{
-					position: posInt,	//update these (or insert)
+					position: pos,	//update these (or insert)
 					date: stats.date,
 					time: stats.time,
 					distance: stats.distance,
