@@ -30,6 +30,7 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
     Long totTime;
     private Presenter mPresenter;
     String theRideDate;
+    String theRideTime;
     String name = "in-app POST test";
 
     @Override
@@ -64,6 +65,7 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
         Long timelapse = fTime - sTime;
 
         theRideDate = datef.format(fTime);
+        theRideTime = String.valueOf(converter.convertHoursMinSecToString(timelapse));
 
         initializeTotals();
 
@@ -95,8 +97,8 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
 
     }
 
-
     public void doneWithRide(View view){
+        updateLocalLeaderboard();
         Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
         startActivity(menu);
     }
@@ -113,13 +115,15 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
      * Same with the global leaderboard.
      *
      * NOTE: This isnt really safe code as it will try to compare leaderboard stats even if its empty.
-     * In a testing enviroment, pre fill the leaderboard or improve this code!
+     * In a testing enviroment, pre fill the leaderboard so that it works properly or fix this code!
+     *
+     * Update local leaderboard should be basically the same ...
+     * @todo modify this somehow to use location data ? Maybe just only have a single leaderboard instead of local/global...
      */
     private void updateLocalLeaderboard() {
         UnitConverter converter = new UnitConverter();
         double justFinishedDistance = converter.getDistInKm(totDistance.doubleValue());
-        String justFinishedDistanceText = converter.convertHoursMinSecToString(totTime);
-        String justFinishedTime = converter.convertHoursMinSecToString(totTime);
+        String justFinishedDistanceText = String.valueOf(justFinishedDistance);
 
         JSONArray data = mPresenter.getLeaderboardFromServer(ModelViewPresenterComponents.LOCAL);
         JSONArray thisRideData = new JSONArray();
@@ -128,7 +132,7 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
         try {
             values.put("date",theRideDate);
             values.put("distance",justFinishedDistanceText);
-            values.put("time",justFinishedTime);
+            values.put("time",theRideTime);
             values.put("name",name);
         } catch (JSONException e) {
             System.out.println("JSONException trying to put values into JSONObject in updateLeaderboard()!");
@@ -140,24 +144,37 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
             JSONObject jsonDataThirdRank = data.getJSONObject(2);
 
             if (justFinishedDistance > Double.parseDouble(jsonDataFirstRank.get("distance").toString())) {
-                values.put("pos", 1);
+                values.put("pos", "1");
                 thisRideData.put(data);
                 mPresenter.sendLeaderboardToServer(ModelViewPresenterComponents.LOCAL, thisRideData);
             }
             else if (justFinishedDistance > Double.parseDouble(jsonDataSecondRank.get("distance").toString())) {
-                values.put("pos", 2);
+                values.put("pos", "2");
                 thisRideData.put(data);
                 mPresenter.sendLeaderboardToServer(ModelViewPresenterComponents.LOCAL, thisRideData);
             }
             else if (justFinishedDistance > Double.parseDouble(jsonDataThirdRank.get("distance").toString())) {
-                values.put("pos", 3);
+                values.put("pos", "3");
                 thisRideData.put(data);
                 mPresenter.sendLeaderboardToServer(ModelViewPresenterComponents.LOCAL, thisRideData);
             }
 
-            // TESTING
+            /*
+            TESTING  ****************************
+            Will update the 1st rank in local leaderbboard each time to showcase the feature
+            Turn this off in production! And be sure to clear the leaderboard (/ResetLocalLeaderboard)
+            so this doesnt show, and re populate the leaderboard after.
+            Ex. (in PostMan, in body, using JSON setting) {
+                    "pos":"1",
+                    "date":"12-04-2017",
+                    "distance":"6.6",
+                    "time":"0H 04M 0S",
+                    "name":"test"
+                }
+            */
+            /*
             System.out.println("sending dummy update.");
-            values.put("pos", 1);
+            values.put("pos", "1");
             thisRideData.put(values);
             try{
                 System.out.println("******data: " + thisRideData.get(0).toString());
@@ -165,11 +182,19 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
                 e.printStackTrace();
             }
             mPresenter.sendLeaderboardToServer(ModelViewPresenterComponents.LOCAL, thisRideData);
+            */
 
 
         } catch (JSONException e) {
             System.out.println("BAD JSON CALL IN updateLeaderboard()");
         }
+
+    }
+
+    /**
+     * @todo Implement this stub - updateGlobalLeaderboard() based off of updateLocalLeaderboard()
+     */
+    private void updateGlobalLeaderboard() {
 
     }
 

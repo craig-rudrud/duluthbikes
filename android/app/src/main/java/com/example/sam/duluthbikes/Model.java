@@ -185,7 +185,11 @@ public class Model
     @Override
     public void sendToGlobalLeaderboard(JSONArray data) {
 
-        //new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/postgloballeaderboard","POST", data.toString());
+        try {
+            new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/postgloballeaderboard","POST", data.get(0).toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

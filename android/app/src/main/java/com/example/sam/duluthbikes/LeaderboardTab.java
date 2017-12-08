@@ -92,9 +92,9 @@ public class LeaderboardTab extends Fragment {
     private void updateTextViews(JSONArray data) {
 
         try {
-            JSONObject jsonDataFirstRank = data.getJSONObject(0);
+            JSONObject jsonDataFirstRank = data.getJSONObject(2);
             JSONObject jsonDataSecondRank = data.getJSONObject(1);
-            JSONObject jsonDataThirdRank = data.getJSONObject(2);
+            JSONObject jsonDataThirdRank = data.getJSONObject(0);
 
             totDist1.setText(jsonDataFirstRank.get("distance").toString());
             totTime1.setText(jsonDataFirstRank.get("time").toString());
