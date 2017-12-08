@@ -77,6 +77,15 @@
                 android:layout_marginTop="15dp"
                 app:srcCompat="@drawable/ic_directions_bike_black_24dp" />
 
+            <Button
+                android:id="@+id/skipSignIn"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="skipSignIn"
+                android:text="@string/skip_sign_in"
+                android:textSize="8sp" />
+
         </LinearLayout>
 
     </ScrollView>

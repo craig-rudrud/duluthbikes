@@ -314,6 +314,12 @@ class LoginScreenActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFai
             updateUI(true)
         } else updateUI(false)
     }
+
+
+    public fun skipSignIn(view : View) {
+        val intent = Intent(applicationContext, MenuActivity::class.java)
+        startActivity(intent)
+    }
 }
 
 //You're welcome for the documentation. I knew how it felt looking at this project the first time.
