@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -85,6 +86,16 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
     @Override
     public void sendLeaderboardToServer(String type, JSONArray data) {
 
+        switch (type) {
+            case ModelViewPresenterComponents.LOCAL :
+                mModel.sendToLocalLeaderboard(data);
+                break;
+            case ModelViewPresenterComponents.GLOBAL :
+                mModel.sendToGlobalLeaderboard(data);
+                break;
+            default:
+                System.out.println("Should never reach here.");
+        }
     }
 
     @Override

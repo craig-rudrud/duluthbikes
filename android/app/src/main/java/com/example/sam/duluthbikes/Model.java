@@ -38,6 +38,8 @@ import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import retrofit2.http.HTTP;
+
 /**
  * Created by Sam on 3/26/2017.
  */
@@ -173,11 +175,17 @@ public class Model
     @Override
     public void sendToLocalLeaderboard(JSONArray data) {
 
+        try {
+            new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/postlocalleaderboard","POST", data.get(0).toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void sendToGlobalLeaderboard(JSONArray data) {
 
+        //new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/postgloballeaderboard","POST", data.toString());
     }
 
     @Override

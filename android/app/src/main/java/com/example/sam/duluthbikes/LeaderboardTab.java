@@ -102,11 +102,11 @@ public class LeaderboardTab extends Fragment {
 
             totDist2.setText(jsonDataSecondRank.get("distance").toString());
             totTime2.setText(jsonDataSecondRank.get("time").toString());
-            name2.setText(jsonDataFirstRank.get("name").toString());
+            name2.setText(jsonDataSecondRank.get("name").toString());
 
             totDist3.setText(jsonDataThirdRank.get("distance").toString());
             totTime3.setText(jsonDataThirdRank.get("time").toString());
-            name3.setText(jsonDataFirstRank.get("name").toString());
+            name3.setText(jsonDataThirdRank.get("name").toString());
 
         } catch (JSONException e) {
             System.out.println("BAD JSON CALL IN updateTextViews()");

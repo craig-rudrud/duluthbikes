@@ -69,7 +69,7 @@
     <string name="startFinish">Times:</string>
     <string name="sTimeLabel">Start:</string>
     <string name="fTimeLabel">Finish:</string>
-    <string name="totDistLabel">Total distance:</string>
+    <string name="totDistLabel">Distance\n(km):</string>
     <string name="totTimeLabel">Total time:</string>
     <string name="DONE">DONE</string>
 
