@@ -1,5 +1,6 @@
 package com.example.sam.duluthbikes;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,7 +21,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import java.util.Calendar;
 
 /**
  * Created by Mackenzie Fulton on 11/16/2017.
@@ -41,7 +45,7 @@ public class NotificationsSettingsFragment extends Fragment {
 
     @Nullable
     @Override
-    /* Class ctor
+    /* Class constructor
     Opens the layout, sets certain layout elements to variables, defines button click
     response, determines if toggle is active or inactive
      */
@@ -49,6 +53,7 @@ public class NotificationsSettingsFragment extends Fragment {
         myView = inflater.inflate(R.layout.activity_notifications, container, false);
 
         toggleNotifications = (ToggleButton) myView.findViewById(R.id.toggle_notifications);
+//        toggleNotifications.setChecked(isAlarmActive());
 
         timePicker = (TimePicker) myView.findViewById(R.id.time_picker);
 
@@ -56,68 +61,71 @@ public class NotificationsSettingsFragment extends Fragment {
 
         context = getActivity().getApplicationContext();
 
+        allowSet();
+
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setNotifications();
+                scheduleNotifications(view);
             }
         });
-
-        determineSetTimeState();
 
         toggleNotifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                determineSetTimeState();
+                allowSet();
             }
         });
 
         return myView;
     }
 
-    /* Determines if the notification toggle button is on or off; allowing or
-    disallowing the user to press the "set" button
-     */
-    private void determineSetTimeState() {
+    private boolean isAlarmActive() {
+        return (PendingIntent.getBroadcast(context,
+                100,
+                new Intent(getActivity(), NotificationsReceiver.class),
+                PendingIntent.FLAG_NO_CREATE) != null);
+    }
+
+    private void allowSet() {
         if (!toggleNotifications.isChecked()) {
             setTime.setEnabled(false);
             timePicker.setEnabled(false);
-        } else {
+        }
+        else {
             setTime.setEnabled(true);
             timePicker.setEnabled(true);
         }
     }
 
-    /* Sets the notification to go off at the determined time
+    private void scheduleNotifications(View view) {
+        Calendar calendar = Calendar.getInstance();
 
-    UNDER CONSTRUCTION:  Currently trying to get it to output a test notification
-     */
-    private void setNotifications() {
-        hour = timePicker.getHour();
-        minute = timePicker.getMinute();
+        calendar.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
+        calendar.set(Calendar.MINUTE, timePicker.getMinute());
 
-        activateNotifications();
-    }
+        Intent intent = new Intent(context.getApplicationContext(), NotificationsReceiver.class);
 
-    private void activateNotifications() {
-        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context.getApplicationContext(),
+                100,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent intent = new Intent();
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY,
+                pendingIntent);
 
-        PendingIntent pendingIntent = PendingIntent
-                .getActivity(context, 0, intent, 0);
-
-        Notification bikeTime = new Notification.Builder(getContext())
-                .setContentTitle(getResources().getString(R.string.app_name))
-                .setContentText(getResources().getString(R.string.bike_time))
-                .setSmallIcon(R.drawable.ic_action_logo)
-                .setContentIntent(pendingIntent)
-                .setSound(soundUri)
-                .setVibrate(new long[] {0, 1000}).build();
-
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0, bikeTime);
+        Toast toast = Toast.makeText(context,
+                getResources().getText(R.string.notifications_set)
+                        + " "
+                        + String.valueOf(timePicker.getHour())
+                        + ":"
+                        + String.valueOf(timePicker.getMinute())
+                        + ".",
+                Toast.LENGTH_LONG);
+        toast.show();
     }
 }
