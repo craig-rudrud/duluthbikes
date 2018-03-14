@@ -131,9 +131,15 @@ The main goal is to collect information about rides and use that data for cyclin
 
     <!-- strings related to leaderboard -->
     <string name="leaderboard">Leaderboard</string>
-    <string name="localLeaderboard">Your Leaderboard</string>
-    <string name="globalLeaderboard">Local Leaderboard</string>
-    <string name="rank">Rank</string>
+
+    <string name="localLeaderboard">Local Leaderboard</string>
+    <string name="globalLeaderboard">Global Leaderboard</string>
+    <string name="rank1">Rank 1</string>
+    <string name="rank2">Rank 2</string>
+    <string name="rank3">Rank 3</string>
+    <string name="name">Name:</string>
+    <string name="updateLeaderboard">Refresh Leaderboard</string>
+
     <string name="sign_in_with_google">Sign in with Google</string>
 
 </resources>

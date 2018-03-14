@@ -4,6 +4,7 @@ package com.example.sam.duluthbikes;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -21,6 +22,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import org.json.JSONArray;
 
 
 //app:headerLayout="@layout/nav_header"
@@ -227,22 +231,18 @@ public class MenuActivity extends AppCompatActivity
     ModelViewPresenterComponents
      */
 
-    @Override
     public void locationChanged(Location location) {
 
     }
 
-    @Override
     public void userResults(String results) {
 
     }
 
-    @Override
     public void setClient(GoogleApiClient googleApiClient) {
 
     }
 
-    @Override
     public GoogleApiClient getClient() {
         return null;
     }
