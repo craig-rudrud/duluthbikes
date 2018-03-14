@@ -27,6 +27,13 @@
             android:id="@+id/nav_about"
             android:title="@string/about" />
 
+        <item
+            android:id="@+id/nav_settings"
+            android:title="@string/settings" />
+        <item
+            android:id="@+id/nav_leaderboard"
+            android:title="@string/leaderboard" />
+
     </group>
 
 </menu>

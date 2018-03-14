@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteY="25dp">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="top|center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/notifications_header"
+            android:layout_width="wrap_content"
+            android:layout_height="53dp"
+            android:text="@string/notifications"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            tools:text="@string/notifications" />
+
+        <TextView
+            android:id="@+id/about_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="62dp"
+            android:text="@string/about_notifications"
+            android:textAlignment="center"
+            tools:text="@string/about_notifications" />
+
+        <ToggleButton
+            android:id="@+id/toggle_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/notifications_toggle"
+            android:textColorLink="@color/duluthBikesDarkBlue"
+            android:textOff="@string/notifications_inactive"
+            android:textOn="@string/notifications_active"
+            tools:text="@string/notifications_toggle" />
+
+        <TimePicker
+            android:id="@+id/time_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:headerBackground="@color/duluthBikesDarkBlue"
+            android:timePickerMode="spinner"
+            tools:numbersSelectorColor="@color/duluthBikesLightGreen" />
+
+        <Button
+            android:id="@+id/set_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set_time" />
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
