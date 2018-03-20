@@ -19,9 +19,11 @@ public class UserTabFragment extends Fragment {
 
     View myView;
     TextView totalDist;
+    TextView avgDist;
     TextView totalTime;
     TextView rideData;
     Float totDistance;
+    Float avgDistance;
     Long totTime;
     int numberOfRides;
     UnitConverter converter;
@@ -33,6 +35,7 @@ public class UserTabFragment extends Fragment {
         converter = new UnitConverter();
 
         totalDist = (TextView)myView.findViewById(R.id.homeTotalDistance);
+        avgDist = (TextView)myView.findViewById(R.id.homeAvgDistance);
         totalTime = (TextView)myView.findViewById(R.id.homeTotalTime);
         rideData = (TextView)myView.findViewById(R.id.allRideDataGoesHere);
 
@@ -41,6 +44,7 @@ public class UserTabFragment extends Fragment {
         initializeTotals();
 
         totalDist.setText(df.format(totDistance.doubleValue()/1000).toString() + " km");
+        avgDist.setText(df.format((totDistance.doubleValue()/1000)/numberOfRides).toString() + " km");
         totalTime.setText(converter.convertHoursMinSecToString(totTime));
 
         retrieveRideData();
@@ -53,6 +57,7 @@ public class UserTabFragment extends Fragment {
 
         SharedPreferences totalstats = getActivity().getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
         totDistance = totalstats.getFloat(getString(R.string.lifetimeStats_totDist), 0);
+        avgDistance = totalstats.getFloat(getString(R.string.lifetimeStats_avgDist), 0);
         totTime = totalstats.getLong(getString(R.string.lifetimeStats_totTime), 0);
         numberOfRides = totalstats.getInt(getString(R.string.lifetimeStats_rideNumber), 0);
 

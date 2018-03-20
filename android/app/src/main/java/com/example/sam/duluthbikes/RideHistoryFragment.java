@@ -21,7 +21,7 @@ public class RideHistoryFragment extends Fragment {
         myView = inflater.inflate(R.layout.activity_ride_history, container, false);
 
         TabLayout tabLayout = (TabLayout) myView.findViewById (R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("User Stats"));
+        tabLayout.addTab(tabLayout.newTab().setText("Statistics"));
         tabLayout.addTab(tabLayout.newTab().setText("Heatmap"));
         tabLayout.addTab(tabLayout.newTab().setText("Polylines"));
 
