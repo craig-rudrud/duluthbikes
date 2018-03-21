@@ -4,6 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.example.sam.duluthbikes.fragments.HeatTabFragment;
+import com.example.sam.duluthbikes.fragments.PolyTabFragment;
+import com.example.sam.duluthbikes.fragments.UserTabFragment;
+
 /**
  * Created by Sam on 4/20/2017.
  */

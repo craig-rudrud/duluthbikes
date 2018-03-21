@@ -1,4 +1,4 @@
-package com.example.sam.duluthbikes;
+package com.example.sam.duluthbikes.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,32 +10,34 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.example.sam.duluthbikes.R;
+
 /**
  * Created by Sam on 4/20/2017.
  */
 
-public class PolyTabFragment extends Fragment {
+public class HeatTabFragment extends Fragment {
 
     View myView;
     WebView myWebView;
-    String PolylinePage = "http://ukko.d.umn.edu:23405/rides/";
+    String HeatTabPage = "http://ukko.d.umn.edu:23405/maps/";
     ProgressBar pb;
 
-    @Override
+
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.activity_poly_tab, container, false);
-        myWebView = (WebView) myView.findViewById(R.id.webViewPolylineTab);
+        myView = inflater.inflate(R.layout.activity_heat_tab, container, false);
+        myWebView = (WebView) myView.findViewById(R.id.webViewHeatTab);
         myWebView.getSettings().setJavaScriptEnabled(true);
         pb = (ProgressBar) myView.findViewById(R.id.progressBar);
         pb.setVisibility(View.VISIBLE);
 
-        myWebView.setWebViewClient(new newWebClient(){
+        myWebView.setWebViewClient(new newWebClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 pb.setVisibility(View.INVISIBLE);
             }
         });
-        myWebView.loadUrl(PolylinePage);
+        myWebView.loadUrl(HeatTabPage);
         return myView;
     }
     private class newWebClient extends WebViewClient { }

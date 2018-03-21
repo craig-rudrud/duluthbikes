@@ -1,5 +1,4 @@
-package com.example.sam.duluthbikes;
-
+package com.example.sam.duluthbikes.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,44 +11,45 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.example.sam.duluthbikes.R;
+
 /**
- * Activity to display events
- * Check: https://developer.android.com/guide/webapps/webview.html
+ * This fragment displays a webview with companies participating in Two Wheel Deal program
+ * pulled from DuluthBikes website
  */
 
-public class EventsFragment extends Fragment {
+public class DiscountFragment extends Fragment {
 
     View myView;
     WebView myWebView;
-    String EventsPage = "http://www.duluthbikes.org/news-events/";
+    String DiscountPage = "http://www.duluthbikes.org/resources-and-partners/two-wheel-deals/";
     ProgressBar pb;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.activity_events, container, false);
-
-        myWebView = (WebView) myView.findViewById(R.id.webViewEvents);
+        myView = inflater.inflate(R.layout.activity_discount, container, false);
+        myWebView = (WebView) myView.findViewById(R.id.webViewDiscount);
+        myWebView.getSettings().setJavaScriptEnabled(true);
         pb = (ProgressBar)myView.findViewById(R.id.progressBar);
         pb.setVisibility(View.VISIBLE);
 
-
-        myWebView.getSettings().setJavaScriptEnabled(true);
+        //Button b (Button)findViewById(R.id.button)
         myWebView.setWebViewClient(new newWebClient(){
             @Override
             public void onPageFinished(WebView view,String url)
             {
-                pb.setVisibility(View.INVISIBLE);
+
                 myWebView.loadUrl("javascript:(function() { " +
                         "document.getElementsByTagName('footer')[0].style.display='none'; " +
                         "document.getElementsByTagName('header')[0].style.display='none'; " +
-                        "document.getElementById('main-content').style.marginTop='-5em';" +
+                        "document.getElementById('main-content').style.marginTop='-10em';" +
                         "})()");
+                pb.setVisibility(View.INVISIBLE);
             }
         });
-
-
-        myWebView.loadUrl(EventsPage);
+        myWebView.loadUrl(DiscountPage);
         //this allows to navigate back in website using Back key
         myWebView.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -73,10 +73,8 @@ public class EventsFragment extends Fragment {
             }
         });
 
-
         return myView;
     }
-
 
     private class newWebClient extends WebViewClient {
 
