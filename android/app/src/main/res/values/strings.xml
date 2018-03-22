@@ -68,6 +68,8 @@
     <string name="totDistLabel">Total distance:</string>
     <string name="avgDistLabel">Average distance:</string>
     <string name="totTimeLabel">Total time:</string>
+    <string name="avgTimeLabel">Average time:</string>
+    <string name="rideHistoryLabel">Ride History:</string>
     <string name="DONE">DONE</string>
 
     <string name="DisclaimerReportApp">This app is in a development stage.
@@ -101,6 +103,7 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="lifetimeStats_totDist">totalDistance</string>
     <string name="lifetimeStats_avgDist">avgDistance</string>
     <string name="lifetimeStats_totTime">totalTime</string>
+    <string name="lifetimeStats_avgTime">avgTime</string>
     <string name="lifetimeStats_rideNumber">rideNumber</string>
     <string name="km">km</string>
     <string name="miles">miles</string>
@@ -108,5 +111,7 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="milesh">miles/h</string>
 
     <string name="eraseAllRides">Erase All Rides</string>
+    <string name="eraseAllRidesToast">All rides have been erased!</string>
+    <string name="eraseAllRidesPopup">Are you sure you want to erase all your rides?</string>
 
 </resources>
