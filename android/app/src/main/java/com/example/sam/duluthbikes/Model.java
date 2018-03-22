@@ -33,6 +33,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * Created by Sam on 3/26/2017.
  */
@@ -133,14 +136,25 @@ public class Model
         }
     }
 
+    public String sha256(String input) throws NoSuchAlgorithmException {
+        MessageDigest mDigest = MessageDigest.getInstance("SHA256");
+        byte[] result = mDigest.digest(input.getBytes());
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < result.length; i++) {
+            sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        return sb.toString();
+    }
+
     @Override
     public void loginAttempt(String user, String pass) {
         JSONObject profile = null;
         try{
             profile = new JSONObject();
             profile.put("userName",user);
-            profile.put("passWord",pass);
-        }catch (JSONException e){
+            profile.put("passWord", sha256(pass+user));
+        } catch (Exception e){
             e.printStackTrace();
         }
         mode = true;
