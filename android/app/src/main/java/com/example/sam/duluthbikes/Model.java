@@ -123,10 +123,9 @@ public class Model
 
 
     /**
-     *
      * @param finishRoute JSON object containing ride info
      * @param list ___
-     *
+     * Sends route data to database
      */
     @Override
     public void notifyFinishRoute(JSONArray finishRoute,JSONArray list){
@@ -143,6 +142,12 @@ public class Model
         }
     }
 
+    /**
+     *
+     * @param input String to be hashed
+     * @return string that has been hashed for sha256
+     * @throws NoSuchAlgorithmException
+     */
     public String sha256(String input) throws NoSuchAlgorithmException {
         MessageDigest mDigest = MessageDigest.getInstance("SHA256");
         byte[] result = mDigest.digest(input.getBytes());
@@ -150,10 +155,14 @@ public class Model
         for (int i = 0; i < result.length; i++) {
             sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
         }
-
         return sb.toString();
     }
 
+    /**
+     * @param user username
+     * @param pass password
+     * Attempts to login with given credentials
+     */
     @Override
     public void loginAttempt(String user, String pass) {
         JSONObject profile = null;
@@ -168,6 +177,13 @@ public class Model
         new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt","POST",profile.toString());
     }
 
+    /**
+     *
+     * @param location ___
+     * @param description ___ a description for the image
+     * @param encodedImage ___ the image as a string
+     * Sends a picture to be inserted into the database
+     */
     @Override
     public void sendPicture(String location, String description, String encodedImage) {
         JSONObject pictureObj = null;
