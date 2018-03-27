@@ -1,7 +1,5 @@
 package com.example.sam.duluthbikes;
 
-
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,6 +23,7 @@ import com.example.sam.duluthbikes.fragments.HomeFragment;
 import com.example.sam.duluthbikes.fragments.ReportAppFragment;
 import com.example.sam.duluthbikes.fragments.ReportFragment;
 import com.example.sam.duluthbikes.fragments.RideHistoryFragment;
+import com.example.sam.duluthbikes.fragments.SettingsFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,10 +33,8 @@ import static java.lang.Math.abs;
 /**
  * Home screen
  */
-
 public class MenuActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, ModelViewPresenterComponents.View
-        {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, ModelViewPresenterComponents.View {
 
     private int mRequestCode;
 
@@ -92,7 +89,6 @@ public class MenuActivity extends AppCompatActivity
         intent.putExtra("value", false);
         startActivity(intent);
     }
-
 
     @Override
     public void onBackPressed() {
@@ -158,6 +154,10 @@ public class MenuActivity extends AppCompatActivity
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new ReportAppFragment())
                     .commit();
+        } else if (id == R.id.nav_settings) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new SettingsFragment())
+                    .commit();
         } else if (id == R.id.nav_about) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new AboutFragment())
@@ -168,56 +168,53 @@ public class MenuActivity extends AppCompatActivity
         return true;
     }
 
-            public Location getLastLocation(){ return mLastLocation; }
-            public void setLastLocation(Location curr) { mLastLocation = curr; }
+    public Location getLastLocation(){ return mLastLocation; }
 
-            @Override
-            public void locationChanged(Location location) {
-                if (location != null) {
-                    if (mLastLocation == null) {
-                        setLastLocation(location);
-                    }
-                    float time = (mLastLocation.getTime() - location.getTime()) / 1000;
-                    float speed = location.distanceTo(mLastLocation) / time;
-                    speed = Math.abs(speed);
-                    setLastLocation(location);
-                    if(automaticTracking) {
-                        if (speed*3.6 > 10) {
-                            counter++;
-                        }
-                        if ((speed*3.6 >= 10) && (counter >= 4)) {
-                            startSession();
-                        }
-                    }
+    public void setLastLocation(Location curr) { mLastLocation = curr; }
+
+    @Override
+    public void locationChanged(Location location) {
+        if (location != null) {
+            if (mLastLocation == null) {
+                setLastLocation(location);
+            }
+            float time = (mLastLocation.getTime() - location.getTime()) / 1000;
+            float speed = location.distanceTo(mLastLocation) / time;
+            speed = Math.abs(speed);
+            setLastLocation(location);
+            if(automaticTracking) {
+                if (speed*3.6 > 10) {
+                    counter++;
+                }
+                if ((speed*3.6 >= 10) && (counter >= 4)) {
+                    startSession();
                 }
             }
+        }
+    }
 
-            @Override
-            public void userResults(String results) {
+    @Override
+    public void userResults(String results) {
 
-            }
+    }
 
-            @Override
-            public void setClient(GoogleApiClient googleApiClient) {
-                LocationData.getOurInstance(this).setGoogleClient(googleApiClient);
+    @Override
+    public void setClient(GoogleApiClient googleApiClient) {
+        LocationData.getOurInstance(this).setGoogleClient(googleApiClient);
+    }
 
-            }
+    @Override
+    public GoogleApiClient getClient() {
+        return LocationData.getOurInstance(this).getGoogleClient();
+    }
 
-            @Override
-            public GoogleApiClient getClient() {
-                return LocationData.getOurInstance(this).getGoogleClient();
-            }
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+    }
 
-
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-
-            }
-
-
-            public void toggleAutoTracking(View view){
-                automaticTracking = !automaticTracking;
-                }
-            }
+    public void toggleAutoTracking(View view){
+        automaticTracking = !automaticTracking;
+    }
+}
 
 

@@ -70,7 +70,7 @@
                 android:layout_weight="1"
                 android:text="0.00"
                 android:textAlignment="4"
-                android:textSize="60dp"
+                android:textSize="40dp"
                 android:background="@drawable/back"/>
 
             <TextView
@@ -80,7 +80,7 @@
                 android:textAlignment="4"
                 android:layout_weight="1"
                 android:text="0.00"
-                android:textSize="60dp"
+                android:textSize="40dp"
                 android:background="@drawable/back"/>
         </LinearLayout>
 
@@ -144,7 +144,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/timelapseLabel"
-                android:textSize="25dp"
+                android:textSize="20dp"
                 android:textAlignment="4"
                 android:textAllCaps="true"
                 android:textStyle="bold"
@@ -157,7 +157,7 @@
                 android:textAlignment="4"
                 android:layout_weight="1"
                 android:text="00:00:00"
-                android:textSize="50sp"/>
+                android:textSize="40sp"/>
         </LinearLayout>
 
         <Button
@@ -171,6 +171,7 @@
             android:layout_margin="5dp"
             android:textColor="@color/white"/>
 
+        <!--
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -229,6 +230,7 @@
                 android:textSize="20sp"
                 android:text="0.00"/>
         </LinearLayout>
+        -->
 
     </RelativeLayout>
 

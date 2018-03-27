@@ -1,7 +1,5 @@
 package com.example.sam.duluthbikes.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,14 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.sam.duluthbikes.R;
 import com.example.sam.duluthbikes.UnitConverter;
-
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 
@@ -39,7 +33,6 @@ public class UserTabFragment extends Fragment {
     int numberOfRides;
     UnitConverter converter;
     DecimalFormat df;
-    Button eraseAllRides;
 
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_user_tab, container, false);
@@ -70,8 +63,6 @@ public class UserTabFragment extends Fragment {
             avgDist.setText("0.00");
             avgTime.setText(converter.convertHoursMinSecToString(totTime));
         }
-
-        eraseAllRides = makeEraseAllRidesButton();
 
         return myView;
     }
@@ -109,45 +100,5 @@ public class UserTabFragment extends Fragment {
                     "Time: " + converter.convertHoursMinSecToString(rideT) + "\n\n");
         }
 
-    }
-
-    private void eraseAllRides() {
-
-        SharedPreferences totalStats = getActivity()
-                .getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
-        totalStats.edit().clear().commit();
-        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-    }
-
-    private Button makeEraseAllRidesButton() {
-
-        Button button = (Button)myView.findViewById(R.id.button_eraseAllRides);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogInterface.OnClickListener dialogBox = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int choice) {
-                        switch (choice) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                eraseAllRides();
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                        getString(R.string.eraseAllRidesToast), Toast.LENGTH_SHORT)
-                                        .show();
-                                break;
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                break;
-                        }
-                    }
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
-                builder.setMessage(getString(R.string.eraseAllRidesPopup))
-                        .setPositiveButton("Yes", dialogBox)
-                        .setNegativeButton("No", dialogBox).show();
-            }
-        });
-
-        return button;
     }
 }

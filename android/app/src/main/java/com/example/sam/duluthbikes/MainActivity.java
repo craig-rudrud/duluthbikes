@@ -52,7 +52,6 @@ public class MainActivity extends FragmentActivity
     private GoogleMap mMap;
     private ArrayList<LatLng> points;
     private PolylineOptions polylineOptions;
-    private LocationData locationData;
     private boolean animate;
     private ToggleButton pauseToggle;
     private int counter = 0;
@@ -148,7 +147,6 @@ public class MainActivity extends FragmentActivity
         pauseToggle.setChecked(true);
     }
 
-
     public void pictureButton() {
         Intent intent = new Intent(this.getApplicationContext(),ReportFragment.class);
         startActivity(intent);
@@ -159,7 +157,7 @@ public class MainActivity extends FragmentActivity
     }
 
     public void cancelTheRide(View view){
-        locationData.getOurInstance(this).resetData();
+        LocationData.getOurInstance(this).resetData();
         mPresenter.finishRideButton();
         Intent i = new Intent(this,MenuActivity.class);
         startActivity(i);
@@ -179,7 +177,8 @@ public class MainActivity extends FragmentActivity
         endIntent.putExtra("endTime", endTime);
 
         mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
-                locationData.getOurInstance(this.getBaseContext()).getLatlng());
+                               LocationData.getOurInstance(this.getBaseContext()).getLatlng());
+
         LocationData.getOurInstance(this.getBaseContext()).resetData();
         startActivity(endIntent);
     }
@@ -275,6 +274,7 @@ public class MainActivity extends FragmentActivity
 
     //get location and set location methods
     public Location getLastLocation(){ return mLastLocation; }
+
     public void setLastLocation(Location curr) { mLastLocation = curr; }
 
     @Override
@@ -293,8 +293,8 @@ public class MainActivity extends FragmentActivity
                     mMap.setMaxZoomPreference(18);
                 }
             }
-            locationData.getOurInstance(this.getBaseContext()).addPoint(latLng, location);
-            polylineOptions = locationData.getOurInstance(this.getBaseContext()).getPoints();
+            LocationData.getOurInstance(this.getBaseContext()).addPoint(latLng, location);
+            polylineOptions = LocationData.getOurInstance(this.getBaseContext()).getPoints();
             LatLngBounds.Builder bounds = LocationData.getOurInstance(this.getBaseContext()).getBuilder();
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds.build(), 100);
             if (animate) {
@@ -310,7 +310,7 @@ public class MainActivity extends FragmentActivity
             location.setSpeed(speed);
             String sd = df.format(location.getSpeed()*3.6);
             tvSpeed.setText(sd+" KM/H");
-            sd = df.format(locationData.getOurInstance(this.getBaseContext()).getDistance()/1000);
+            sd = df.format(LocationData.getOurInstance(this.getBaseContext()).getDistance()/1000);
             tvDistance.setText(sd+" KM");
             setLastLocation(location);
             if(autoStart){
