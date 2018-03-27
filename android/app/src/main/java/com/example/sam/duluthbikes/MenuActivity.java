@@ -23,6 +23,7 @@ import com.example.sam.duluthbikes.fragments.HomeFragment;
 import com.example.sam.duluthbikes.fragments.ReportAppFragment;
 import com.example.sam.duluthbikes.fragments.ReportFragment;
 import com.example.sam.duluthbikes.fragments.RideHistoryFragment;
+import com.example.sam.duluthbikes.fragments.SettingsFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -152,6 +153,10 @@ public class MenuActivity extends AppCompatActivity
         } else if (id == R.id.nav_reportApp) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new ReportAppFragment())
+                    .commit();
+        } else if (id == R.id.nav_settings) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new SettingsFragment())
                     .commit();
         } else if (id == R.id.nav_about) {
             fragmentManager.beginTransaction()

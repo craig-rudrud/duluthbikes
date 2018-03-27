@@ -36,8 +36,8 @@ public class EndRideActivity extends AppCompatActivity{
         TextView avSpeed = (TextView)findViewById(R.id.averageSpeed);
         TextView startTime = (TextView)findViewById(R.id.startTime);
         TextView endTime = (TextView)findViewById(R.id.endTime);
-        TextView totalDist = (TextView)findViewById(R.id.totalDistance);
-        TextView totalTime = (TextView)findViewById(R.id.totalTime);
+        //TextView totalDist = (TextView)findViewById(R.id.totalDistance);
+        //TextView totalTime = (TextView)findViewById(R.id.totalTime);
 
         data = getIntent().getExtras();
         Long sTime =  data.getLong("startTime");
@@ -67,8 +67,8 @@ public class EndRideActivity extends AppCompatActivity{
         avSpeed.setText(Double.toString(averKmH));
         startTime.setText(timeStart);
         endTime.setText(timeFinish);
-        totalDist.setText(df.format(converter.getDistInKm(totDistance.doubleValue())).toString() + " km");
-        totalTime.setText(converter.convertHoursMinSecToString(timelapse));
+        //totalDist.setText(df.format(converter.getDistInKm(totDistance.doubleValue())).toString() + " km");
+        //totalTime.setText(converter.convertHoursMinSecToString(timelapse));
 
     }
 

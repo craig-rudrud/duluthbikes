@@ -31,25 +31,25 @@
                     android:id="@+id/labelTotDist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/back"
                     android:text="@string/totDistLabel"
                     android:textAlignment="4"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:layout_weight="1"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/labelAvgDist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/back"
-                    android:textSize="20sp"
                     android:text="@string/avgDistLabel"
                     android:textAlignment="4"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -66,20 +66,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/back"
                     android:text="0.00"
                     android:textAlignment="4"
-                    android:textSize="40dp"
-                    android:background="@drawable/back"/>
+                    android:textSize="36sp" />
 
                 <TextView
                     android:id="@+id/homeAvgDistance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="4"
                     android:layout_weight="1"
+                    android:background="@drawable/back"
                     android:text="0.00"
-                    android:textSize="40dp"
-                    android:background="@drawable/back"/>
+                    android:textAlignment="4"
+                    android:textSize="36sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -104,25 +104,25 @@
                     android:id="@+id/totTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/back"
                     android:text="@string/totTimeLabel"
                     android:textAlignment="4"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:layout_weight="1"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/labelAvgTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/back"
-                    android:textSize="20sp"
                     android:text="@string/avgTimeLabel"
                     android:textAlignment="4"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -139,18 +139,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/back"
                     android:textAlignment="4"
-                    android:textSize="40dp"
-                    android:background="@drawable/back"/>
+                    android:textSize="36sp" />
 
                 <TextView
                     android:id="@+id/homeAvgTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="4"
                     android:layout_weight="1"
-                    android:textSize="40dp"
-                    android:background="@drawable/back"/>
+                    android:background="@drawable/back"
+                    android:textAlignment="4"
+                    android:textSize="36sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -175,13 +175,13 @@
                     android:id="@+id/rideHist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/back"
                     android:text="@string/rideHistoryLabel"
                     android:textAlignment="4"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:layout_weight="1"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -197,20 +197,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/back"
                     android:textAlignment="0"
-                    android:textSize="30dp"
-                    android:background="@drawable/back"/>
+                    android:textSize="20sp" />
             </LinearLayout>
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/button_eraseAllRides"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/eraseAllRides"
-            />
 
     </LinearLayout>
 
