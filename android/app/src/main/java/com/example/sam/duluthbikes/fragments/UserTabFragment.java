@@ -56,17 +56,18 @@ public class UserTabFragment extends Fragment {
 
         initializeTotals();
 
-        totalDist.setText(df.format(totDistance.doubleValue()/1000).toString() + " km");
         totalTime.setText(converter.convertHoursMinSecToString(totTime));
 
         retrieveRideData();
 
         if(numberOfRides != 0) {
-            avgDist.setText(df.format((totDistance.doubleValue() / 1000) / numberOfRides).toString() + " km");
+            totalDist.setText(df.format(totDistance.doubleValue()/1000).toString());
+            avgDist.setText(df.format((totDistance.doubleValue() / 1000) / numberOfRides).toString());
             avgTime.setText(converter.convertHoursMinSecToString(totTime/numberOfRides));
         }
         else {
-            avgDist.setText("0 km");
+            totalDist.setText("0.00");
+            avgDist.setText("0.00");
             avgTime.setText(converter.convertHoursMinSecToString(totTime));
         }
 
