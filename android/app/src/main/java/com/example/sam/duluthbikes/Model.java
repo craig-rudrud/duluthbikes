@@ -111,6 +111,7 @@ public class Model
         disconnectApiOnFinish();
     }
 
+
     public void disconnectApiOnFinish() {
         if(mGoogleApiClient.isConnected())
             mGoogleApiClient.disconnect();
@@ -121,6 +122,12 @@ public class Model
     }
 
 
+    /**
+     *
+     * @param finishRoute JSON object containing ride info
+     * @param list ___
+     *
+     */
     @Override
     public void notifyFinishRoute(JSONArray finishRoute,JSONArray list){
         if(finishRoute.length()>10) {
@@ -158,7 +165,7 @@ public class Model
             e.printStackTrace();
         }
         mode = true;
-        new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/postusername","POST",profile.toString());
+        new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt","POST",profile.toString());
     }
 
     @Override

@@ -148,7 +148,6 @@ public class MainActivity extends FragmentActivity
         pauseToggle.setChecked(true);
     }
 
-
     public void pictureButton() {
         Intent intent = new Intent(this.getApplicationContext(),ReportFragment.class);
         startActivity(intent);
@@ -275,6 +274,7 @@ public class MainActivity extends FragmentActivity
 
     //get location and set location methods
     public Location getLastLocation(){ return mLastLocation; }
+
     public void setLastLocation(Location curr) { mLastLocation = curr; }
 
     @Override
