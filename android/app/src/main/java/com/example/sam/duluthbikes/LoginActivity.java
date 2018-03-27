@@ -30,9 +30,12 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -73,19 +76,6 @@ public class LoginActivity extends AppCompatActivity
 
         mPresenter = new Presenter(this.getBaseContext(), this, this);
 
-
-
-        requestStoragePermission();
-        final File file = new File("sdcard/Profile.txt");
-        if (file.exists()) {
-            Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
-            startActivity(menu);
-        }
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         // Set up the login form.
         mUserView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -107,15 +97,25 @@ public class LoginActivity extends AppCompatActivity
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                requestStoragePermission();
+                final File file = new File("sdcard/Profile.txt");
+                if(file.exists()) {
+                    Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
+                    startActivity(menu);
+                }
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 if (ContextCompat.checkSelfPermission(getBaseContext(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     String u = mUserView.getText().toString();
                     String p = mPasswordView.getText().toString();
-                    if (!Objects.equals(u, "") && !Objects.equals(p, ""))
+                    if (!Objects.equals(u, "") && !Objects.equals(p, "")) {
                         mPresenter.loginUser(u, p);
-                    //
+                    }
                     startMenu(mUserView.getText().toString(), mPasswordView.getText().toString());
-                    //
                 } else {
                     requestStoragePermission();
                 }
@@ -127,13 +127,15 @@ public class LoginActivity extends AppCompatActivity
     private void startMenu(String user, String pass) {
 
         try {
-            out = openFileOutput("profile", Context.MODE_PRIVATE);
-            out.write(user.getBytes());
-            out.write(pass.getBytes());
+            out = new FileOutputStream("sdcard/Profile.txt");
+            out.write((user+"\n").getBytes());
+            out.write(sha256(pass+user).getBytes());
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -304,4 +306,13 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
+    public String sha256(String input) throws NoSuchAlgorithmException {
+        MessageDigest mDigest = MessageDigest.getInstance("SHA256");
+        byte[] result = mDigest.digest(input.getBytes());
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < result.length; i++) {
+            sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        return sb.toString();
+    }
 }

@@ -114,4 +114,10 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="eraseAllRidesToast">All rides have been erased!</string>
     <string name="eraseAllRidesPopup">Are you sure you want to erase all your rides?</string>
 
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="logoutMessage">Are you sure you want to logout?</string>
+    <string name="username">Username</string>
+    <string name="noUsername">You are not logged in!</string>
+
 </resources>

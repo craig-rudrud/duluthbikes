@@ -2,6 +2,7 @@ package com.example.sam.duluthbikes.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,19 +11,76 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sam.duluthbikes.LoginActivity;
 import com.example.sam.duluthbikes.R;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class SettingsFragment extends Fragment {
 
     View myView;
+    Button loginButton;
     Button eraseAllRides;
+    File profile;
+    TextView username;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_settings, container, false);
+
+        profile = new File("sdcard/Profile.txt");
+
+        final boolean isLoggedIn = getLoginStatus();
+
+        username = myView.findViewById(R.id.usernameTextView);
+        if(isLoggedIn) {
+            username.setText(getString(R.string.username) + ": " + getUsername());
+        }
+        else {
+            username.setText(getString(R.string.noUsername));
+        }
+
+        loginButton = (Button)myView.findViewById(R.id.loginButton);
+        loginButton.setText((isLoggedIn) ? getString(R.string.logout) : getString(R.string.login));
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isLoggedIn) {
+                    DialogInterface.OnClickListener dialogBox = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            switch (i) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    profile.delete();
+                                    Intent login = new Intent(getActivity(), LoginActivity.class);
+                                    startActivity(login);
+                                    break;
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    break;
+                            }
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
+                    builder.setMessage(getString(R.string.logoutMessage))
+                            .setPositiveButton("Yes", dialogBox)
+                            .setNegativeButton("No", dialogBox)
+                            .show();
+                }
+                else {
+                    Intent login = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(login);
+                }
+            }
+        });
 
         eraseAllRides = (Button)myView.findViewById(R.id.button_eraseAllRides);
         eraseAllRides.setOnClickListener(new View.OnClickListener() {
@@ -47,7 +105,8 @@ public class SettingsFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
                 builder.setMessage(getString(R.string.eraseAllRidesPopup))
                         .setPositiveButton("Yes", dialogBox)
-                        .setNegativeButton("No", dialogBox).show();
+                        .setNegativeButton("No", dialogBox)
+                        .show();
             }
         });
 
@@ -60,5 +119,29 @@ public class SettingsFragment extends Fragment {
                 .getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
         totalStats.edit().clear().commit();
         getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
+
+    private boolean getLoginStatus() {
+
+        return profile.exists();
+    }
+
+    private String getUsername() {
+
+        String username = "";
+
+        try {
+            FileInputStream in = new FileInputStream(profile);
+            Scanner s = new Scanner(in);
+            username = s.nextLine();
+            s.close();
+            in.close();
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return username;
     }
 }
