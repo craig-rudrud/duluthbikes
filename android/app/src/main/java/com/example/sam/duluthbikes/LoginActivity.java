@@ -21,6 +21,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,6 +40,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -88,10 +91,10 @@ public class LoginActivity extends AppCompatActivity
 
         requestStoragePermission();
         final File file = new File("sdcard/Profile.txt");
-        if(file.exists()) {
-            Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
-            startActivity(menu);
-        }
+//        if(file.exists()) {
+//            Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
+//            startActivity(menu);
+//        }
 
         skipSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -114,10 +117,23 @@ public class LoginActivity extends AppCompatActivity
                     String user = mUserView.getText().toString();
                     String pass = mPasswordView.getText().toString();
                     String email = mEmailView.getText().toString();
-                    if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
-                        mPresenter.loginUser(user, pass);
+                    if (user.length() < 8) {
+                        Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
+                    } else if (stringHasInvalidChar(user)) {
+                        Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
+                    } else if (pass.length() < 8) {
+                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
+                    } else if (stringHasInvalidChar(pass)) {
+                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
+                    } else if (email.length() > 0 && (!email.contains("@") || !email.contains(".") || email.contains("@."))) {
+                        Toast.makeText(LoginActivity.this, getString(R.string.error_invalid_email), Toast.LENGTH_SHORT).show();
                     }
-                    startMenu(user, pass, email);
+                    else {
+                        if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
+                            mPresenter.loginUser(user, pass);
+                        }
+                        startMenu(user, pass, email);
+                    }
                 } else {
                     requestStoragePermission();
                 }
@@ -317,5 +333,12 @@ public class LoginActivity extends AppCompatActivity
             sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
         }
         return sb.toString();
+    }
+
+    private boolean stringHasInvalidChar(String str) {
+
+        Pattern p = Pattern.compile("[!@#$%&*()+=|<>?{}\\[\\]~]");
+        Matcher m = p.matcher(str);
+        return m.find();
     }
 }

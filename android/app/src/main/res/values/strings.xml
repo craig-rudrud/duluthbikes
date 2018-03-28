@@ -48,7 +48,7 @@
     <string name="action_sign_in">Sign in or register</string>
     <string name="skip_sign_in">Skip for now</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_email">Email must be in the correct format!</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
@@ -57,6 +57,8 @@
     <string name="Username">Username</string>
     <string name="hint">More than 8 characters, and no special characters like !@#$%^*()"</string>string>
     <string name="Password">Password</string>
+    <string name="lengthReq">must be at least 8 characters long!</string>
+    <string name="charReq">must not contain special characters!</string>
 
 
     <!-- Strings for stats-->
