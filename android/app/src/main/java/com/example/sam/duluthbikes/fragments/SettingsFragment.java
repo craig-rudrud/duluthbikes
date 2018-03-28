@@ -30,6 +30,7 @@ public class SettingsFragment extends Fragment {
     Button eraseAllRides;
     File profile;
     TextView username;
+    TextView email;
 
     @Nullable
     @Override
@@ -41,11 +42,14 @@ public class SettingsFragment extends Fragment {
         final boolean isLoggedIn = getLoginStatus();
 
         username = myView.findViewById(R.id.usernameTextView);
+        email = myView.findViewById(R.id.emailTextView);
         if(isLoggedIn) {
-            username.setText(getString(R.string.username) + ": " + getUsername());
+            username.setText(getString(R.string.Username) + ": " + getUsername());
+            email.setText(getString(R.string.prompt_email) + ": " + getEmail());
         }
         else {
             username.setText(getString(R.string.noUsername));
+            email.setText("");
         }
 
         loginButton = (Button)myView.findViewById(R.id.loginButton);
@@ -143,5 +147,26 @@ public class SettingsFragment extends Fragment {
         }
 
         return username;
+    }
+
+    private String getEmail() {
+
+        String email = "";
+
+        try {
+            FileInputStream in = new FileInputStream(profile);
+            Scanner s = new Scanner(in);
+            while(s.hasNextLine()) {
+                email = s.nextLine();
+            }
+            s.close();
+            in.close();
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return email;
     }
 }

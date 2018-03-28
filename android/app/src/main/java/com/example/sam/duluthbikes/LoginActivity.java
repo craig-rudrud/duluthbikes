@@ -86,6 +86,13 @@ public class LoginActivity extends AppCompatActivity
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         Button skipSignInButton = (Button) findViewById(R.id.skip_sign_in_button);
 
+        requestStoragePermission();
+        final File file = new File("sdcard/Profile.txt");
+        if(file.exists()) {
+            Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
+            startActivity(menu);
+        }
+
         skipSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,12 +104,6 @@ public class LoginActivity extends AppCompatActivity
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestStoragePermission();
-                final File file = new File("sdcard/Profile.txt");
-                if(file.exists()) {
-                    Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
-                    startActivity(menu);
-                }
                 try {
                     file.createNewFile();
                 } catch (IOException e) {
@@ -110,12 +111,13 @@ public class LoginActivity extends AppCompatActivity
                 }
                 if (ContextCompat.checkSelfPermission(getBaseContext(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    String u = mUserView.getText().toString();
-                    String p = mPasswordView.getText().toString();
-                    if (!Objects.equals(u, "") && !Objects.equals(p, "")) {
-                        mPresenter.loginUser(u, p);
+                    String user = mUserView.getText().toString();
+                    String pass = mPasswordView.getText().toString();
+                    String email = mEmailView.getText().toString();
+                    if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
+                        mPresenter.loginUser(user, pass);
                     }
-                    startMenu(mUserView.getText().toString(), mPasswordView.getText().toString());
+                    startMenu(user, pass, email);
                 } else {
                     requestStoragePermission();
                 }
@@ -124,12 +126,13 @@ public class LoginActivity extends AppCompatActivity
 
     }
 
-    private void startMenu(String user, String pass) {
+    private void startMenu(String user, String pass, String email) {
 
         try {
             out = new FileOutputStream("sdcard/Profile.txt");
             out.write((user+"\n").getBytes());
-            out.write(sha256(pass+user).getBytes());
+            out.write((sha256(pass+user)+"\n").getBytes());
+            out.write((email+"\n").getBytes());
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
