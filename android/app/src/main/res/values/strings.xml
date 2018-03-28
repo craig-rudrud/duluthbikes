@@ -55,6 +55,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
     <string name="Username">Username</string>
+    <string name="hint">More than 8 characters, and no special characters like !@#$%^*()"</string>string>
     <string name="Password">Password</string>
 
 
