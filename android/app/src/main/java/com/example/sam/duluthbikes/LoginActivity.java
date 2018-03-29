@@ -142,7 +142,7 @@ public class LoginActivity extends AppCompatActivity
         try {
             out = new FileOutputStream("sdcard/Profile.txt");
             out.write((user+"\n").getBytes());
-            out.write((sha256(pass+user)+"\n").getBytes());
+            out.write(("\n").getBytes());
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

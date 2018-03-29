@@ -74,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity
         setContentView(R.layout.activity_register);
         duplicateCode = 400;
 
-        mPresenter = new Presenter(this.getBaseContext(), this, this);
+        //mPresenter = new Presenter(this.getBaseContext(), this, this);
 
         // Set up the login form.
         mUserView = (EditText) findViewById(R.id.rUsername);
@@ -144,8 +144,8 @@ public class RegisterActivity extends AppCompatActivity
         try {
             out = new FileOutputStream("sdcard/Profile.txt");
             out.write((user+"\n").getBytes());
-            out.write((sha256(pass+user)+"\n").getBytes());
             out.write((email+"\n").getBytes());
+            out.write((sha256(pass+user)+"\n").getBytes());
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
