@@ -5,7 +5,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -21,7 +20,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -31,7 +29,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,7 +45,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity
+public class RegisterActivity extends AppCompatActivity
         implements LoaderCallbacks<Cursor>,ModelViewPresenterComponents.View {
 
     /**
@@ -74,7 +71,7 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
         duplicateCode = 400;
 
         mPresenter = new Presenter(this.getBaseContext(), this, this);
@@ -82,13 +79,12 @@ public class LoginActivity extends AppCompatActivity
         // Set up the login form.
         mUserView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mEmailView = (EditText) findViewById(R.id.email);
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         Button skipSignInButton = (Button) findViewById(R.id.skip_sign_in_button);
-        Button RegisterButton = (Button) findViewById(R.id. register);
 
         requestStoragePermission();
         final File file = new File("sdcard/Profile.txt");
@@ -105,16 +101,6 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
-        RegisterButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
-
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,15 +115,15 @@ public class LoginActivity extends AppCompatActivity
                     String pass = mPasswordView.getText().toString();
                     String email = mEmailView.getText().toString();
                     if (user.length() < 8) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, getString(R.string.Username)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
                     } else if (stringHasInvalidChar(user)) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
                     } else if (pass.length() < 8) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, getString(R.string.Password)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
                     } else if (stringHasInvalidChar(pass)) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
                     } else if (email.length() > 0 && (!email.contains("@") || !email.contains(".") || email.contains("@."))) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.error_invalid_email), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, getString(R.string.error_invalid_email), Toast.LENGTH_SHORT).show();
                     }
                     else {
                         if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
@@ -190,7 +176,7 @@ public class LoginActivity extends AppCompatActivity
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mUserView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                    .setAction(android.R.string.ok, new OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
