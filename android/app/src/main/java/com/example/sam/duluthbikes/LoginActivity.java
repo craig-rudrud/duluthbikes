@@ -65,7 +65,6 @@ public class LoginActivity extends AppCompatActivity
     // UI references.
     private EditText mUserView;
     private EditText mPasswordView;
-    private EditText mEmailView;
     private View mProgressView;
     private View mLoginFormView;
     private Presenter mPresenter;
@@ -82,13 +81,11 @@ public class LoginActivity extends AppCompatActivity
         // Set up the login form.
         mUserView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mEmailView = (EditText) findViewById(R.id.email);
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        Button skipSignInButton = (Button) findViewById(R.id.skip_sign_in_button);
-        Button RegisterButton = (Button) findViewById(R.id. register);
+        Button registerButton = (Button) findViewById(R.id.needAccountButton);
 
         requestStoragePermission();
         final File file = new File("sdcard/Profile.txt");
@@ -97,69 +94,55 @@ public class LoginActivity extends AppCompatActivity
 //            startActivity(menu);
 //        }
 
-        skipSignInButton.setOnClickListener(new OnClickListener() {
+        registerButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        RegisterButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(intent);
             }
         });
 
-
-
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (ContextCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    String user = mUserView.getText().toString();
-                    String pass = mPasswordView.getText().toString();
-                    String email = mEmailView.getText().toString();
-                    if (user.length() < 8) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
-                    } else if (stringHasInvalidChar(user)) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
-                    } else if (pass.length() < 8) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
-                    } else if (stringHasInvalidChar(pass)) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
-                    } else if (email.length() > 0 && (!email.contains("@") || !email.contains(".") || email.contains("@."))) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.error_invalid_email), Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
-                            mPresenter.loginUser(user, pass);
-                        }
-                        startMenu(user, pass, email);
-                    }
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (ContextCompat.checkSelfPermission(getBaseContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                String user = mUserView.getText().toString();
+                String pass = mPasswordView.getText().toString();
+                if (user.length() < 8) {
+                    Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
+                } else if (stringHasInvalidChar(user)) {
+                    Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
+                } else if (pass.length() < 8) {
+                    Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
+                } else if (stringHasInvalidChar(pass)) {
+                    Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
                 } else {
-                    requestStoragePermission();
+                    if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
+                        mPresenter.loginUser(user, pass);
+                    }
+                    startMenu(user, pass);
                 }
+            } else {
+                requestStoragePermission();
+            }
             }
         });
 
     }
 
-    private void startMenu(String user, String pass, String email) {
+    // TODO: Re-write function so it doesn't overwrite the username and password but just checks it
+    private void startMenu(String user, String pass) {
 
         try {
             out = new FileOutputStream("sdcard/Profile.txt");
             out.write((user+"\n").getBytes());
             out.write((sha256(pass+user)+"\n").getBytes());
-            out.write((email+"\n").getBytes());
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

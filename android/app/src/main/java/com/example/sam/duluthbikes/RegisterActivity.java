@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via email/password.
+ * A register screen that offers login via email/password.
  */
 public class RegisterActivity extends AppCompatActivity
         implements LoaderCallbacks<Cursor>,ModelViewPresenterComponents.View {
@@ -64,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity
     private EditText mPasswordView;
     private EditText mEmailView;
     private View mProgressView;
-    private View mLoginFormView;
+    private View mRegisterFormView;
     private Presenter mPresenter;
     private FileOutputStream out;
 
@@ -77,13 +77,13 @@ public class RegisterActivity extends AppCompatActivity
         mPresenter = new Presenter(this.getBaseContext(), this, this);
 
         // Set up the login form.
-        mUserView = (EditText) findViewById(R.id.username);
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mUserView = (EditText) findViewById(R.id.rUsername);
+        mPasswordView = (EditText) findViewById(R.id.rPassword);
+        mEmailView = (EditText) findViewById(R.id.rEmail);
+        mRegisterFormView = findViewById(R.id.register_form);
+        mProgressView = findViewById(R.id.register_progress);
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button registerButton = (Button) findViewById(R.id.registerButton);
         Button skipSignInButton = (Button) findViewById(R.id.skip_sign_in_button);
 
         requestStoragePermission();
@@ -101,39 +101,39 @@ public class RegisterActivity extends AppCompatActivity
             }
         });
 
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (ContextCompat.checkSelfPermission(getBaseContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                String user = mUserView.getText().toString();
+                String pass = mPasswordView.getText().toString();
+                String email = mEmailView.getText().toString();
+                if (user.length() < 8) {
+                    Toast.makeText(RegisterActivity.this, getString(R.string.Username)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
+                } else if (stringHasInvalidChar(user)) {
+                    Toast.makeText(RegisterActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
+                } else if (pass.length() < 8) {
+                    Toast.makeText(RegisterActivity.this, getString(R.string.Password)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
+                } else if (stringHasInvalidChar(pass)) {
+                    Toast.makeText(RegisterActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
+                } else if (email.length() > 0 && (!email.contains("@") || !email.contains(".") || email.contains("@."))) {
+                    Toast.makeText(RegisterActivity.this, getString(R.string.error_invalid_email), Toast.LENGTH_SHORT).show();
                 }
-                if (ContextCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    String user = mUserView.getText().toString();
-                    String pass = mPasswordView.getText().toString();
-                    String email = mEmailView.getText().toString();
-                    if (user.length() < 8) {
-                        Toast.makeText(RegisterActivity.this, getString(R.string.Username)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
-                    } else if (stringHasInvalidChar(user)) {
-                        Toast.makeText(RegisterActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
-                    } else if (pass.length() < 8) {
-                        Toast.makeText(RegisterActivity.this, getString(R.string.Password)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
-                    } else if (stringHasInvalidChar(pass)) {
-                        Toast.makeText(RegisterActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
-                    } else if (email.length() > 0 && (!email.contains("@") || !email.contains(".") || email.contains("@."))) {
-                        Toast.makeText(RegisterActivity.this, getString(R.string.error_invalid_email), Toast.LENGTH_SHORT).show();
+                else {
+                    if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
+                        mPresenter.loginUser(user, pass);
                     }
-                    else {
-                        if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
-                            mPresenter.loginUser(user, pass);
-                        }
-                        startMenu(user, pass, email);
-                    }
-                } else {
-                    requestStoragePermission();
+                    startMenu(user, pass, email);
                 }
+            } else {
+                requestStoragePermission();
+            }
             }
         });
 
@@ -213,12 +213,12 @@ public class RegisterActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -234,7 +234,7 @@ public class RegisterActivity extends AppCompatActivity
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 

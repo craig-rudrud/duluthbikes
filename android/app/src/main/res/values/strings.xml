@@ -55,7 +55,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
     <string name="Username">Username</string>
-    <string name="hint">You username and password should be more than 8 characters, and no special characters like !@#$%^*()"</string>string>
+    <string name="hint">You username and password should be more than 8 characters, and contain no special characters like !@#$%^*()"</string>
     <string name="Password">Password</string>
     <string name="lengthReq">must be at least 8 characters long!</string>
     <string name="charReq">must not contain special characters!</string>
@@ -123,5 +123,6 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="logout">Logout</string>
     <string name="logoutMessage">Are you sure you want to logout?</string>
     <string name="noUsername">You are not logged in!</string>
+    <string name="needAnAccount">Need an account?</string>
 
 </resources>

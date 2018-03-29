@@ -63,29 +63,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Email (optional)"
-                    android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:text="@string/hint" />
-
             <Button
                 android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceSmall"
@@ -97,23 +74,13 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/skip_sign_in_button"
+                android:id="@+id/needAccountButton"
                 style="?android:textAppearanceSmall"
-                android:layout_width="140dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:text="@string/skip_sign_in"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/register"
-                style="?android:textAppearanceSmall"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:text="register"
+                android:text="@string/needAnAccount"
                 android:textStyle="bold" />
 
 
