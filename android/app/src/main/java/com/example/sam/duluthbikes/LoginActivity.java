@@ -114,11 +114,11 @@ public class LoginActivity extends AppCompatActivity
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 String user = mUserView.getText().toString();
                 String pass = mPasswordView.getText().toString();
-                if (user.length() < 8) {
+                if (user.length() < 3) {
                     Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
                 } else if (stringHasInvalidChar(user)) {
                     Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
-                } else if (pass.length() < 8) {
+                } else if (pass.length() < 6) {
                     Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
                 } else if (stringHasInvalidChar(pass)) {
                     Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
