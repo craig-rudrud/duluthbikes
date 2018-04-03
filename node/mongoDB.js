@@ -15,7 +15,6 @@ console.log("MongoDB is active.");
 
 
 module.exports = function () {
-
     var mongodb = mongojs(url, collections); //creation of the mongo connection
 
     mongodb.on('error', function (err) {
