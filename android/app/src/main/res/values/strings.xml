@@ -76,6 +76,8 @@
     <string name="avgTimeLabel">Average Time:</string>
     <string name="rideHistoryLabel">Ride History:</string>
     <string name="DONE">DONE</string>
+    <string name="shareRideLabel">Share Ride</string>
+    <string name="shareRideTo">Share ride to...</string>
 
     <string name="DisclaimerReportApp">This app is in a development stage.
         However, we would like to hear what you think about it.
