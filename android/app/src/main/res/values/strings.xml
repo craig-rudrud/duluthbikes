@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">DuluthBikes</string>
     <string name="title_activity_maps">Duluth Bikes</string>
+    <string name="facebook_app_id">1246493272150923</string>
 
     <string-array name="Options">
         <item>Events</item>

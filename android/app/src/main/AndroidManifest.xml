@@ -45,6 +45,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_maps">
@@ -62,5 +66,10 @@
             </intent-filter>
         </activity>
     </application>
+
+    <!-- Sets up a ContentProvider with the app ID -->
+    <!--<provider android:authorities="com.facebook.app.FacebookContentProvider1246493272150923"-->
+        <!--android:name="com.facebook.FacebookContentProvider"-->
+        <!--android:exported="true" />-->
 
 </manifest>
