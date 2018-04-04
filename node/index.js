@@ -21,7 +21,7 @@ var io = require('socket.io')(http);
 var routeHistory = [];
 
 // setting the port for the app system to use
-app.set("port",23405);
+app.set("port",23401);
 
 // this section tells the body parser what type of data to expect
 // for now it is mainly json
@@ -32,18 +32,20 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json({limit: '50mb'}));
 
-
+//Include all files in the public folder to serve to the website
+app.use(express.static('public'));
 
 //********MangoDB*******
 // Connect to the mongo module
 var mongodb = require('./mongoDB.js')();
+console.log(mongodb);
 
 app.get('/heatmapfiles',function(req,res){
-	res.sendFile(__dirname + '/node_modules/heatmap.js/build/heatmap.js');
+	res.sendFile(__dirname + '/public/node_modules/heatmap.js/build/heatmap.js');
 });
 
 app.get('/heatmapfilesgmaps',function(req,res){
-  res.sendFile(__dirname + '/node_modules/heatmap.js/plugins/gmaps-heatmap/gmaps-heatmap.js');
+  res.sendFile(__dirname + '/public/node_modules/heatmap.js/plugins/gmaps-heatmap/gmaps-heatmap.js');
 });
 
 app.get('/fullRide',function(req,res){
@@ -86,22 +88,58 @@ app.get('/raw', function(request, response) {
 });
 
 app.get('/rides',function(request,response){
-	response.sendFile(__dirname +'/ride.html');
+	response.sendFile(__dirname +'/public/ride.html');
 	printRides('FullRidesRecorded',function(doc){
         io.emit('FullRidesRecorded',doc);
         });
 });
 
 app.get('/maps',function(req,res){
-	res.sendFile(__dirname + '/maps.html');
+	res.sendFile(__dirname + '/public/maps.html');
 	printRides('FullRidesRecorded',function(doc){
 	io.emit('FullRidesRecorded',doc);
 	});
 });
 
 app.get('/',function(req,res){
-	res.sendFile(__dirname + '/duluthbikes.html');
+	res.sendFile(__dirname + '/public/duluthBikesBootstrap.html');
 });
+
+app.post('/postlocalleaderboard', function(request,response) {
+
+	if (!request.body) return response.sendStatus(400);
+
+	var position = {
+		'pos':request.body.pos
+	}
+	var statData = {
+		'date':request.body.date,
+		'distance':request.body.distance,
+		'time':request.body.time,
+		'name':request.body.name
+	}
+	insertLocalLeaderboard(position,statData);
+	console.log('Post Request: postlocalleaderboard');
+	response.sendStatus(200);
+});
+
+app.post('/postgloballeaderboard', function(request,response) {
+	
+		if (!request.body) return response.sendStatus(400);
+	
+		var position = {
+			'pos':request.body.pos
+		}
+		var statData = {
+			'date':request.body.date,
+			'distance':request.body.distance,
+			'time':request.body.time,
+			'name':request.body.name
+		}
+		insertGlobalLeaderboard(position,statData);
+		console.log('Post Request: postgloballeaderboard');
+		response.sendStatus(200);
+	});
 
 app.post('/postroute', function(request, response) {
 
@@ -150,9 +188,24 @@ app.get('/usernames', function(req,res){
     console.log('users request');
 });
 
+app.get('/localleaderboard', function(req, res) {
+	var users = printLocalLeaderboard('localLeaderboard',function(result){
+		   res.write(JSON.stringify(result));
+		   res.send();
+	   });
+   console.log('local leaderboard request');
+});
+
+app.get('/globalleaderboard', function(req, res) {
+	var users = printLocalLeaderboard('globalLeaderboard',function(result){
+		   res.write(JSON.stringify(result));
+		   res.send();
+	   });
+   console.log('global leaderboard request');
+});
+
 app.post('/postusername', function(req,res){
 	if(!req.body)return res.sendStatus(400);
-
 	var userObj = { 'user':req.body.userName,
 					'pass':req.body.passWord };
 	insertUsername(userObj);
@@ -175,7 +228,7 @@ app.post('/postpicture', function(req,res){
 app.get('/pictures',function(req,res){
 	
 	// 1.// THE FOLLOWING IS FOR ACCESSING DB. ( CURRENTLY DOES NOT ACCESS - PICS HARDCODED.)
-	res.sendFile(__dirname +'/threepics.html'); // Will try and use if we can use Canvas element - HTML5
+	res.sendFile(__dirname +'/public/threepics.html'); // Will try and use if we can use Canvas element - HTML5
 	printPictures('PicturesSaved',function(doc){
 	io.emit('PicturesSaved',doc);
 	});
@@ -204,6 +257,33 @@ app.get('/deletealltherides',function(res,req){
 	console.log('deleted all rides atempt');
 	
 	deleteAll('FullLatLngsRecorded',function(result){
+		if(result==true)console.log("deleted all");
+		else console.log("didnt work");
+		});
+});
+
+app.get('/deleteAllUsers',function(res,req){
+	console.log('deleted all users atempt');
+	
+	deleteAll('UsersSaved',function(result){
+		if(result==true)console.log("deleted all");
+		else console.log("didnt work");
+		});
+});
+
+app.get('/resetLocalLeaderboard',function(res,req){
+	console.log('deleted all local leaderboard atempt');
+	
+	deleteAll('localLeaderboard',function(result){
+		if(result==true)console.log("deleted all");
+		else console.log("didnt work");
+		});
+});
+
+app.get('/resetGlobalLeaderboard',function(res,req){
+	console.log('deleted all global leaderboard atempt');
+	
+	deleteAll('globalLeaderboard',function(result){
 		if(result==true)console.log("deleted all");
 		else console.log("didnt work");
 		});
