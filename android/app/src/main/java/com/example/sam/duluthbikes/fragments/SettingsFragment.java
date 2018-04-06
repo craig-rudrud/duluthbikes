@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +17,16 @@ import android.widget.Toast;
 
 import com.example.sam.duluthbikes.LoginActivity;
 import com.example.sam.duluthbikes.R;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,8 +75,14 @@ public class SettingsFragment extends Fragment {
                             switch (i) {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     profile.delete();
-                                    Intent login = new Intent(getActivity(), LoginActivity.class);
-                                    startActivity(login);
+                                    mGoogleSignInClient.signOut()
+                                            .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    Intent login = new Intent(getActivity(), LoginActivity.class);
+                                                    startActivity(login);
+                                                }
+                                            });
                                     break;
                                 case DialogInterface.BUTTON_NEGATIVE:
                                     break;
@@ -115,6 +132,18 @@ public class SettingsFragment extends Fragment {
         });
 
         return myView;
+    }
+
+    private GoogleSignInClient mGoogleSignInClient;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+
     }
 
     private void eraseAllRides() {
