@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/userTabScrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -9,51 +10,45 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/settingsTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            android:text="@string/settings"
-            android:textAlignment="textStart"
-            android:textSize="27sp" />
+        android:orientation="vertical"
+        android:layout_margin="10dp">
 
         <TextView
             android:id="@+id/usernameTextView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:text="Username: "
-            android:textSize="14sp" />
+            android:text="@string/Username"
+            android:textSize="27sp" />
 
         <TextView
             android:id="@+id/emailTextView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Email: "
-            android:textSize="14sp" />
+            android:text="@string/prompt_email"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/profilePicture"
+            android:layout_width="175dp"
+            android:layout_height="175dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/default_profile_pic" />
 
         <Button
             android:id="@+id/loginButton"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginTop="10dp"
             android:text="Login/Logout" />
 
         <Button
             android:id="@+id/button_eraseAllRides"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginTop="10dp"
             android:text="@string/eraseAllRides" />
 
     </LinearLayout>

@@ -56,9 +56,12 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
     <string name="Username">Username</string>
-    <string name="hint">You username and password should be more than 8 characters, and contain no special characters like !@#$%^*()"</string>
+    <string name="hint">You username must be more than 3 characters,
+        your password must be more than 6 characters,
+        and contain no special characters like !@#$%^*()"</string>
     <string name="Password">Password</string>
-    <string name="lengthReq">must be at least 8 characters long!</string>
+    <string name="usernameLengthReq">must be at least 3 characters long!</string>
+    <string name="passwordLengthReq">must be at least 6 characters long!</string>
     <string name="charReq">must not contain special characters!</string>
     <string name="register">register</string>
 

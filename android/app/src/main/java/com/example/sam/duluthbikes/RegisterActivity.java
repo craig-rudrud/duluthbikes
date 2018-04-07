@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A register screen that offers login via email/password.
+ * A register screen that offers account creation via email/password.
  */
 public class RegisterActivity extends AppCompatActivity
         implements LoaderCallbacks<Cursor>,ModelViewPresenterComponents.View {
@@ -68,30 +68,29 @@ public class RegisterActivity extends AppCompatActivity
     private Presenter mPresenter;
     private FileOutputStream out;
 
+    private final int USERNAME_LENGTH_REQ = 3;
+    private final int PASSWORD_LENGTH_REQ = 6;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         duplicateCode = 400;
 
-        //mPresenter = new Presenter(this.getBaseContext(), this, this);
+        mPresenter = new Presenter(this.getBaseContext(), this, this);
 
         // Set up the login form.
-        mUserView = (EditText) findViewById(R.id.rUsername);
-        mPasswordView = (EditText) findViewById(R.id.rPassword);
-        mEmailView = (EditText) findViewById(R.id.rEmail);
+        mUserView = findViewById(R.id.rUsername);
+        mPasswordView = findViewById(R.id.rPassword);
+        mEmailView = findViewById(R.id.rEmail);
         mRegisterFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.register_progress);
 
-        Button registerButton = (Button) findViewById(R.id.registerButton);
-        Button skipSignInButton = (Button) findViewById(R.id.skip_sign_in_button);
+        Button registerButton = findViewById(R.id.registerButton);
+        Button skipSignInButton = findViewById(R.id.skip_sign_in_button);
 
         requestStoragePermission();
         final File file = new File("sdcard/Profile.txt");
-//        if(file.exists()) {
-//            Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
-//            startActivity(menu);
-//        }
 
         skipSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -111,20 +110,41 @@ public class RegisterActivity extends AppCompatActivity
             }
             if (ContextCompat.checkSelfPermission(getBaseContext(),
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
                 String user = mUserView.getText().toString();
                 String pass = mPasswordView.getText().toString();
                 String email = mEmailView.getText().toString();
-                if (user.length() < 8) {
-                    Toast.makeText(RegisterActivity.this, getString(R.string.Username)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
-                } else if (stringHasInvalidChar(user)) {
-                    Toast.makeText(RegisterActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
-                } else if (pass.length() < 8) {
-                    Toast.makeText(RegisterActivity.this, getString(R.string.Password)+" "+getString(R.string.lengthReq), Toast.LENGTH_SHORT).show();
-                } else if (stringHasInvalidChar(pass)) {
-                    Toast.makeText(RegisterActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
-                } else if (email.length() > 0 && (!email.contains("@") || !email.contains(".") || email.contains("@."))) {
-                    Toast.makeText(RegisterActivity.this, getString(R.string.error_invalid_email), Toast.LENGTH_SHORT).show();
+
+                if (user.length() < USERNAME_LENGTH_REQ) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.Username)+" "+getString(R.string.usernameLengthReq),
+                            Toast.LENGTH_SHORT).show();
                 }
+
+                else if (stringHasInvalidChar(user)) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.Username)+" "+getString(R.string.charReq),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                else if (pass.length() < PASSWORD_LENGTH_REQ) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.Password)+" "+getString(R.string.passwordLengthReq),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                else if (stringHasInvalidChar(pass)) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.Password)+" "+getString(R.string.charReq),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                else if (email.length() > 0 && (!email.contains("@") || !email.contains(".") || email.contains("@."))) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.error_invalid_email),
+                            Toast.LENGTH_SHORT).show();
+                }
+
                 else {
                     if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
                         mPresenter.loginUser(user, pass);
