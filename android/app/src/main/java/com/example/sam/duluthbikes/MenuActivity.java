@@ -213,12 +213,7 @@ public class MenuActivity extends AppCompatActivity
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new AboutFragment())
                     .commit();
-        } else if (id == R.id.nav_settings) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new SettingsFragment())
-                    .commit();
-        }
-        else if (id == R.id.nav_leaderboard) {
+        } else if (id == R.id.nav_leaderboard) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new LeaderboardFragment())
                     .commit();

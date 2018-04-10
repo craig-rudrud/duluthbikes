@@ -25,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -83,7 +84,15 @@ public class SettingsFragment extends Fragment {
             case 2:
                 username.setText(personName);
                 email.setText(personEmail);
-                profilePicture.setImageURI(personPhoto);
+                String url = "https:/lh5.googleusercontent.com"+personPhoto.getPath();
+                Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
+                        .error(R.drawable.default_profile_pic)
+                        .into(profilePicture, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {}
+                            @Override
+                            public void onError() {}
+                        });
                 break;
             case 1:
                 username.setText(getUsername());
@@ -92,9 +101,19 @@ public class SettingsFragment extends Fragment {
             case 0:
                 username.setText(getString(R.string.noUsername));
                 email.setText("");
-                profilePicture.setImageURI(null);
+                profilePicture.setImageBitmap(null);
                 break;
         }
+
+        // Allow user to change their profile picture
+        profilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent uploadIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                uploadIntent.setType("image/*");
+                startActivity(uploadIntent);
+            }
+        });
 
         loginButton = myView.findViewById(R.id.loginButton);
         loginButton.setText((loginStatus > 0) ? getString(R.string.logout) : getString(R.string.login));

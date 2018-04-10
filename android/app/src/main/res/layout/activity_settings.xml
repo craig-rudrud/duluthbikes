@@ -35,7 +35,7 @@
             android:layout_height="175dp"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:background="@drawable/default_profile_pic" />
+            android:src="@drawable/default_profile_pic" />
 
         <Button
             android:id="@+id/loginButton"
