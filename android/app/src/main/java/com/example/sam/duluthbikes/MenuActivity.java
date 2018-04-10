@@ -20,8 +20,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
@@ -56,12 +54,14 @@ public class MenuActivity extends AppCompatActivity
     private String name = "";
     private String email = "";
 
+    private GoogleMap mMap;
+
     Location mLastLocation;
     private boolean automaticTracking = false;
     private int counter = 0;
 
 
-            @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_activity);
@@ -109,13 +109,24 @@ public class MenuActivity extends AppCompatActivity
         ImageView img = (ImageView) hView.findViewById(R.id.imageView);
         Uri fileURL = getIntent().getData();
 
-        if (null != fileURL) {
-            Glide.with(getApplicationContext())
-                    .load(fileURL)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(img);
-        }
+//        if (null != fileURL) {
+//            Glide.with(getApplicationContext())
+//                    .load(fileURL)
+//                    .apply(RequestOptions.circleCropTransform())
+//                    .into(img);
+//        }
 
+    }
+
+    /**
+     * Required by OnMapReadyCallback interface
+     * Called when the map is ready to be used.
+     * https://developers.google.com/android/reference/com/google/android/gms/maps/OnMapReadyCallback
+     * @param googleMap
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
     }
 
     public void startMainActivity(View view) {
@@ -225,7 +236,7 @@ public class MenuActivity extends AppCompatActivity
 
 
     public void signOutClick(View view) {
-        Intent intent = new Intent(this, LoginScreenActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 

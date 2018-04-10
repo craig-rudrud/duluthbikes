@@ -217,7 +217,7 @@ public class MainActivity extends FragmentActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             saveRide = false;
-                            returnMenu();
+                            //returnMenu();
                         }
                     });
 

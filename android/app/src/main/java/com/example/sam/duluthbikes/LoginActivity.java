@@ -27,18 +27,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-<<<<<<< HEAD
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-=======
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
->>>>>>> og
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 
@@ -108,7 +102,6 @@ public class LoginActivity extends AppCompatActivity
 
         mPresenter = new Presenter(this.getBaseContext(), this, this);
 
-<<<<<<< HEAD
         // Set up the login form.
         mUserView = findViewById(R.id.username);
         mPasswordView = findViewById(R.id.password);
@@ -124,28 +117,6 @@ public class LoginActivity extends AppCompatActivity
             Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
             startActivity(menu);
         }
-=======
-        requestStoragePermission();
-        final File file = new File("sdcard/Profile.txt");
-        if (file.exists()) {
-            //Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
-            //startActivity(menu);
-        }
-        else {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Set up the login form.
-        mUserView = (EditText) findViewById(R.id.username);
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mEmailView = (EditText) findViewById(R.id.email);
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
->>>>>>> og
 
         registerButton.setOnClickListener(new OnClickListener() {
             @Override

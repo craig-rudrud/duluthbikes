@@ -22,8 +22,6 @@
     <string name="com.twitter.sdk.android.CONSUMER_SECRET">
         6zALqY7lSw8DthHAdugE3xwnoI4wztCM0HY3vjHyi1HRmlcxIU</string>
 
-    <string name="facebook_app_id">2036926216591978</string>
-
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to Drawer -->

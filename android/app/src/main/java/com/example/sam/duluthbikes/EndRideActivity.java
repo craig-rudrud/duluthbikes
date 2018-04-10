@@ -2,7 +2,7 @@ package com.example.sam.duluthbikes;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-<<<<<<< HEAD
+
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,9 +11,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.net.Uri;
-=======
+
 import android.location.Location;
->>>>>>> og
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -21,19 +21,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-<<<<<<< HEAD
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-=======
+
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
->>>>>>> og
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,13 +43,7 @@ import java.util.Date;
  * Displays statistics of the ride and allows to return to the home screen
  */
 
-<<<<<<< HEAD
-public class EndRideActivity extends AppCompatActivity{
-    Bundle data;
-    Float totDistance;
-    Long totTime;
-    TextView dist;
-=======
+
 public class EndRideActivity extends AppCompatActivity implements ModelViewPresenterComponents.View{
 
     Bundle data;
@@ -60,7 +53,7 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
     String theRideDate;
     String theRideTime;
     String name = "in-app POST test";
->>>>>>> og
+    TextView dist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,8 +131,6 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
         Intent intent = new Intent(this, MenuActivity.class);
         startActivity(intent);
     }
-<<<<<<< HEAD
-=======
 
     /**
      * Determine wether the user has beat a leaderbboard score.
@@ -254,8 +245,6 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
     public GoogleApiClient getClient() {
         return null;
     }
-}
->>>>>>> og
 
     public void shareRide() {
 

@@ -38,7 +38,7 @@ import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import retrofit2.http.HTTP;
+//import retrofit2.http.HTTP;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
