@@ -13,7 +13,6 @@ var assert = require('assert');
 console.log("MongoDB is active.");
 
 
-
 module.exports = function () {
     var mongodb = mongojs(url, collections); //creation of the mongo connection
 
@@ -129,34 +128,23 @@ module.exports = function () {
 	    });
     };
 
-    checkCreds = function (user) {
-	console.log("checkCreds");
-	results = mongodb.collection('users').find({name:user.name}).toArray();
-	console.log("query success");
-	ret = results && results.length() == 1 && results[0].pass === user.pass;
-	console.log("ret");
-	return ret;
-    };
+    loginAttempt = function (user, callback) {
+	mongodb.collection('users').find({name:user.user}, (err,docs)=>{
+	    if(err) callback(err, null)
+	    else if(docs.length == 0) callback("user not found", null)
+	    else if(docs.length > 1 ) callback("username collision", null)
+	    else callback(null, "dummy login token")})}
 
-    newAccount = function (user){
-	console.log('newAccount');
-	results = mongodb.collection('users').find({name:user.name});
-	if(results.count() != 0) return false;
-	return mongodb.collection('users').insert(user).nInserted == 1 ? true : false;
-    };
+    insertUser = function (user, callback){
+	return mongodb.collection('users').insert(user, (err,docs)=>{
+	    if(err) console.log(err)
+	    else callback(docs)});};
 
     printUsers = function (collectionName, callback) {
-
 	var cursor = mongodb.collection(collectionName).find(function (err, docs) {
 	    if (err || !docs) {
-		console.log("Cannot print database or database is empty\n");
-	    }
-	    else {
-		callback(docs);
-	    }
-	});
-
-    };
+		console.log("Cannot print database or database is empty\n");}
+	    else {callback(docs);}});};
 
     printLocalLeaderboard = function (collectionName, callback) {
 

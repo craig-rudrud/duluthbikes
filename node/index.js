@@ -126,7 +126,7 @@ app.post('/postlocalleaderboard', function(request,response) {
 });
 
 app.post('/postgloballeaderboard', function(request,response) {
-    
+    x
     if (!request.body) return response.sendStatus(400);
     
     var position = {
@@ -243,26 +243,20 @@ app.get('/globalleaderboard', function(req, res) {
 });
 
 app.post('/loginAttempt', function(req,res){
-    if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
-    var userObj = { 'user':req.body.userName,
-		    'pass':req.body.passWord };
-    console.log('loginAttempt');
-    if(checkCreds(userObj))
-    {   console.log("wtf")
-	res.sendStatus(200);
-    }
-    else {
-	res.sendStatus(300);
-	console.log("help")
-    }
-    console.log("success")
-});
+    if(!req.body.user || !req.body.pass) return res.sendStatus(400);
+    var userObj = { 'user':req.body.user};
+    loginAttempt(userObj, (err, token) =>{
+	if(err) res.send(err)
+	else res.send(token)})})
 
 app.post('/newAccount', function(req,res){
-    if(!req.body) return res.sendStatus(400);
-    var userObj = { 'user':req.body.userName,
-		    'pass':req.body.passWord,
+    if(!req.body.user || !req.body.pass) return res.sendStatus(400);
+    var userObj = { 'user':req.body.user,
+		    'pass':req.body.pass,
 		    'email':req.body.email};
+
+    getUser(user)
+    
     if(newAccount(userObj))
     {   console.log("wtf")
 	res.sendStatus(200);
