@@ -2,7 +2,13 @@ package com.example.sam.duluthbikes;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,6 +35,7 @@ public class EndRideActivity extends AppCompatActivity{
     Bundle data;
     Float totDistance;
     Long totTime;
+    TextView dist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +44,12 @@ public class EndRideActivity extends AppCompatActivity{
 
         UnitConverter converter = new UnitConverter();
 
-        TextView rideDate = (TextView)findViewById(R.id.dateLabel);
-        TextView dist = (TextView)findViewById(R.id.distance);
-        TextView timeLapsed = (TextView) findViewById(R.id.timeLapsed);
-        TextView avSpeed = (TextView)findViewById(R.id.averageSpeed);
-        TextView startTime = (TextView)findViewById(R.id.startTime);
-        TextView endTime = (TextView)findViewById(R.id.endTime);
+        TextView rideDate = findViewById(R.id.dateLabel);
+        dist = findViewById(R.id.distance);
+        TextView timeLapsed = findViewById(R.id.timeLapsed);
+        TextView avSpeed = findViewById(R.id.averageSpeed);
+        TextView startTime = findViewById(R.id.startTime);
+        TextView endTime = findViewById(R.id.endTime);
 
         data = getIntent().getExtras();
         Long sTime =  data.getLong("startTime");
@@ -109,7 +116,7 @@ public class EndRideActivity extends AppCompatActivity{
 
         View v1 = findViewById(R.id.statsLayout);
         v1.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+        Bitmap bitmap = (addWatermark(getResources(), Bitmap.createBitmap(v1.getDrawingCache())));
         v1.setDrawingCacheEnabled(false);
 
         File image = new File(path);
@@ -128,7 +135,53 @@ public class EndRideActivity extends AppCompatActivity{
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("image/*");
         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(image));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "I just biked " + dist.getText().toString() + " km with Duluth Bikes!");
         startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.shareRideTo)));
     }
-}
 
+    /**
+     * @author Android Guys
+     * Source URL: https://androidluckyguys.wordpress.com/2017/08/14/add-watermark-to-captured-image/
+     *
+     * Embeds an image watermark over a source image to produce
+     * a watermarked one.
+     * @param res The image file used as the watermark.
+     * @param source The source image file.
+     *
+     * Adds a watermark on the given image.
+     */
+    public static Bitmap addWatermark(Resources res, Bitmap source) {
+        int w, h;
+        Canvas c;
+        Paint paint;
+        Bitmap bmp, watermark;
+        Matrix matrix;
+        float scale;
+        RectF r;
+        w = source.getWidth();
+        h = source.getHeight();
+        // Create the new bitmap
+        bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
+        // Copy the original bitmap into the new one
+        c = new Canvas(bmp);
+        c.drawBitmap(source, 0, 0, paint);
+        // Load the watermark
+        watermark = BitmapFactory.decodeResource(res, R.drawable.duluth_bikes_logo);
+        // Scale the watermark to be approximately 40% of the source image height
+        scale = (float) (((float) h * 0.25) / (float) watermark.getHeight());
+        // Create the matrix
+        matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        // Determine the post-scaled size of the watermark
+        r = new RectF(0, 0, watermark.getWidth(), watermark.getHeight());
+        matrix.mapRect(r);
+        // Move the watermark to the bottom right corner
+        matrix.postTranslate(w - r.width(), h - r.height());
+        // Draw the watermark
+        c.drawBitmap(watermark, matrix, paint);
+        // Free up the bitmap memory
+        watermark.recycle();
+        return bmp;
+    }
+}
