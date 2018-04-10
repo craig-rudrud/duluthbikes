@@ -2,6 +2,7 @@ package com.example.sam.duluthbikes;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+<<<<<<< HEAD
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.net.Uri;
+=======
+import android.location.Location;
+>>>>>>> og
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -17,10 +21,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+<<<<<<< HEAD
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+=======
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+>>>>>>> og
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,16 +44,30 @@ import java.util.Date;
  * Displays statistics of the ride and allows to return to the home screen
  */
 
+<<<<<<< HEAD
 public class EndRideActivity extends AppCompatActivity{
     Bundle data;
     Float totDistance;
     Long totTime;
     TextView dist;
+=======
+public class EndRideActivity extends AppCompatActivity implements ModelViewPresenterComponents.View{
+
+    Bundle data;
+    Float totDistance;
+    Long totTime;
+    private Presenter mPresenter;
+    String theRideDate;
+    String theRideTime;
+    String name = "in-app POST test";
+>>>>>>> og
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_ride);
+
+        mPresenter = new Presenter(this.getBaseContext(), this, this, true);
 
         UnitConverter converter = new UnitConverter();
 
@@ -62,6 +89,9 @@ public class EndRideActivity extends AppCompatActivity{
         DecimalFormat df = new DecimalFormat("#.##");
 
         Long timelapse = fTime - sTime;
+
+        theRideDate = datef.format(fTime);
+        theRideTime = String.valueOf(converter.convertHoursMinSecToString(timelapse));
 
         initializeTotals();
 
@@ -87,6 +117,7 @@ public class EndRideActivity extends AppCompatActivity{
             }
         });
 
+        updateLocalLeaderboard();
     }
 
 
@@ -96,9 +127,9 @@ public class EndRideActivity extends AppCompatActivity{
         totTime = totalstats.getLong(getString(R.string.lifetimeStats_totTime), 0);
     }
 
-
     public void doneWithRide(View view){
-        Intent menu = new Intent(this.getApplicationContext(),MenuActivity.class);
+        updateLocalLeaderboard();
+        Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
         startActivity(menu);
     }
 
@@ -107,6 +138,124 @@ public class EndRideActivity extends AppCompatActivity{
         Intent intent = new Intent(this, MenuActivity.class);
         startActivity(intent);
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Determine wether the user has beat a leaderbboard score.
+     * If the user has beaten their own local leaderboard, update the local leaderboard.
+     * Same with the global leaderboard.
+     *
+     * NOTE: This isnt really safe code as it will try to compare leaderboard stats even if its empty.
+     * In a testing enviroment, pre fill the leaderboard so that it works properly or fix this code!
+     *
+     * Update local leaderboard should be basically the same ...
+     * @todo modify this somehow to use location data ? Maybe just only have a single leaderboard instead of local/global...
+     */
+    private void updateLocalLeaderboard() {
+        UnitConverter converter = new UnitConverter();
+        double justFinishedDistance = converter.getDistInKm(totDistance.doubleValue());
+        String justFinishedDistanceText = String.valueOf(justFinishedDistance);
+
+        JSONArray data = mPresenter.getLeaderboardFromServer(ModelViewPresenterComponents.LOCAL);
+        JSONArray thisRideData = new JSONArray();
+        JSONObject values = new JSONObject();
+
+        try {
+            values.put("date",theRideDate);
+            values.put("distance",justFinishedDistanceText);
+            values.put("time",theRideTime);
+            values.put("name",name);
+        } catch (JSONException e) {
+            System.out.println("JSONException trying to put values into JSONObject in updateLeaderboard()!");
+        }
+
+        try {
+            JSONObject jsonDataFirstRank = data.getJSONObject(0);
+            JSONObject jsonDataSecondRank = data.getJSONObject(1);
+            JSONObject jsonDataThirdRank = data.getJSONObject(2);
+
+            if (justFinishedDistance > Double.parseDouble(jsonDataFirstRank.get("distance").toString())) {
+                values.put("pos", "1");
+                thisRideData.put(data);
+                mPresenter.sendLeaderboardToServer(ModelViewPresenterComponents.LOCAL, thisRideData);
+            }
+            else if (justFinishedDistance > Double.parseDouble(jsonDataSecondRank.get("distance").toString())) {
+                values.put("pos", "2");
+                thisRideData.put(data);
+                mPresenter.sendLeaderboardToServer(ModelViewPresenterComponents.LOCAL, thisRideData);
+            }
+            else if (justFinishedDistance > Double.parseDouble(jsonDataThirdRank.get("distance").toString())) {
+                values.put("pos", "3");
+                thisRideData.put(data);
+                mPresenter.sendLeaderboardToServer(ModelViewPresenterComponents.LOCAL, thisRideData);
+            }
+
+            /*
+            TESTING  ****************************
+            Will update the 1st rank in local leaderbboard each time to showcase the feature
+            Turn this off in production! And be sure to clear the leaderboard (/ResetLocalLeaderboard)
+            so this doesnt show, and re populate the leaderboard after.
+            Ex. (in PostMan, in body, using JSON setting) {
+                    "pos":"1",
+                    "date":"12-04-2017",
+                    "distance":"6.6",
+                    "time":"0H 04M 0S",
+                    "name":"test"
+                }
+            */
+            /*
+            System.out.println("sending dummy update.");
+            values.put("pos", "1");
+            thisRideData.put(values);
+            try{
+                System.out.println("******data: " + thisRideData.get(0).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mPresenter.sendLeaderboardToServer(ModelViewPresenterComponents.LOCAL, thisRideData);
+            */
+
+
+        } catch (JSONException e) {
+            System.out.println("BAD JSON CALL IN updateLeaderboard()");
+        }
+
+    }
+
+    /**
+     * @todo Implement this stub - updateGlobalLeaderboard() based off of updateLocalLeaderboard()
+     */
+    private void updateGlobalLeaderboard() {
+
+    }
+
+    /*
+    These below functions are required to implement to consider this class a View, as defined in
+    ModelViewPresenterComponents
+     */
+
+    @Override
+    public void locationChanged(Location location) {
+
+    }
+
+    @Override
+    public void userResults(String results) {
+
+    }
+
+    @Override
+    public void setClient(GoogleApiClient googleApiClient) {
+
+    }
+
+    @Override
+    public GoogleApiClient getClient() {
+        return null;
+    }
+}
+>>>>>>> og
 
     public void shareRide() {
 

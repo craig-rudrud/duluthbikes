@@ -28,6 +28,7 @@ public class RideHistoryFragment extends Fragment {
         tabLayout.addTab(tabLayout.newTab().setText("Statistics"));
         tabLayout.addTab(tabLayout.newTab().setText("Heatmap"));
         tabLayout.addTab(tabLayout.newTab().setText("Polylines"));
+        tabLayout.addTab(tabLayout.newTab().setText("Top Rides"));
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 

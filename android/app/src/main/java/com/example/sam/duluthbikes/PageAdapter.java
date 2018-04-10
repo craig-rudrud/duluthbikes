@@ -32,6 +32,9 @@ public class PageAdapter  extends FragmentStatePagerAdapter {
             case 2:
                 PolyTabFragment polyTabFragment = new PolyTabFragment();
                 return polyTabFragment;
+            case 3:
+                LeaderboardFragment ldrbrdFragment = new LeaderboardFragment();
+                return ldrbrdFragment;
             default:
                 return null;
         }

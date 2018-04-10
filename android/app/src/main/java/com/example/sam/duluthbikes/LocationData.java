@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class LocationData {
     private static LocationData ourInstance;
-    private static Context mContext;
+    private Context mContext;
     private PolylineOptions mPolylineOptions;
     private LatLngBounds.Builder builder;
     private JSONArray trip;

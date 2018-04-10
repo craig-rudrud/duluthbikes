@@ -12,6 +12,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -32,6 +35,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
+import retrofit2.http.HTTP;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -50,15 +57,18 @@ public class Model
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApi;
     private Context mContext;
     private FragmentActivity mActivity;
     private int mRequestCode;
     private boolean mode;
 
+
     public Model(){}
 
     public Model(Context context, Presenter presenter){
         mContext = context;
+        //mGSO = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         if(mGoogleApiClient==null) {
             mGoogleApiClient = new GoogleApiClient.Builder(mContext)
                     .addConnectionCallbacks(this)
@@ -199,6 +209,70 @@ public class Model
         //mGoogleApiClient.disconnect();
     }
 
+    @Override
+    public void sendToLocalLeaderboard(JSONArray data) {
+
+        try {
+            new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/postlocalleaderboard","POST", data.get(0).toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendToGlobalLeaderboard(JSONArray data) {
+
+        try {
+            new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/postgloballeaderboard","POST", data.get(0).toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public JSONArray getLocalLeaderboard() {
+        String data = null;
+        JSONArray result = null;
+
+        try {
+            data = new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/localleaderboard","GET").get();
+        } catch (Exception e) {
+            Log.d("DEBUG GET REQUEST",
+                    "Timed out waiting for response from http://akka.d.umn.edu:23401/localleaderboard");
+        }
+
+        try {
+            result = new JSONArray(data);
+        } catch (JSONException e) {
+            Log.d("JSON EXCEP",
+                    "parse fails or doesn't yield a JSONObject.");
+        }
+
+        return result;
+    }
+
+    @Override
+    public JSONArray getGlobalLeaderboard() {
+        String data = null;
+        JSONArray result = null;
+
+        try {
+            data = new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/globalleaderboard","GET").get();
+        } catch (Exception e) {
+            Log.d("DEBUG GET REQUEST",
+                    "Timed out waiting for response from http://akka.d.umn.edu:23401/localleaderboard");
+        }
+
+        try {
+            result = new JSONArray(data);
+        } catch (JSONException e) {
+            Log.d("JSON EXCEP",
+                    "parse fails or doesn't yield a JSONObject.");
+        }
+
+        return result;
+    }
+
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(3000);
@@ -212,6 +286,16 @@ public class Model
      */
     public Location getLocation() { return mLastLocation; }
     public void setLocation(Location curr) { mLastLocation = curr; }
+
+    @Override
+    public GoogleApiClient getGoogleApi() {
+        return mGoogleApi;
+    }
+
+    @Override
+    public void setGoogleApi(GoogleApiClient mGoogleApiClient) {
+        mGoogleApi = mGoogleApiClient;
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

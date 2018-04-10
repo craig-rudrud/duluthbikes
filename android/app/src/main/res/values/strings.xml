@@ -15,10 +15,14 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="settings">Settings</string>
     <string name="settings2">Settings2</string>
     <string name="settings3">Settings3</string>
 
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">Hx7zByXJQQ20arq9CofpBthS1</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">
+        6zALqY7lSw8DthHAdugE3xwnoI4wztCM0HY3vjHyi1HRmlcxIU</string>
+
+    <string name="facebook_app_id">2036926216591978</string>
 
     <string name="title_activity_login">Sign in</string>
 
@@ -120,6 +124,7 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="lifetimeStats_totTime">totalTime</string>
     <string name="lifetimeStats_avgTime">avgTime</string>
     <string name="lifetimeStats_rideNumber">rideNumber</string>
+    <string name="lifetimeStats_date">date</string>
     <string name="km">km</string>
     <string name="miles">miles</string>
     <string name="kmh">km/h</string>
@@ -129,6 +134,37 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="eraseAllRidesToast">All rides have been erased!</string>
     <string name="eraseAllRidesPopup">Are you sure you want to erase all your rides?</string>
 
+    <!-- strings related to settings -->
+    <string name="settings">Settings</string>
+    <string name="resetStats">Reset Stats</string>
+    <string name="dialog_reset_confirmation">Are you sure you would like to reset your local stats?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="sign_out_button">Sign Out</string>
+    <string name="dialog_sign_out_confirmation">Are you sure you would like to sign out?</string>
+
+    <!-- strings related to notifications settings -->
+    <string name="notifications">Notifications</string>
+    <string name="about_notifications">Set the time you would like a notification to go off every day to remind you to go on a bike ride.</string>
+    <string name="set_time">Set</string>
+    <string name="notifications_toggle">Notifications Toggle</string>
+    <string name="notifications_active">Notifications are active</string>
+    <string name="notifications_inactive">Notifications are inactive</string>
+    <string name="bike_time">It\'s time for your bike ride!</string>
+    <string name="notifications_set">Notifications will go off every day at </string>
+
+    <!-- strings related to leaderboard -->
+    <string name="leaderboard">Leaderboard</string>
+
+    <string name="localLeaderboard">Local Leaderboard</string>
+    <string name="globalLeaderboard">Global Leaderboard</string>
+    <string name="rank1">Rank 1</string>
+    <string name="rank2">Rank 2</string>
+    <string name="rank3">Rank 3</string>
+    <string name="name">Name:</string>
+    <string name="updateLeaderboard">Refresh Leaderboard</string>
+
+    <string name="sign_in_with_google">Sign in with Google</string>
 
 
 </resources>

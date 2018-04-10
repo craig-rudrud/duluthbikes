@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Array for AM/PM spinner in activity_notifications -->
+    <string-array name="spinner_items">
+        <item>AM</item>
+        <item>PM</item>
+    </string-array>
+</resources>

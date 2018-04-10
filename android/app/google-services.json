@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "559803519388",
+    "project_id": "duluth-bikes"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559803519388:android:db6baa7bdb1bb1b1",
+        "android_client_info": {
+          "package_name": "com.example.sam.duluthbikes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559803519388-i8b093p444f3nit3u8qga237aik7r1u8.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "559803519388-b28qrgcb3eov3r5g9boipi6r6lqc8osr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sam.duluthbikes",
+            "certificate_hash": "b8dcc999e307f18324852396ec4a71d81130ed56"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTnIc5BwtKMlfbrDIhHmNkKu2IVuOPmXo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
