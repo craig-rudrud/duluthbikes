@@ -1,4 +1,4 @@
-package com.example.sam.duluthbikes;
+package com.example.sam.duluthbikes.fragments;
 
 import android.Manifest;
 import android.app.Activity;
@@ -27,6 +27,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.sam.duluthbikes.Presenter;
+import com.example.sam.duluthbikes.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

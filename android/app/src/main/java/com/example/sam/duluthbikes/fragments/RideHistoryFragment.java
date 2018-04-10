@@ -1,4 +1,4 @@
-package com.example.sam.duluthbikes;
+package com.example.sam.duluthbikes.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +8,10 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.sam.duluthbikes.PageAdapter;
+import com.example.sam.duluthbikes.R;
+
 /**
  * Created by Sam on 4/19/2017.
  */
@@ -21,7 +25,7 @@ public class RideHistoryFragment extends Fragment {
         myView = inflater.inflate(R.layout.activity_ride_history, container, false);
 
         TabLayout tabLayout = (TabLayout) myView.findViewById (R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("User Stats"));
+        tabLayout.addTab(tabLayout.newTab().setText("Statistics"));
         tabLayout.addTab(tabLayout.newTab().setText("Heatmap"));
         tabLayout.addTab(tabLayout.newTab().setText("Polylines"));
         tabLayout.addTab(tabLayout.newTab().setText("Top Rides"));

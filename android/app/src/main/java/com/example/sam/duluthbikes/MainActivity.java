@@ -2,6 +2,8 @@
 package com.example.sam.duluthbikes;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.sam.duluthbikes.fragments.ReportFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,6 +40,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static java.lang.Math.abs;
+
 /**
  * Main Activity Class
  * Displays a map with your current location and allows to start tracking
@@ -52,9 +57,9 @@ public class MainActivity extends FragmentActivity
     private GoogleMap mMap;
     private ArrayList<LatLng> points;
     private PolylineOptions polylineOptions;
-    private LocationData locationData;
     private boolean animate;
     private ToggleButton pauseToggle;
+    private int counter = 0;
 
     private LinearLayout tv;
     private SupportMapFragment mapFragment;
@@ -63,10 +68,20 @@ public class MainActivity extends FragmentActivity
     private FrameLayout linearLayout;
     private LinearLayout greyScreen;
 
+    private boolean autoStart;
+    private boolean saveRide;
+    private Long startTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Date date = new Date();
+        startTime = date.getTime();
+
+        autoStart = getIntent().getExtras().getBoolean("autoTracking");
+        saveRide = false;
 
         CharSequence text ="Must click finish to end location tracking! Make sure location is enabled on your device.";
         Toast toast = Toast.makeText(
@@ -138,7 +153,6 @@ public class MainActivity extends FragmentActivity
         pauseToggle.setChecked(true);
     }
 
-
     public void pictureButton() {
         Intent intent = new Intent(this.getApplicationContext(),ReportFragment.class);
         startActivity(intent);
@@ -149,19 +163,17 @@ public class MainActivity extends FragmentActivity
     }
 
     public void cancelTheRide(View view){
-        locationData.getOurInstance(this).resetData();
+        LocationData.getOurInstance(this).resetData();
         mPresenter.finishRideButton();
         Intent i = new Intent(this,MenuActivity.class);
         startActivity(i);
     }
 
-    public void endRide(View view) {
-        mPresenter.finishRideButton();
+    public void endSession(){
         Intent endIntent = new Intent(this.getApplicationContext(),EndRideActivity.class);
         Date thisDate = new Date();
 
         Long endTime = thisDate.getTime();
-        Long startTime = LocationData.getOurInstance(this.getBaseContext()).getStartTime();
         Double distance = LocationData.getOurInstance(this.getBaseContext()).getDistance();
 
         SimpleDateFormat datef = new SimpleDateFormat("MM-dd-yyyy");
@@ -174,9 +186,43 @@ public class MainActivity extends FragmentActivity
         endIntent.putExtra("endTime", endTime);
 
         mPresenter.notifyRoute(LocationData.getOurInstance(this.getBaseContext()).getTrip(),
-                locationData.getOurInstance(this.getBaseContext()).getLatlng());
+                               LocationData.getOurInstance(this.getBaseContext()).getLatlng());
+
         LocationData.getOurInstance(this.getBaseContext()).resetData();
         startActivity(endIntent);
+    }
+
+    public void endRide(View view) {
+        if(autoStart){autoEnd();}
+        else {
+            mPresenter.finishRideButton();
+            endSession();
+        }
+    }
+
+    public void autoEnd(){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("Do you want to save this ride?");
+            alertDialogBuilder.setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            saveRide = true;
+                            endSession();
+                        }
+                    });
+
+            alertDialogBuilder.setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveRide = false;
+                            //returnMenu();
+                        }
+                    });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
     }
 
     public void changeUI(View view){
@@ -218,7 +264,6 @@ public class MainActivity extends FragmentActivity
         editor.putLong(newRideTime, timelapse);
 
         editor.apply();
-
     }
 
 
@@ -235,12 +280,15 @@ public class MainActivity extends FragmentActivity
 
     //get location and set location methods
     public Location getLastLocation(){ return mLastLocation; }
+
     public void setLastLocation(Location curr) { mLastLocation = curr; }
 
     @Override
     public void locationChanged(Location location) {
         if(location!=null) {
-            setLastLocation(location);
+            if (mLastLocation == null){
+                setLastLocation(location);
+            }
             LatLng latLng =
                     new LatLng(getLastLocation().getLatitude(), getLastLocation().getLongitude());
             points.add(latLng);
@@ -251,8 +299,8 @@ public class MainActivity extends FragmentActivity
                     mMap.setMaxZoomPreference(18);
                 }
             }
-            locationData.getOurInstance(this.getBaseContext()).addPoint(latLng, location);
-            polylineOptions = locationData.getOurInstance(this.getBaseContext()).getPoints();
+            LocationData.getOurInstance(this.getBaseContext()).addPoint(latLng, location);
+            polylineOptions = LocationData.getOurInstance(this.getBaseContext()).getPoints();
             LatLngBounds.Builder bounds = LocationData.getOurInstance(this.getBaseContext()).getBuilder();
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds.build(), 100);
             if (animate) {
@@ -262,12 +310,30 @@ public class MainActivity extends FragmentActivity
 
             DecimalFormat df = new DecimalFormat("0.00");
             Polyline p = mMap.addPolyline(polylineOptions);
+            float time = (mLastLocation.getTime() - location.getTime()) / 1000;
+            float speed = location.distanceTo(mLastLocation) / time;
+            speed = abs(speed);
+            location.setSpeed(speed);
             String sd = df.format(location.getSpeed()*3.6);
             tvSpeed.setText(sd+" KM/H");
-            sd = df.format(locationData.getOurInstance(this.getBaseContext()).getDistance()/1000);
+            sd = df.format(LocationData.getOurInstance(this.getBaseContext()).getDistance()/1000);
             tvDistance.setText(sd+" KM");
+            setLastLocation(location);
+            if(autoStart){
+                if(speed*3.6 < 10){
+                    counter++;
+                }
+                else counter = 0;
+                if(counter >= 20 && speed*3.6 <= 10){
+                    mPresenter.finishRideButton();
+                    autoEnd();
+                }
+                else counter = 0;
+                }
+
+            }
         }
-    }
+
 
     @Override
     public void userResults(String results) {

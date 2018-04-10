@@ -24,6 +24,9 @@
             android:id="@+id/nav_reportApp"
             android:title="@string/reportApp"/>
         <item
+            android:id="@+id/nav_settings"
+            android:title="@string/settings"/>
+        <item
             android:id="@+id/nav_about"
             android:title="@string/about" />
 

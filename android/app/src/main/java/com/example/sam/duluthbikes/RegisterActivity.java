@@ -20,21 +20,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.Task;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -51,9 +43,9 @@ import java.util.regex.Pattern;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via email/password.
+ * A register screen that offers account creation via email/password.
  */
-public class LoginActivity extends AppCompatActivity
+public class RegisterActivity extends AppCompatActivity
         implements LoaderCallbacks<Cursor>,ModelViewPresenterComponents.View {
 
     /**
@@ -66,106 +58,114 @@ public class LoginActivity extends AppCompatActivity
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     public int duplicateCode;
-    public int RC_SIGN_IN;
 
     // UI references.
     private EditText mUserView;
     private EditText mPasswordView;
+    private EditText mEmailView;
     private View mProgressView;
-    private View mLoginFormView;
+    private View mRegisterFormView;
     private Presenter mPresenter;
     private FileOutputStream out;
+
+    private final int USERNAME_LENGTH_REQ = 3;
+    private final int PASSWORD_LENGTH_REQ = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
         duplicateCode = 400;
-        RC_SIGN_IN = 200;
-
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        // Build a GoogleSignInClient with the options specified by gso.
-        final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        findViewById(R.id.sign_in_button).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
-        });
 
         mPresenter = new Presenter(this.getBaseContext(), this, this);
 
         // Set up the login form.
-        mUserView = findViewById(R.id.username);
-        mPasswordView = findViewById(R.id.password);
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mUserView = findViewById(R.id.rUsername);
+        mPasswordView = findViewById(R.id.rPassword);
+        mEmailView = findViewById(R.id.rEmail);
+        mRegisterFormView = findViewById(R.id.register_form);
+        mProgressView = findViewById(R.id.register_progress);
 
-        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
-        Button registerButton = findViewById(R.id.needAccountButton);
+        Button registerButton = findViewById(R.id.registerButton);
+        Button skipSignInButton = findViewById(R.id.skip_sign_in_button);
 
         requestStoragePermission();
         final File file = new File("sdcard/Profile.txt");
-        if(file.exists()) {
-            Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
-            startActivity(menu);
-        }
 
-        registerButton.setOnClickListener(new OnClickListener() {
+        skipSignInButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                 startActivity(intent);
             }
         });
 
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (ContextCompat.checkSelfPermission(getBaseContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+                String user = mUserView.getText().toString();
+                String pass = mPasswordView.getText().toString();
+                String email = mEmailView.getText().toString();
+
+                if (user.length() < USERNAME_LENGTH_REQ) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.Username)+" "+getString(R.string.usernameLengthReq),
+                            Toast.LENGTH_SHORT).show();
                 }
-                if (ContextCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    String user = mUserView.getText().toString();
-                    String pass = mPasswordView.getText().toString();
-                    if (user.length() < 3) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.usernameLengthReq), Toast.LENGTH_SHORT).show();
-                    } else if (stringHasInvalidChar(user)) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
-                    } else if (pass.length() < 6) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.usernameLengthReq), Toast.LENGTH_SHORT).show();
-                    } else if (stringHasInvalidChar(pass)) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
-                    } else {
-                        if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
-                            mPresenter.loginUser(user, pass);
-                        }
-                        startMenu(user, pass);
+
+                else if (stringHasInvalidChar(user)) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.Username)+" "+getString(R.string.charReq),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                else if (pass.length() < PASSWORD_LENGTH_REQ) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.Password)+" "+getString(R.string.passwordLengthReq),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                else if (stringHasInvalidChar(pass)) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.Password)+" "+getString(R.string.charReq),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                else if (email.length() > 0 && (!email.contains("@") || !email.contains(".") || email.contains("@."))) {
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.error_invalid_email),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                else {
+                    if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
+                        mPresenter.loginUser(user, pass);
                     }
-                } else {
-                    requestStoragePermission();
+                    startMenu(user, pass, email);
                 }
+            } else {
+                requestStoragePermission();
+            }
             }
         });
 
     }
 
-    private void startMenu(String user, String pass) {
+    private void startMenu(String user, String pass, String email) {
 
         try {
             out = new FileOutputStream("sdcard/Profile.txt");
             out.write((user+"\n").getBytes());
-            out.write(("\n").getBytes());
+            out.write((email+"\n").getBytes());
+            out.write((sha256(pass+user)+"\n").getBytes());
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -177,52 +177,6 @@ public class LoginActivity extends AppCompatActivity
 
         Intent start = new Intent(this.getApplicationContext(), MenuActivity.class);
         startActivity(start);
-    }
-
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account);
-    }
-
-    private void updateUI(GoogleSignInAccount account) {
-
-        // Launch the main activity if signed in
-        if(account != null) {
-            Intent start = new Intent(this.getApplicationContext(), MenuActivity.class);
-            startActivity(start);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
-    }
-
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            // Signed in successfully, show authenticated UI.
-            updateUI(account);
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("Error: ", "signInResult:failed code=" + e.getStatusCode());
-            updateUI(null);
-        }
     }
 
     private void populateAutoComplete() {
@@ -242,7 +196,7 @@ public class LoginActivity extends AppCompatActivity
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mUserView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                    .setAction(android.R.string.ok, new OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
@@ -279,12 +233,12 @@ public class LoginActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -300,7 +254,7 @@ public class LoginActivity extends AppCompatActivity
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -381,7 +335,7 @@ public class LoginActivity extends AppCompatActivity
             Toast toast = Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT);
             toast.show();
 
-            ActivityCompat.requestPermissions(this,
+                ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
 

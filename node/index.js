@@ -1,11 +1,11 @@
 /*
  * Our node server index.js file for use with our
- * duluthbikes app and the corresponding 
- * dashboard 
+ * duluthbikes app and the corresponding
+ * dashboard
  *
  */
 
-// Body Parser for icoming http requests 
+// Body Parser for icoming http requests
 var bodyParser = require('body-parser');
 // require express
 var express = require('express');
@@ -58,7 +58,7 @@ app.get('/fullRide',function(req,res){
 	res.send();
     });
     console.log('full ride request');
-}); 
+});
 
 app.get('/fulllatlng',function(req,res){
     var rides = printRides('FullLatLngsRecorded',function(result){
@@ -78,13 +78,13 @@ app.get('/raw', function(request, response) {
 
     //when using Mongo
     var str = printDatabase('RideHistory', function(result) {
-	response.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>' 
+	response.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
 		       + '<H1>Duluth Bikes Route Data.</H1>')
 	result.reverse();
 	response.write(JSON.stringify(result,['point','lat','lng'],'\n') + '</BODY></HTML>');
 	response.send();
     });
-    
+
     console.log('DashBoard request received!');
 });
 
@@ -126,9 +126,8 @@ app.post('/postlocalleaderboard', function(request,response) {
 });
 
 app.post('/postgloballeaderboard', function(request,response) {
-    x
     if (!request.body) return response.sendStatus(400);
-    
+
     var position = {
 	'pos':request.body.pos
     }
@@ -162,9 +161,9 @@ app.post('/postlocalleaderboard', function(request,response) {
 });
 
 app.post('/postgloballeaderboard', function(request,response) {
-    
+
     if (!request.body) return response.sendStatus(400);
-    
+
     var position = {
 	'pos':request.body.pos
     }
@@ -198,7 +197,7 @@ app.post('/postroute', function(request, response) {
 
 app.post('/postfinish',function(req,res){
 
-    if(!req.body)return res.sendStatus(400);	
+    if(!req.body)return res.sendStatus(400);
 
     var arr = [];
     arr = req.body.ride;
@@ -207,7 +206,7 @@ app.post('/postfinish',function(req,res){
 	var latlng = [];
 	latlng = req.body.heat;
 	insertLatLng(latlng);
-	
+
 	io.emit('FullRidesRecorded',doc);
     }
     console.log('Post Full Ride');
@@ -308,7 +307,7 @@ app.get('/deleteallthepictures',function(res,req) {
 
 app.get('/deletealltherides',function(res,req){
     console.log('deleted all rides atempt');
-    
+
     deleteAll('FullLatLngsRecorded',function(result){
 	if(result==true)console.log("deleted all");
 	else console.log("didnt work");
@@ -317,7 +316,7 @@ app.get('/deletealltherides',function(res,req){
 
 app.get('/deleteAllUsers',function(res,req){
     console.log('deleted all users atempt');
-    
+
     deleteAll('UsersSaved',function(result){
 	if(result==true)console.log("deleted all");
 	else console.log("didnt work");
@@ -326,7 +325,7 @@ app.get('/deleteAllUsers',function(res,req){
 
 app.get('/resetLocalLeaderboard',function(res,req){
     console.log('deleted all local leaderboard atempt');
-    
+
     deleteAll('localLeaderboard',function(result){
 	if(result==true)console.log("deleted all");
 	else console.log("didnt work");
@@ -335,7 +334,7 @@ app.get('/resetLocalLeaderboard',function(res,req){
 
 app.get('/resetGlobalLeaderboard',function(res,req){
     console.log('deleted all global leaderboard atempt');
-    
+
     deleteAll('globalLeaderboard',function(result){
 	if(result==true)console.log("deleted all");
 	else console.log("didnt work");
@@ -361,7 +360,7 @@ app.get('/logout', (req, res)=>{
 
 
 
-// this last section is to start the app and start listening on 
+// this last section is to start the app and start listening on
 // the given port for requests
 //
 
@@ -370,5 +369,3 @@ app.get('/logout', (req, res)=>{
 http.listen(app.get("port"),function(){
     console.log('duluth bikes node listening on port:',app.get("port"));
 });
-
-

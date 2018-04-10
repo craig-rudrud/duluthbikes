@@ -20,8 +20,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
@@ -30,18 +28,38 @@ import org.json.JSONArray;
 //app:headerLayout="@layout/nav_header"
 
 
+import com.example.sam.duluthbikes.fragments.AboutFragment;
+import com.example.sam.duluthbikes.fragments.DiscountFragment;
+import com.example.sam.duluthbikes.fragments.EventsFragment;
+import com.example.sam.duluthbikes.fragments.HomeFragment;
+import com.example.sam.duluthbikes.fragments.ReportAppFragment;
+import com.example.sam.duluthbikes.fragments.ReportFragment;
+import com.example.sam.duluthbikes.fragments.RideHistoryFragment;
+import com.example.sam.duluthbikes.fragments.SettingsFragment;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+
+import static java.lang.Math.abs;
+
 /**
  * Home screen
  */
-
 public class MenuActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, ModelViewPresenterComponents.View {
 
     private int mRequestCode;
     private Presenter mPresenter;
 
     private String name = "";
     private String email = "";
+
+    private GoogleMap mMap;
+
+    Location mLastLocation;
+    private boolean automaticTracking = false;
+    private int counter = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,17 +109,35 @@ public class MenuActivity extends AppCompatActivity
         ImageView img = (ImageView) hView.findViewById(R.id.imageView);
         Uri fileURL = getIntent().getData();
 
-        if (null != fileURL) {
-            Glide.with(getApplicationContext())
-                    .load(fileURL)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(img);
-        }
+//        if (null != fileURL) {
+//            Glide.with(getApplicationContext())
+//                    .load(fileURL)
+//                    .apply(RequestOptions.circleCropTransform())
+//                    .into(img);
+//        }
 
     }
 
-    public void startMainActivity(View view){
-        Intent intent = new Intent(this,MainActivity.class);
+    /**
+     * Required by OnMapReadyCallback interface
+     * Called when the map is ready to be used.
+     * https://developers.google.com/android/reference/com/google/android/gms/maps/OnMapReadyCallback
+     * @param googleMap
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+    }
+
+    public void startMainActivity(View view) {
+        automaticTracking = false;
+        startSession();
+    }
+
+    public void startSession(){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("autoTracking", automaticTracking);
+        intent.putExtra("value", false);
         startActivity(intent);
     }
 
@@ -111,7 +147,7 @@ public class MenuActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            //super.onBackPressed();
+            super.onBackPressed();
         }
     }
 
@@ -169,6 +205,10 @@ public class MenuActivity extends AppCompatActivity
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new ReportAppFragment())
                     .commit();
+        } else if (id == R.id.nav_settings) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new SettingsFragment())
+                    .commit();
         } else if (id == R.id.nav_about) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new AboutFragment())
@@ -196,7 +236,7 @@ public class MenuActivity extends AppCompatActivity
 
 
     public void signOutClick(View view) {
-        Intent intent = new Intent(this, LoginScreenActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 

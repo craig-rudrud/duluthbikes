@@ -1,4 +1,4 @@
-package com.example.sam.duluthbikes;
+package com.example.sam.duluthbikes.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.sam.duluthbikes.R;
 
 /**
  * Created by Sam on 3/22/2017.

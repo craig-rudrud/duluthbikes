@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">DuluthBikes</string>
     <string name="title_activity_maps">Duluth Bikes</string>
+    <string name="facebook_app_id">1246493272150923</string>
 
     <string-array name="Options">
         <item>Events</item>
@@ -20,8 +21,6 @@
     <string name="com.twitter.sdk.android.CONSUMER_KEY">Hx7zByXJQQ20arq9CofpBthS1</string>
     <string name="com.twitter.sdk.android.CONSUMER_SECRET">
         6zALqY7lSw8DthHAdugE3xwnoI4wztCM0HY3vjHyi1HRmlcxIU</string>
-
-    <string name="facebook_app_id">2036926216591978</string>
 
     <string name="title_activity_login">Sign in</string>
 
@@ -49,18 +48,30 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="skip_sign_in">Skip Sign In</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="skip_sign_in">Skip for now</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_email">Email must be in the correct format!</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
     <string name="Username">Username</string>
+    <string name="hint">You username must be more than 3 characters,
+        your password must be more than 6 characters,
+        and contain no special characters like !@#$%^*()"</string>
     <string name="Password">Password</string>
+    <string name="usernameLengthReq">must be at least 3 characters long!</string>
+    <string name="passwordLengthReq">must be at least 6 characters long!</string>
+    <string name="charReq">must not contain special characters!</string>
+    <string name="register">register</string>
 
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="logoutMessage">Are you sure you want to logout?</string>
+    <string name="noUsername">You are not logged in!</string>
+    <string name="createAccount">Create an account</string>
 
     <!-- Strings for stats-->
     <string name="distanceLabel">Distance\n(km):</string>
@@ -69,9 +80,14 @@
     <string name="startFinish">Times:</string>
     <string name="sTimeLabel">Start:</string>
     <string name="fTimeLabel">Finish:</string>
-    <string name="totDistLabel">Distance\n(km):</string>
-    <string name="totTimeLabel">Total time:</string>
+    <string name="totDistLabel">Total\nDistance (km):</string>
+    <string name="avgDistLabel">Average\nDistance (km):</string>
+    <string name="totTimeLabel">Total Time:</string>
+    <string name="avgTimeLabel">Average Time:</string>
+    <string name="rideHistoryLabel">Ride History:</string>
     <string name="DONE">DONE</string>
+    <string name="shareRideLabel">Share Ride</string>
+    <string name="shareRideTo">Share ride to...</string>
 
     <string name="DisclaimerReportApp">This app is in a development stage.
         However, we would like to hear what you think about it.
@@ -102,13 +118,19 @@ The main goal is to collect information about rides and use that data for cyclin
 
     <string name="lifetimeStats_file_key">com.example.duluthbikes.LIFETIMESTATS_FILE_KEY</string>
     <string name="lifetimeStats_totDist">totalDistance</string>
+    <string name="lifetimeStats_avgDist">avgDistance</string>
     <string name="lifetimeStats_totTime">totalTime</string>
+    <string name="lifetimeStats_avgTime">avgTime</string>
     <string name="lifetimeStats_rideNumber">rideNumber</string>
     <string name="lifetimeStats_date">date</string>
     <string name="km">km</string>
     <string name="miles">miles</string>
     <string name="kmh">km/h</string>
     <string name="milesh">miles/h</string>
+
+    <string name="eraseAllRides">Erase All Rides</string>
+    <string name="eraseAllRidesToast">All rides have been erased!</string>
+    <string name="eraseAllRidesPopup">Are you sure you want to erase all your rides?</string>
 
     <!-- strings related to settings -->
     <string name="settings">Settings</string>
@@ -141,5 +163,6 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="updateLeaderboard">Refresh Leaderboard</string>
 
     <string name="sign_in_with_google">Sign in with Google</string>
+
 
 </resources>
