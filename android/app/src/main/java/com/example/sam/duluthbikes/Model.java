@@ -178,13 +178,27 @@ public class Model
         JSONObject profile = null;
         try{
             profile = new JSONObject();
-            profile.put("userName",user);
-            profile.put("passWord", sha256(pass+user));
+            profile.put("name",user);
+            profile.put("pass", sha256(pass+user));
         } catch (Exception e){
             e.printStackTrace();
         }
         mode = true;
         new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt","POST",profile.toString());
+    }
+
+    public void newAccount(String user, String pass, String email){
+        JSONObject profile = null;
+        try{
+            profile = new JSONObject();
+            profile.put("name",user);
+            profile.put("pass", sha256(pass+user));
+            profile.put("email", email);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        mode = true;
+        new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/newAccount","POST",profile.toString());
     }
 
     /**
@@ -213,7 +227,7 @@ public class Model
     public void sendToLocalLeaderboard(JSONArray data) {
 
         try {
-            new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/postlocalleaderboard","POST", data.get(0).toString());
+            new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/postlocalleaderboard","POST", data.get(0).toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -223,7 +237,7 @@ public class Model
     public void sendToGlobalLeaderboard(JSONArray data) {
 
         try {
-            new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/postgloballeaderboard","POST", data.get(0).toString());
+            new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/postgloballeaderboard","POST", data.get(0).toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -235,10 +249,10 @@ public class Model
         JSONArray result = null;
 
         try {
-            data = new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/localleaderboard","GET").get();
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/localleaderboard","GET").get();
         } catch (Exception e) {
             Log.d("DEBUG GET REQUEST",
-                    "Timed out waiting for response from http://akka.d.umn.edu:23401/localleaderboard");
+                    "Timed out waiting for response from http://ukko.d.umn.edu:23405/localleaderboard");
         }
 
         try {
@@ -257,10 +271,10 @@ public class Model
         JSONArray result = null;
 
         try {
-            data = new HTTPAsyncTask().execute("http://akka.d.umn.edu:23401/globalleaderboard","GET").get();
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/globalleaderboard","GET").get();
         } catch (Exception e) {
             Log.d("DEBUG GET REQUEST",
-                    "Timed out waiting for response from http://akka.d.umn.edu:23401/localleaderboard");
+                    "Timed out waiting for response from http://ukko.d.umn.edu:23405/localleaderboard");
         }
 
         try {

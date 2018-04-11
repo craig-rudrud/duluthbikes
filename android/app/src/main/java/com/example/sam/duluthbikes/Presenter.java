@@ -78,6 +78,11 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
         mModel.loginAttempt(userName,passWord);
     }
 
+    public void newAccount(String userName, String passWord, String email) {
+        mModel= new Model(mContext,mActivity,this);
+        mModel.newAccount(userName,passWord, email);
+    }
+
     @Override
     public void sendPictureToServer(String location, String description, String encodedImage) {
         //mModel = new Model(mContext);

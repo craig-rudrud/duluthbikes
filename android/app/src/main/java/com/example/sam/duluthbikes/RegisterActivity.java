@@ -147,7 +147,7 @@ public class RegisterActivity extends AppCompatActivity
 
                 else {
                     if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
-                        mPresenter.loginUser(user, pass);
+                        mPresenter.newAccount(user, pass, email);
                     }
                     startMenu(user, pass, email);
                 }
