@@ -242,30 +242,20 @@ app.get('/globalleaderboard', function(req, res) {
 });
 
 app.post('/loginAttempt', function(req,res){
-    if(!req.body.user || !req.body.pass) return res.sendStatus(400);
-    var userObj = { 'user':req.body.user};
+    if(!req.body.name || !req.body.pass) return res.sendStatus(400)
+    var userObj = { 'name':req.body.name}
     loginAttempt(userObj, (err, token) =>{
 	if(err) res.send(err)
 	else res.send(token)})})
 
 app.post('/newAccount', function(req,res){
-    if(!req.body.user || !req.body.pass) return res.sendStatus(400);
-    var userObj = { 'user':req.body.user,
+    if(!req.body.name || !req.body.pass) return res.sendStatus(400);
+    var userObj = { 'name':req.body.name,
 		    'pass':req.body.pass,
-		    'email':req.body.email};
-
-    getUser(user)
-    
-    if(newAccount(userObj))
-    {   console.log("wtf")
-	res.sendStatus(200);
-    }
-    else {
-	res.sendStatus(300);
-	console.log("help")
-    }
-    console.log("success")
-});
+		    'email':req.body.email}
+    insertUser(userObj, (err, docs)=>{
+	if(err) res.send(err)
+	else res.send(docs)})})
 
 app.post('/postpicture', function(req,res){
     if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);

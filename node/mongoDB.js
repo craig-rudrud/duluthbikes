@@ -129,16 +129,28 @@ module.exports = function () {
     };
 
     loginAttempt = function (user, callback) {
-	mongodb.collection('users').find({name:user.user}, (err,docs)=>{
+	mongodb.collection('users').find({name:user.name}, (err,docs)=>{
 	    if(err) callback(err, null)
 	    else if(docs.length == 0) callback("user not found", null)
 	    else if(docs.length > 1 ) callback("username collision", null)
 	    else callback(null, "dummy login token")})}
 
     insertUser = function (user, callback){
-	return mongodb.collection('users').insert(user, (err,docs)=>{
-	    if(err) console.log(err)
-	    else callback(docs)});};
+	mongodb.collection('users').find({name:user.name}, (err,docs)=>{
+	    console.log({name:user.name})
+	    console.log(docs)
+	    //check for error
+	    if(err) callback("database error on find", null)
+	    //check to see if username is taken
+	    else if(docs.length > 0) {
+		callback("user already exists", null)
+	    }
+	    //insert into database
+	    else mongodb.collection('users').insert(user, (err, docs)=>{
+		if(err) callback("database error on insert", null)
+		else callback(null, docs)})})}
+
+    
 
     printUsers = function (collectionName, callback) {
 	var cursor = mongodb.collection(collectionName).find(function (err, docs) {
