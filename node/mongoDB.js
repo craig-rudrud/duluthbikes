@@ -9,6 +9,7 @@ var collections = ['rides', 'users', 'RideHistory', 'FullRidesRecorded'];
 
 var mongojs = require('mongojs');
 var assert = require('assert');
+var sha256 = require('js-sha256');
 
 console.log("MongoDB is active.");
 
@@ -123,33 +124,35 @@ module.exports = function () {
     insertLatLng = function (LatLng) {
 	mongodb.collection('FullLatLngsRecorded').save(
 	    { latlng: LatLng }, function (err, result) {
-		if (err || !result) console.log("latlng not saved");
-		else console.log("latlng loged in DB");
-	    });
-    };
+		if (err || !result) console.log("latlng not saved")
+		else console.log("latlng loged in DB")})}
 
     loginAttempt = function (user, callback) {
-	mongodb.collection('users').find({name:user.name}, (err,docs)=>{
+	mongodb.collection('users').find({name:user.name,pass:user.pass}, (err,docs)=>{
+	    console.log("login attempt")
+	    console.log(docs[0])
 	    if(err) callback(err, null)
 	    else if(docs.length == 0) callback("user not found", null)
 	    else if(docs.length > 1 ) callback("username collision", null)
-	    else callback(null, "dummy login token")})}
+	    else {
+		token = sha256(user.pass+Math.random())
+		callback(null, "dummy login token")
+	    }
+	})
+    }
 
     insertUser = function (user, callback){
 	mongodb.collection('users').find({name:user.name}, (err,docs)=>{
-	    console.log({name:user.name})
-	    console.log(docs)
-	    //check for error
+	    console.log("insertUser")
 	    if(err) callback("database error on find", null)
-	    //check to see if username is taken
-	    else if(docs.length > 0) {
-		callback("user already exists", null)
-	    }
-	    //insert into database
+	    else if(docs.length > 0) callback("user already exists", null)
 	    else mongodb.collection('users').insert(user, (err, docs)=>{
 		if(err) callback("database error on insert", null)
-		else callback(null, docs)})})}
+		else callback(null, "Account created sucessfullly")})})}
 
+    logout = (token, logout)=>{
+	
+    }
     
 
     printUsers = function (collectionName, callback) {

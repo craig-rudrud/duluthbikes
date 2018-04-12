@@ -243,10 +243,12 @@ app.get('/globalleaderboard', function(req, res) {
 
 app.post('/loginAttempt', function(req,res){
     if(!req.body.name || !req.body.pass) return res.sendStatus(400)
-    var userObj = { 'name':req.body.name}
+    var userObj = { 'name':req.body.name, 'pass':req.body.pass}
     loginAttempt(userObj, (err, token) =>{
 	if(err) res.send(err)
-	else res.send(token)})})
+	else res.send(token)
+    })
+})
 
 app.post('/newAccount', function(req,res){
     if(!req.body.name || !req.body.pass) return res.sendStatus(400);
@@ -257,6 +259,9 @@ app.post('/newAccount', function(req,res){
 	if(err) res.send(err)
 	else res.send(docs)})})
 
+app.post('/logout', (req, res)=>{})
+   // if(!req.body.token)  res.sendStatus(400)})   
+
 app.post('/postpicture', function(req,res){
     if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
     var picObj = { 'location':req.body.loc,
@@ -265,7 +270,6 @@ app.post('/postpicture', function(req,res){
     insertPicture(picObj);
     console.log('Post Picture');
     res.send();
-
 });
 
 app.get('/pictures',function(req,res){
