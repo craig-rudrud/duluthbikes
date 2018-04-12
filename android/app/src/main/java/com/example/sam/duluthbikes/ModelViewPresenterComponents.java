@@ -90,6 +90,8 @@ public interface ModelViewPresenterComponents {
 
         void loginAttempt(String user,String pass);
 
+        void newAccount(String user, String pass, String email);
+
         void sendPicture(String loc, String description, String encodedImage);
 
         GoogleApiClient getGoogleApi();
