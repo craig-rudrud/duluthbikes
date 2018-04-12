@@ -131,6 +131,7 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="eraseAllRides">Erase All Rides</string>
     <string name="eraseAllRidesToast">All rides have been erased!</string>
     <string name="eraseAllRidesPopup">Are you sure you want to erase all your rides?</string>
+    <string name="uploadImageFrom">Upload image from...</string>
 
     <!-- strings related to settings -->
     <string name="settings">Settings</string>
