@@ -339,7 +339,7 @@ public class SettingsFragment extends Fragment {
             HttpURLConnection urlConnection;
 
             try {
-                URL url = new URL("http://ukko.d.umn.edu:23406");
+                URL url = new URL("http://ukko.d.umn.edu:23405");
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setDoOutput(true);
                 urlConnection.setChunkedStreamingMode(0);
