@@ -53,6 +53,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".EndRideActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".ProfilePictureViewer" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_maps">

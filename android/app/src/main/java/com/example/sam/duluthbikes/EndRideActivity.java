@@ -2,7 +2,6 @@ package com.example.sam.duluthbikes;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,10 +9,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.net.Uri;
-
 import android.location.Location;
-
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -21,18 +18,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -110,7 +104,7 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
             }
         });
 
-        updateLocalLeaderboard();
+        //updateLocalLeaderboard();
     }
 
 
@@ -121,7 +115,7 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
     }
 
     public void doneWithRide(View view){
-        updateLocalLeaderboard();
+        //updateLocalLeaderboard();
         Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
         startActivity(menu);
     }
@@ -264,8 +258,6 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
