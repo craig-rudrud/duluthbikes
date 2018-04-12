@@ -1,5 +1,6 @@
 package com.example.sam.duluthbikes.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,9 +21,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sam.duluthbikes.ProfilePictureViewer;
 import com.example.sam.duluthbikes.LoginActivity;
+import com.example.sam.duluthbikes.ProfilePictureViewer;
 import com.example.sam.duluthbikes.R;
+import com.example.sam.duluthbikes.UnitConverter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -35,6 +38,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public class SettingsFragment extends Fragment {
@@ -46,6 +52,8 @@ public class SettingsFragment extends Fragment {
     TextView username;
     TextView email;
     ImageView profilePicture;
+    TextView totalDistance;
+    TextView totalTime;
 
     GoogleSignInClient mGoogleSignInClient;
     String personName;
@@ -60,10 +68,14 @@ public class SettingsFragment extends Fragment {
      */
     int loginStatus;
 
+    static final int UPLOAD_IMAGE = 1;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_settings, container, false);
+        DecimalFormat df = new DecimalFormat("#.##");
+        UnitConverter converter = new UnitConverter();
 
         profile = new File("sdcard/Profile.txt");
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
@@ -84,6 +96,17 @@ public class SettingsFragment extends Fragment {
         username.setText(getUsername());
         email.setText(getEmail());
         setProfilePicture();
+
+        SharedPreferences totalStats = getContext().getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
+        totalDistance = myView.findViewById(R.id.totalDistanceAmt);
+        totalTime = myView.findViewById(R.id.totalTimeAmt);
+
+        Float totDist = totalStats.getFloat(getString(R.string.lifetimeStats_totDist), 0);
+        Double mTotDist = Double.valueOf(df.format(converter.getDistInKm(totDist.doubleValue())));
+        totalDistance.setText(String.valueOf(mTotDist)+" km");
+
+        Long totTime = totalStats.getLong(getString(R.string.lifetimeStats_totTime), 0);
+        totalTime.setText(converter.convertHoursMinSecToString(totTime));
 
         loginButton = myView.findViewById(R.id.loginButton);
         makeLoginButton();
@@ -252,6 +275,7 @@ public class SettingsFragment extends Fragment {
 
     private void setProfilePicture() {
 
+        // TODO: Retrieve picture from server as byte array then decode it as an image
         if (loginStatus == 2) {
             String url = "https:/lh5.googleusercontent.com" + personPhoto.getPath();
             Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
@@ -292,8 +316,54 @@ public class SettingsFragment extends Fragment {
         profilePicture.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                // Source: https://stackoverflow.com/a/9107983
+                // Modified by Duluth Bikes
+                startActivityForResult(new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI),
+                        UPLOAD_IMAGE);
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Source: https://stackoverflow.com/a/9107983
+        // Heavily modified by Duluth Bikes
+        if(requestCode == UPLOAD_IMAGE && resultCode == Activity.RESULT_OK) {
+
+            Uri selectedImage = data.getData();
+            Bitmap bm;
+            HttpURLConnection urlConnection;
+
+            try {
+                URL url = new URL("http://ukko.d.umn.edu:23406");
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setDoOutput(true);
+                urlConnection.setChunkedStreamingMode(0);
+                urlConnection.setRequestProperty("Content-Type", "image/jpeg");
+
+                bm = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
+                ByteArrayOutputStream stream = (ByteArrayOutputStream) urlConnection.getOutputStream();
+                bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+                stream.close();
+                urlConnection.disconnect();
+
+                Toast.makeText(getActivity().getApplicationContext(),
+                        getString(R.string.profilePicUpdateGood), Toast.LENGTH_SHORT)
+                        .show();
+
+                profilePicture.setImageBitmap(bm);
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                Toast.makeText(getActivity().getApplicationContext(),
+                        getString(R.string.profilePicUpdateFail), Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
     }
 }

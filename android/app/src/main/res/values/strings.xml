@@ -81,6 +81,7 @@
     <string name="sTimeLabel">Start:</string>
     <string name="fTimeLabel">Finish:</string>
     <string name="totDistLabel">Total\nDistance (km):</string>
+    <string name="totDistLabelNoBreak">Total Distance:</string>
     <string name="avgDistLabel">Average\nDistance (km):</string>
     <string name="totTimeLabel">Total Time:</string>
     <string name="avgTimeLabel">Average Time:</string>
@@ -131,7 +132,9 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="eraseAllRides">Erase All Rides</string>
     <string name="eraseAllRidesToast">All rides have been erased!</string>
     <string name="eraseAllRidesPopup">Are you sure you want to erase all your rides?</string>
-    <string name="uploadImageFrom">Upload image from...</string>
+    <string name="uploadImageFrom">Upload image from…</string>
+    <string name="profilePicUpdateGood">Successfully changed profile picture!</string>
+    <string name="profilePicUpdateFail">Profile picture upload failed!</string>
 
     <!-- strings related to settings -->
     <string name="settings">Settings</string>
