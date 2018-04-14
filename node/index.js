@@ -265,8 +265,11 @@ app.post('/postpicture', function(req,res){
     insertPicture(picObj);
     console.log('Post Picture');
     res.send();
-
 });
+
+app.get('/getpicture', function(req, res){
+    
+})
 
 app.get('/pictures',function(req,res){
     // 1.// THE FOLLOWING IS FOR ACCESSING DB. ( CURRENTLY DOES NOT ACCESS - PICS HARDCODED.)

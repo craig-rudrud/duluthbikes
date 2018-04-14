@@ -135,6 +135,7 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="uploadImageFrom">Upload image from…</string>
     <string name="profilePicUpdateGood">Successfully changed profile picture!</string>
     <string name="profilePicUpdateFail">Profile picture upload failed!</string>
+    <string name="profilePicLocation">_profile_picture</string>
 
     <!-- strings related to settings -->
     <string name="settings">Settings</string>

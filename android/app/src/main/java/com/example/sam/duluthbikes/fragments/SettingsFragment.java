@@ -6,13 +6,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sam.duluthbikes.LoginActivity;
+import com.example.sam.duluthbikes.Model;
 import com.example.sam.duluthbikes.ProfilePictureViewer;
 import com.example.sam.duluthbikes.R;
 import com.example.sam.duluthbikes.UnitConverter;
@@ -33,12 +38,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Scanner;
@@ -276,22 +288,29 @@ public class SettingsFragment extends Fragment {
     private void setProfilePicture() {
 
         // TODO: Retrieve picture from server as byte array then decode it as an image
-        if (loginStatus == 2) {
-            String url = "https:/lh5.googleusercontent.com" + personPhoto.getPath();
-            Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
-                    .error(R.drawable.default_profile_pic)
-                    .into(profilePicture, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                        }
-
-                        @Override
-                        public void onError() {
-                        }
-                    });
+//        if (loginStatus == 2) {
+//            String url = "https:/lh5.googleusercontent.com" + personPhoto.getPath();
+//            Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
+//                    .error(R.drawable.default_profile_pic)
+//                    .into(profilePicture, new com.squareup.picasso.Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                        }
+//                    });
+//        }
+        if (loginStatus == 0) {
+            profilePicture.setImageResource(R.drawable.default_profile_pic);
         }
         else {
-            profilePicture.setImageResource(R.drawable.default_profile_pic);
+            Model model = new Model();
+            String image = model.getPicture(getUsername()+getString(R.string.profilePicLocation));
+            byte[] data = Base64.decode(image, Base64.DEFAULT);
+            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
+            profilePicture.setImageBitmap(bm);
         }
 
         // Allow the user to VIEW their profile picture when they tap on it
@@ -301,6 +320,7 @@ public class SettingsFragment extends Fragment {
                 Intent viewIntent = new Intent(getActivity(), ProfilePictureViewer.class);
 
                 Bitmap b = ((BitmapDrawable)profilePicture.getDrawable()).getBitmap();
+
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 b.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
@@ -335,22 +355,16 @@ public class SettingsFragment extends Fragment {
         if(requestCode == UPLOAD_IMAGE && resultCode == Activity.RESULT_OK) {
 
             Uri selectedImage = data.getData();
-            Bitmap bm;
-            HttpURLConnection urlConnection;
 
             try {
-                URL url = new URL("http://ukko.d.umn.edu:23405");
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setDoOutput(true);
-                urlConnection.setChunkedStreamingMode(0);
-                urlConnection.setRequestProperty("Content-Type", "image/jpeg");
-
-                bm = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
-                ByteArrayOutputStream stream = (ByteArrayOutputStream) urlConnection.getOutputStream();
+                Bitmap bm = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                String temp = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
-                stream.close();
-                urlConnection.disconnect();
+                Model model = new Model();
+                model.sendPicture("", getUsername()+getString(R.string.profilePicLocation), temp);
 
                 Toast.makeText(getActivity().getApplicationContext(),
                         getString(R.string.profilePicUpdateGood), Toast.LENGTH_SHORT)
