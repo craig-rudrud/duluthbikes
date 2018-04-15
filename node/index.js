@@ -268,8 +268,21 @@ app.post('/postpicture', function(req,res){
 });
 
 app.get('/getpicture', function(req, res){
-    
-})
+    if(!req.body.description) {
+        return res.sendStatus(400)
+    }
+
+    var picObj = {'description': req.body.description}
+
+    getPicture(picObj, (err, docs)=>{
+        if(err) {
+            res.send(err)
+        }
+        else {
+            res.send(docs)
+        }
+    })
+});
 
 app.get('/pictures',function(req,res){
     // 1.// THE FOLLOWING IS FOR ACCESSING DB. ( CURRENTLY DOES NOT ACCESS - PICS HARDCODED.)

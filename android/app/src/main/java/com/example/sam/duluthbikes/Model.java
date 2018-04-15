@@ -226,12 +226,9 @@ public class Model
     public String getPicture(String description) {
         String data = null;
 
-        JSONObject pictureObj;
         try {
-            pictureObj = new JSONObject();
-            pictureObj.put("description", description);
-            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/getPicture", "GET", pictureObj.toString()).get();
-        } catch(JSONException | InterruptedException | ExecutionException e) {
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/getpicture", "GET", description).get();
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 

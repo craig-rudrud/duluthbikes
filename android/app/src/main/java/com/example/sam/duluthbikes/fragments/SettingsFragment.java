@@ -9,14 +9,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,20 +36,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
@@ -70,6 +61,7 @@ public class SettingsFragment extends Fragment {
     GoogleSignInClient mGoogleSignInClient;
     String personName;
     String personEmail;
+    String personId;
     Uri personPhoto;
 
     /*
@@ -81,6 +73,8 @@ public class SettingsFragment extends Fragment {
     int loginStatus;
 
     static final int UPLOAD_IMAGE = 1;
+
+    String localPath;
 
     @Nullable
     @Override
@@ -94,11 +88,13 @@ public class SettingsFragment extends Fragment {
         if (acct != null) {
             personName = acct.getDisplayName();
             personEmail = acct.getEmail();
+            personId = acct.getId();
             personPhoto = acct.getPhotoUrl();
             loginStatus = 2;
         }
         else {
             loginStatus = (profile.exists()) ? 1 : 0;
+            personId = getUsername();
         }
 
         username = myView.findViewById(R.id.usernameTextView);
@@ -125,6 +121,8 @@ public class SettingsFragment extends Fragment {
 
         mEraseAllRides = myView.findViewById(R.id.button_eraseAllRides);
         makeEraseAllRidesButton();
+
+        localPath = getLocalPath();
 
         return myView;
     }
@@ -287,30 +285,49 @@ public class SettingsFragment extends Fragment {
 
     private void setProfilePicture() {
 
-        // TODO: Retrieve picture from server as byte array then decode it as an image
-//        if (loginStatus == 2) {
-//            String url = "https:/lh5.googleusercontent.com" + personPhoto.getPath();
-//            Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
-//                    .error(R.drawable.default_profile_pic)
-//                    .into(profilePicture, new com.squareup.picasso.Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                        }
-//                    });
-//        }
         if (loginStatus == 0) {
             profilePicture.setImageResource(R.drawable.default_profile_pic);
         }
         else {
-            Model model = new Model();
-            String image = model.getPicture(getUsername()+getString(R.string.profilePicLocation));
-            byte[] data = Base64.decode(image, Base64.DEFAULT);
-            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
-            profilePicture.setImageBitmap(bm);
+            File file = new File(getLocalPath());
+            if (!file.exists()) {
+                if (loginStatus == 2) {
+                    String url = "https:/lh5.googleusercontent.com" + personPhoto.getPath();
+                    Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
+                            .error(R.drawable.default_profile_pic)
+                            .into(profilePicture, new com.squareup.picasso.Callback() {
+                                @Override
+                                public void onSuccess() {
+                                }
+
+                                @Override
+                                public void onError() {
+                                }
+                            });
+                }
+                else if (loginStatus == 1){
+                    profilePicture.setImageResource(R.drawable.default_profile_pic);
+                }
+            }
+            else {
+                Picasso.with(getContext()).load(file).placeholder(R.drawable.default_profile_pic)
+                        .error(R.drawable.default_profile_pic)
+                        .into(profilePicture, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                            }
+
+                            @Override
+                            public void onError() {
+                            }
+                        });
+            }
+
+//            Gets profile picture from server.
+//            Model model = new Model();
+//            String image = model.getPicture(personId+getString(R.string.profilePicLocation));
+//            byte[] data = Base64.decode(image, Base64.DEFAULT);
+//            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
         }
 
         // Allow the user to VIEW their profile picture when they tap on it
@@ -336,8 +353,6 @@ public class SettingsFragment extends Fragment {
         profilePicture.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                // Source: https://stackoverflow.com/a/9107983
-                // Modified by Duluth Bikes
                 startActivityForResult(new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI),
                         UPLOAD_IMAGE);
@@ -350,34 +365,50 @@ public class SettingsFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Source: https://stackoverflow.com/a/9107983
-        // Heavily modified by Duluth Bikes
-        if(requestCode == UPLOAD_IMAGE && resultCode == Activity.RESULT_OK) {
+        if(requestCode == UPLOAD_IMAGE) {
+            if(resultCode == Activity.RESULT_OK) {
+                Uri image = data.getData();
+                try {
+                    Bitmap bm = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), image);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] bytes = stream.toByteArray();
+                    String string = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    Model model = new Model();
+                    model.sendPicture("", personId+getString(R.string.profilePicLocation), string);
 
-            Uri selectedImage = data.getData();
+                    FileOutputStream out = new FileOutputStream(localPath);
+                    out.write(bytes);
+                    out.close();
 
-            try {
-                Bitmap bm = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                String temp = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getString(R.string.profilePicUpdateGood), Toast.LENGTH_SHORT)
+                            .show();
 
-                Model model = new Model();
-                model.sendPicture("", getUsername()+getString(R.string.profilePicLocation), temp);
-
-                Toast.makeText(getActivity().getApplicationContext(),
-                        getString(R.string.profilePicUpdateGood), Toast.LENGTH_SHORT)
-                        .show();
-
-                profilePicture.setImageBitmap(bm);
-            } catch (IOException e) {
-                e.printStackTrace();
-
-                Toast.makeText(getActivity().getApplicationContext(),
-                        getString(R.string.profilePicUpdateFail), Toast.LENGTH_SHORT)
-                        .show();
+                    profilePicture.setImageBitmap(bm);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getString(R.string.profilePicUpdateFail), Toast.LENGTH_SHORT)
+                            .show();
+                }
             }
         }
+    }
+
+    private String getLocalPath() {
+        String path = null;
+        switch(loginStatus) {
+            case 2:
+                path = "sdcard/" + personId + getString(R.string.profilePicLocation) + ".jpeg";
+                break;
+            case 1:
+                path = "sdcard/" + getUsername() + getString(R.string.profilePicLocation) + ".jpeg";
+                break;
+            case 0:
+                path = "sdcard/" + getUsername() + getString(R.string.profilePicLocation) + ".jpeg";
+                break;
+        }
+        return path;
     }
 }
