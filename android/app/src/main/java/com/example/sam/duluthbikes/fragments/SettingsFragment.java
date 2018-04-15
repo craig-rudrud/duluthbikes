@@ -328,6 +328,7 @@ public class SettingsFragment extends Fragment {
 //            String image = model.getPicture(personId+getString(R.string.profilePicLocation));
 //            byte[] data = Base64.decode(image, Base64.DEFAULT);
 //            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
+//            profilePicture.setImageBitmap(bm);
         }
 
         // Allow the user to VIEW their profile picture when they tap on it
@@ -374,6 +375,7 @@ public class SettingsFragment extends Fragment {
                     bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                     byte[] bytes = stream.toByteArray();
                     String string = Base64.encodeToString(bytes, Base64.DEFAULT);
+
                     Model model = new Model();
                     model.sendPicture("", personId+getString(R.string.profilePicLocation), string);
 

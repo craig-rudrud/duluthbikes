@@ -183,16 +183,16 @@ module.exports = function () {
     };
 
     insertPicture = function (pic) {
-	mongodb.collection('PicturesSaved').save({ pictures: pic }, function (err, result) {
-		if (err || !result)
-            console.log("Picture not saved");
-		else
-            console.log("picture saves in picture DB")
-	    });
+        mongodb.collection('PicturesSaved').save({ pictures: pic }, function (err, result) {
+            if (err || !result)
+                console.log("Picture not saved");
+            else
+                console.log("picture saves in picture DB")
+        });
     };
 
     getPicture = function (pic, callback) {
-        mongodb.collection('PicturesSaved').find({description:pic.description}, (err,docs)=>{
+        mongodb.collection('PicturesSaved').find({description:pic.description}, function (err,docs) {
             if(err) {
                 callback(err, null);
             }

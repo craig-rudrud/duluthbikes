@@ -258,10 +258,11 @@ app.post('/newAccount', function(req,res){
 	else res.send(docs)})})
 
 app.post('/postpicture', function(req,res){
-    if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
-    var picObj = { 'location':req.body.loc,
-		   'description':req.body.description,
-		   'picture':req.body.picture };
+    //if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
+    var picObj = {
+        'location':req.body.loc,
+		'description':req.body.description,
+		'picture':req.body.picture };
     insertPicture(picObj);
     console.log('Post Picture');
     res.send();
