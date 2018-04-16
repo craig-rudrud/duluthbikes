@@ -260,16 +260,34 @@ app.post('/newAccount', function(req,res){
 	else res.send(docs)})})
 
 app.post('/logout', (req, res)=>{})
-   // if(!req.body.token)  res.sendStatus(400)})   
+   // if(!req.body.token)  res.sendStatus(400)})
 
 app.post('/postpicture', function(req,res){
-    if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
-    var picObj = { 'location':req.body.loc,
-		   'description':req.body.description,
-		   'picture':req.body.picture };
+    //if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
+    var picObj = {
+        'location':req.body.loc,
+		'description':req.body.description,
+		'picture':req.body.picture };
     insertPicture(picObj);
     console.log('Post Picture');
     res.send();
+});
+
+app.get('/getpicture', function(req, res){
+    if(!req.body.description) {
+        return res.sendStatus(400)
+    }
+
+    var picObj = {'description': req.body.description}
+
+    getPicture(picObj, (err, docs)=>{
+        if(err) {
+            res.send(err)
+        }
+        else {
+            res.send(docs)
+        }
+    })
 });
 
 app.get('/pictures',function(req,res){
