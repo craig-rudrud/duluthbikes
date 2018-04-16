@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.sam.duluthbikes.fragments.FriendsFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
@@ -188,6 +189,10 @@ public class MenuActivity extends AppCompatActivity
         } else if (id == R.id.nav_ride_history) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new RideHistoryFragment())
+                    .commit();
+        } else if (id == R.id.nav_friends) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new FriendsFragment())
                     .commit();
         } else if (id == R.id.nav_events) {
             fragmentManager.beginTransaction()

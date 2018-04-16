@@ -291,22 +291,31 @@ public class SettingsFragment extends Fragment {
         else {
             File file = new File(getLocalPath());
             if (!file.exists()) {
-                if (loginStatus == 2) {
-                    String url = "https:/lh5.googleusercontent.com" + personPhoto.getPath();
-                    Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
-                            .error(R.drawable.default_profile_pic)
-                            .into(profilePicture, new com.squareup.picasso.Callback() {
-                                @Override
-                                public void onSuccess() {
-                                }
-
-                                @Override
-                                public void onError() {
-                                }
-                            });
+                // Retrieve the image from the server
+                Model model = new Model();
+                String image = model.getPicture(personId+getString(R.string.profilePicLocation));
+                if(image == null) {
+                    byte[] data = Base64.decode(image, Base64.DEFAULT);
+                    Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    profilePicture.setImageBitmap(bm);
                 }
-                else if (loginStatus == 1){
-                    profilePicture.setImageResource(R.drawable.default_profile_pic);
+                else {
+                    if (loginStatus == 2) {
+                        String url = "https:/lh5.googleusercontent.com" + personPhoto.getPath();
+                        Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
+                                .error(R.drawable.default_profile_pic)
+                                .into(profilePicture, new com.squareup.picasso.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                    }
+                                });
+                    } else if (loginStatus == 1) {
+                        profilePicture.setImageResource(R.drawable.default_profile_pic);
+                    }
                 }
             }
             else {
@@ -322,13 +331,6 @@ public class SettingsFragment extends Fragment {
                             }
                         });
             }
-
-//            Gets profile picture from server.
-//            Model model = new Model();
-//            String image = model.getPicture(personId+getString(R.string.profilePicLocation));
-//            byte[] data = Base64.decode(image, Base64.DEFAULT);
-//            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
-//            profilePicture.setImageBitmap(bm);
         }
 
         // Allow the user to VIEW their profile picture when they tap on it
