@@ -173,4 +173,5 @@ The main goal is to collect information about rides and use that data for cyclin
     <!-- strings related to friends -->
     <string name="friends">Friends</string>
     <string name="searchForFriends">Search for friends...</string>
+    <string name="defaultFriendName">First Last</string>
 </resources>
