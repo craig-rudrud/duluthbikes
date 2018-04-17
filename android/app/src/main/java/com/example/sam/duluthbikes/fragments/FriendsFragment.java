@@ -60,7 +60,7 @@ public class FriendsFragment extends Fragment {
         mFriendsView.setHasFixedSize(true);
         mFriendsView.setItemAnimator(new DefaultItemAnimator());
 
-        mFriendsAdapter = new FriendsAdapter(friendList);
+        mFriendsAdapter = new FriendsAdapter(getContext(), friendList);
         mFriendsView.setAdapter(mFriendsAdapter);
         mFriendsView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -93,5 +93,13 @@ public class FriendsFragment extends Fragment {
         });
 
         return list;
+    }
+
+    public void viewFriend(View v) {
+        android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, new FriendViewFragment())
+                .addToBackStack("FriendsFragment")
+                .commit();
     }
 }

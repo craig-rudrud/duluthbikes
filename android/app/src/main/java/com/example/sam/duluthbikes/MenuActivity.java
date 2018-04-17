@@ -135,14 +135,6 @@ public class MenuActivity extends AppCompatActivity
         startSession();
     }
 
-    public void viewFriend(View v) {
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, new FriendViewFragment())
-                .addToBackStack("FriendsFragment")
-                .commit();
-    }
-
     public void startSession(){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("autoTracking", automaticTracking);

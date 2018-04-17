@@ -1,5 +1,6 @@
 package com.example.sam.duluthbikes.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -56,7 +57,9 @@ public class SettingsFragment extends Fragment {
     TextView email;
     ImageView profilePicture;
     TextView totalDistance;
+    TextView avgDistance;
     TextView totalTime;
+    TextView avgTime;
 
     GoogleSignInClient mGoogleSignInClient;
     String personName;
@@ -76,6 +79,7 @@ public class SettingsFragment extends Fragment {
 
     String localPath;
 
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
@@ -107,14 +111,23 @@ public class SettingsFragment extends Fragment {
 
         SharedPreferences totalStats = getContext().getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
         totalDistance = myView.findViewById(R.id.totalDistanceAmt);
+        avgDistance = myView.findViewById(R.id.avgDistanceAmt);
         totalTime = myView.findViewById(R.id.totalTimeAmt);
+        avgTime = myView.findViewById(R.id.avgTimeAmt);
 
         Float totDist = totalStats.getFloat(getString(R.string.lifetimeStats_totDist), 0);
         Double mTotDist = Double.valueOf(df.format(converter.getDistInKm(totDist.doubleValue())));
-        totalDistance.setText(String.valueOf(mTotDist)+" km");
+        totalDistance.setText(getString(R.string.total)+"  "+String.valueOf(mTotDist) + " km");
+
+        Float avgDist = totalStats.getFloat(getString(R.string.lifetimeStats_avgDist), 0);
+        Double mAvgDist = Double.valueOf(df.format(converter.getDistInKm(avgDist.doubleValue())));
+        avgDistance.setText(getString(R.string.average)+"  "+String.valueOf(mAvgDist) + " km");
 
         Long totTime = totalStats.getLong(getString(R.string.lifetimeStats_totTime), 0);
-        totalTime.setText(converter.convertHoursMinSecToString(totTime));
+        totalTime.setText(getString(R.string.total)+"  "+converter.convertHoursMinSecToString(totTime));
+
+        Long mAvgTime = totalStats.getLong(getString(R.string.lifetimeStats_avgTime), 0);
+        avgTime.setText(getString(R.string.average)+"  "+converter.convertHoursMinSecToString(mAvgTime));
 
         loginButton = myView.findViewById(R.id.loginButton);
         makeLoginButton();

@@ -86,6 +86,8 @@
     <string name="avgDistLabelNoBreak">Average Distance:</string>
     <string name="totTimeLabel">Total Time:</string>
     <string name="avgTimeLabel">Average Time:</string>
+    <string name="total">Total: </string>
+    <string name="average">Average: </string>
     <string name="rideHistoryLabel">Ride History:</string>
     <string name="DONE">DONE</string>
     <string name="shareRideLabel">Share Ride</string>
