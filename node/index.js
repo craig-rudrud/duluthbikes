@@ -133,8 +133,9 @@ app.get('/globalleaderboard', function(req, res) {
     console.log('global leaderboard request');
 });
 
-app.get('/logout', (req, res)=>{})
-   // if(!req.body.token)  res.sendStatus(400)})   
+app.get('/logout', (req, res)=>{
+    res.write("logout");
+});
 
 
 app.get('/pictures',function(req,res){
@@ -248,12 +249,48 @@ app.post('/newAccount', function(req,res){
 	else res.send(docs)})})
 
 app.post('/postpicture', function(req,res){
-    var picObj = { 'location':req.body.loc,
-		   'description':req.body.description,
-		   'picture':req.body.picture };
+    //if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
+    var picObj = {
+        'location':req.body.loc,
+		'description':req.body.description,
+		'picture':req.body.picture };
     insertPicture(picObj);
     console.log('Post Picture');
     res.send();
+});
+
+app.get('/getpicture', function(req, res){
+    if(!req.body.description) {
+        return res.sendStatus(400)
+    }
+
+    var picObj = {'description': req.body.description}
+
+    getPicture(picObj, (err, docs)=>{
+        if(err) {
+            res.send(err)
+        }
+        else {
+            res.send(docs)
+        }
+    })
+});
+
+app.get('/pictures',function(req,res){
+    // 1.// THE FOLLOWING IS FOR ACCESSING DB. ( CURRENTLY DOES NOT ACCESS - PICS HARDCODED.)
+    res.sendFile(__dirname +'/public/threepics.html'); // Will try and use if we can use Canvas element - HTML5
+    printPictures('PicturesSaved',function(doc){
+	io.emit('PicturesSaved',doc);
+    });
+
+    // 2.// THE FOLLOWING WILL PRINT THE RAW PICTURE DATA STORED IN DB
+    //var pics = printPictures('PicturesSaved',function(result){
+    //    res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
+    //        +'<H1>Pictures.</H1>');
+    //        res.write(JSON.stringify(result));
+    //        res.send();
+    //    });
+    console.log('picture request');
 });
 
 
@@ -268,10 +305,6 @@ io.on('connection',function(socket){
 function convertBase64ToImage(){
 
 }
-
-app.get('/logout', (req, res)=>{
-    res.write("logout");
-});
 
 
 

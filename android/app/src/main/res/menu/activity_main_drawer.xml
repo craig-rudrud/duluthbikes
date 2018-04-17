@@ -12,6 +12,9 @@
             android:id="@+id/nav_ride_history"
             android:title="@string/rideHistory" />
         <item
+            android:id="@+id/nav_friends"
+            android:title="@string/friends" />
+        <item
             android:id="@+id/nav_events"
             android:title="@string/events" />
         <item
@@ -25,7 +28,7 @@
             android:title="@string/reportApp"/>
         <item
             android:id="@+id/nav_settings"
-            android:title="@string/settings"/>
+            android:title="@string/profile_settings"/>
         <item
             android:id="@+id/nav_about"
             android:title="@string/about" />

@@ -223,6 +223,18 @@ public class Model
         //mGoogleApiClient.disconnect();
     }
 
+    public String getPicture(String description) {
+        String data = null;
+
+        try {
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/getpicture", "GET", description).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
     @Override
     public void sendToLocalLeaderboard(JSONArray data) {
 
