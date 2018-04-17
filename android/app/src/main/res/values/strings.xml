@@ -83,6 +83,7 @@
     <string name="totDistLabel">Total\nDistance (km):</string>
     <string name="totDistLabelNoBreak">Total Distance:</string>
     <string name="avgDistLabel">Average\nDistance (km):</string>
+    <string name="avgDistLabelNoBreak">Average Distance:</string>
     <string name="totTimeLabel">Total Time:</string>
     <string name="avgTimeLabel">Average Time:</string>
     <string name="rideHistoryLabel">Ride History:</string>
@@ -174,4 +175,5 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="friends">Friends</string>
     <string name="searchForFriends">Search for friends...</string>
     <string name="defaultFriendName">First Last</string>
+    <string name="back">Back</string>
 </resources>

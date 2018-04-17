@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.sam.duluthbikes.fragments.FriendViewFragment;
 import com.example.sam.duluthbikes.fragments.FriendsFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
 
@@ -37,7 +38,6 @@ import com.example.sam.duluthbikes.fragments.ReportAppFragment;
 import com.example.sam.duluthbikes.fragments.ReportFragment;
 import com.example.sam.duluthbikes.fragments.RideHistoryFragment;
 import com.example.sam.duluthbikes.fragments.SettingsFragment;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
@@ -133,6 +133,14 @@ public class MenuActivity extends AppCompatActivity
     public void startMainActivity(View view) {
         automaticTracking = false;
         startSession();
+    }
+
+    public void viewFriend(View v) {
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, new FriendViewFragment())
+                .addToBackStack("FriendsFragment")
+                .commit();
     }
 
     public void startSession(){

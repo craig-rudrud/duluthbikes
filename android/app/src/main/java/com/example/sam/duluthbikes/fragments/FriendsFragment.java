@@ -1,8 +1,10 @@
 package com.example.sam.duluthbikes.fragments;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,19 +19,19 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.example.sam.duluthbikes.Friend;
-import com.example.sam.duluthbikes.MyAdapter;
+import com.example.sam.duluthbikes.FriendsAdapter;
 import com.example.sam.duluthbikes.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class FriendsFragment extends Fragment {
 
     private View myView;
     private EditText mSearchBar;
     private RecyclerView mFriendsView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
-    private String[] myDataset;
+    private FriendsAdapter mFriendsAdapter;
     private ArrayList<Friend> friendList;
     private ProgressBar mSearchProgress;
 
@@ -58,11 +60,9 @@ public class FriendsFragment extends Fragment {
         mFriendsView.setHasFixedSize(true);
         mFriendsView.setItemAnimator(new DefaultItemAnimator());
 
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mFriendsView.setLayoutManager(mLayoutManager);
-
-        mAdapter = new MyAdapter(myDataset);
-        mFriendsView.setAdapter(mAdapter);
+        mFriendsAdapter = new FriendsAdapter(friendList);
+        mFriendsView.setAdapter(mFriendsAdapter);
+        mFriendsView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mSearchProgress = myView.findViewById(R.id.friendSearchProgress);
         mSearchProgress.setVisibility(View.INVISIBLE);
@@ -78,9 +78,19 @@ public class FriendsFragment extends Fragment {
     }
 
     private ArrayList<Friend> getFriendList() {
-        ArrayList<Friend> list = null;
+        ArrayList<Friend> list = new ArrayList<>();
+        list.add(new Friend("Craig Rudrud", BitmapFactory.decodeResource(getResources(), R.drawable.default_profile_pic)));
 
         //TODO: Get each friend and add them to the list
+
+        Collections.sort(list, new Comparator<Friend>() {
+            @Override
+            public int compare(Friend friend1, Friend friend2) {
+                String name1 = friend1.getName();
+                String name2 = friend2.getName();
+                return name1.compareToIgnoreCase(name2);
+            }
+        });
 
         return list;
     }
