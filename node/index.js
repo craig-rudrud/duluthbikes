@@ -107,6 +107,55 @@ app.get('/',function(req,res){
     res.sendFile(__dirname + '/public/duluthBikesBootstrap.html');
 });
 
+app.get('/usernames', function(req,res){
+    var users = printUsers('UsersSaved',function(result){
+        res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
+		  +'<H1>Users </H1>');
+        res.write(JSON.stringify(result));
+        res.send();
+    });
+    console.log('users request');
+});
+
+app.get('/localleaderboard', function(req, res) {
+    var users = printLocalLeaderboard('localLeaderboard',function(result){
+	res.write(JSON.stringify(result));
+	res.send();
+    });
+    console.log('local leaderboard request');
+});
+
+app.get('/globalleaderboard', function(req, res) {
+    var users = printLocalLeaderboard('globalLeaderboard',function(result){
+	res.write(JSON.stringify(result));
+	res.send();
+    });
+    console.log('global leaderboard request');
+});
+
+app.get('/logout', (req, res)=>{
+    res.write("logout");
+});
+
+
+app.get('/pictures',function(req,res){
+    // 1.// THE FOLLOWING IS FOR ACCESSING DB. ( CURRENTLY DOES NOT ACCESS - PICS HARDCODED.)
+    res.sendFile(__dirname +'/public/threepics.html'); // Will try and use if we can use Canvas element - HTML5
+    printPictures('PicturesSaved',function(doc){
+	io.emit('PicturesSaved',doc);
+    });
+
+    // 2.// THE FOLLOWING WILL PRINT THE RAW PICTURE DATA STORED IN DB
+    //var pics = printPictures('PicturesSaved',function(result){
+    //    res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
+    //        +'<H1>Pictures.</H1>');
+    //        res.write(JSON.stringify(result));
+    //        res.send();
+    //    });
+    console.log('picture request');
+});
+
+
 app.post('/postlocalleaderboard', function(request,response) {
 
     if (!request.body) return response.sendStatus(400);
@@ -142,41 +191,6 @@ app.post('/postgloballeaderboard', function(request,response) {
     response.sendStatus(200);
 });
 
-app.post('/postlocalleaderboard', function(request,response) {
-
-    if (!request.body) return response.sendStatus(400);
-
-    var position = {
-	'pos':request.body.pos
-    }
-    var statData = {
-	'date':request.body.date,
-	'distance':request.body.distance,
-	'time':request.body.time,
-	'name':request.body.name
-    }
-    insertLocalLeaderboard(position,statData);
-    console.log('Post Request: postlocalleaderboard');
-    response.sendStatus(200);
-});
-
-app.post('/postgloballeaderboard', function(request,response) {
-
-    if (!request.body) return response.sendStatus(400);
-
-    var position = {
-	'pos':request.body.pos
-    }
-    var statData = {
-	'date':request.body.date,
-	'distance':request.body.distance,
-	'time':request.body.time,
-	'name':request.body.name
-    }
-    insertGlobalLeaderboard(position,statData);
-    console.log('Post Request: postgloballeaderboard');
-    response.sendStatus(200);
-});
 
 app.post('/postroute', function(request, response) {
 
@@ -215,31 +229,6 @@ app.post('/postfinish',function(req,res){
 });
 
 
-app.get('/usernames', function(req,res){
-    var users = printUsers('UsersSaved',function(result){
-        res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
-		  +'<H1>Users </H1>');
-        res.write(JSON.stringify(result));
-        res.send();
-    });
-    console.log('users request');
-});
-
-app.get('/localleaderboard', function(req, res) {
-    var users = printLocalLeaderboard('localLeaderboard',function(result){
-	res.write(JSON.stringify(result));
-	res.send();
-    });
-    console.log('local leaderboard request');
-});
-
-app.get('/globalleaderboard', function(req, res) {
-    var users = printLocalLeaderboard('globalLeaderboard',function(result){
-	res.write(JSON.stringify(result));
-	res.send();
-    });
-    console.log('global leaderboard request');
-});
 
 app.post('/loginAttempt', function(req,res){
     if(!req.body.name || !req.body.pass) return res.sendStatus(400)
@@ -258,9 +247,6 @@ app.post('/newAccount', function(req,res){
     insertUser(userObj, (err, docs)=>{
 	if(err) res.send(err)
 	else res.send(docs)})})
-
-app.post('/logout', (req, res)=>{})
-   // if(!req.body.token)  res.sendStatus(400)})
 
 app.post('/postpicture', function(req,res){
     //if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
@@ -307,52 +293,6 @@ app.get('/pictures',function(req,res){
     console.log('picture request');
 });
 
-app.get('/deleteallthepictures',function(res,req) {
-    console.log('deleted all pictures attempt');
-
-    deleteAll('PicturesSaved', function(result) {
-	if(result==true)console.log("deleted all pictures");
-	else console.log("Did not work");
-    });
-});
-
-
-app.get('/deletealltherides',function(res,req){
-    console.log('deleted all rides atempt');
-
-    deleteAll('FullLatLngsRecorded',function(result){
-	if(result==true)console.log("deleted all");
-	else console.log("didnt work");
-    });
-});
-
-app.get('/deleteAllUsers',function(res,req){
-    console.log('deleted all users atempt');
-
-    deleteAll('UsersSaved',function(result){
-	if(result==true)console.log("deleted all");
-	else console.log("didnt work");
-    });
-});
-
-app.get('/resetLocalLeaderboard',function(res,req){
-    console.log('deleted all local leaderboard atempt');
-
-    deleteAll('localLeaderboard',function(result){
-	if(result==true)console.log("deleted all");
-	else console.log("didnt work");
-    });
-});
-
-app.get('/resetGlobalLeaderboard',function(res,req){
-    console.log('deleted all global leaderboard atempt');
-
-    deleteAll('globalLeaderboard',function(result){
-	if(result==true)console.log("deleted all");
-	else console.log("didnt work");
-    });
-});
-
 
 io.on('connection',function(socket){
     console.log('a socket io connection');
@@ -365,10 +305,6 @@ io.on('connection',function(socket){
 function convertBase64ToImage(){
 
 }
-
-app.get('/logout', (req, res)=>{
-    res.write("logout");
-});
 
 
 
