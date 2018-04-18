@@ -1,6 +1,7 @@
 package com.example.sam.duluthbikes.fragments;
 
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,11 +21,22 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.example.sam.duluthbikes.Friend;
 import com.example.sam.duluthbikes.FriendsAdapter;
+import com.example.sam.duluthbikes.Model;
 import com.example.sam.duluthbikes.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Scanner;
 
 public class FriendsFragment extends Fragment {
 
@@ -34,10 +46,23 @@ public class FriendsFragment extends Fragment {
     private FriendsAdapter mFriendsAdapter;
     private ArrayList<Friend> friendList;
     private ProgressBar mSearchProgress;
+    private File profile;
+    private String personId;
+    private int loginStatus;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_friends, container, false);
+
+        profile = new File("sdcard/Profile.txt");
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        if (acct != null) {
+            loginStatus = 2;
+            personId = acct.getId();
+        } else {
+            loginStatus = (profile.exists()) ? 1 : 0;
+            personId = getUsername();
+        }
 
         friendList = getFriendList();
 
@@ -46,9 +71,9 @@ public class FriendsFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 boolean handled = false;
-                if(i == EditorInfo.IME_ACTION_SEARCH) {
+                if (i == EditorInfo.IME_ACTION_SEARCH) {
                     Friend friend = getFriend(mSearchBar.getText().toString());
-                    if(friend != null) {
+                    if (friend != null) {
                         handled = true;
                     }
                 }
@@ -79,9 +104,18 @@ public class FriendsFragment extends Fragment {
 
     private ArrayList<Friend> getFriendList() {
         ArrayList<Friend> list = new ArrayList<>();
-        list.add(new Friend("Craig Rudrud", BitmapFactory.decodeResource(getResources(), R.drawable.default_profile_pic)));
 
-        //TODO: Get each friend and add them to the list
+        try {
+            Model model = new Model();
+            JSONArray array = model.getFriends(personId);
+            if (array != null) {
+                for (int i = 0; i < array.length(); i++) {
+                    list.add(new Friend(array.getString(i), BitmapFactory.decodeResource(getResources(), R.drawable.default_profile_pic)));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         Collections.sort(list, new Comparator<Friend>() {
             @Override
@@ -95,11 +129,30 @@ public class FriendsFragment extends Fragment {
         return list;
     }
 
-    public void viewFriend(View v) {
-        android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, new FriendViewFragment())
-                .addToBackStack("FriendsFragment")
-                .commit();
+    private String getUsername() {
+
+        String username = null;
+
+        switch(loginStatus) {
+            case 2:
+                username = personId;
+                break;
+            case 1:
+                try {
+                    FileInputStream in = new FileInputStream(profile);
+                    Scanner s = new Scanner(in);
+                    username = s.nextLine();
+                    s.close();
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 0:
+                username = getString(R.string.noUsername);
+                break;
+        }
+
+        return username;
     }
 }
