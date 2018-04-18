@@ -35,20 +35,12 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/usernameTextView"
+                    android:id="@+id/personName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/Username"
+                    android:text="@string/defaultFriendName"
                     android:textSize="27sp" />
-
-                <TextView
-                    android:id="@+id/emailTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/prompt_email"
-                    android:textSize="17sp" />
 
             </LinearLayout>
 
@@ -103,20 +95,6 @@
                 android:textSize="20sp" />
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/loginButton"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Login/Logout" />
-
-        <Button
-            android:id="@+id/button_eraseAllRides"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/eraseAllRides" />
 
     </LinearLayout>
 
