@@ -40,6 +40,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     b.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                     bundle.putByteArray("image", stream.toByteArray());
 
+                    bundle.putString("isFriend", "false");
+
                     FriendViewFragment friendViewFragment = new FriendViewFragment();
                     friendViewFragment.setArguments(bundle);
 

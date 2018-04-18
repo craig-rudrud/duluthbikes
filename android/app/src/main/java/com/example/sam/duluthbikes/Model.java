@@ -1,6 +1,7 @@
 package com.example.sam.duluthbikes;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -299,6 +300,24 @@ public class Model
         return result;
     }
 
+    public JSONArray getFriends(String user) {
+        JSONObject object;
+        String data;
+        JSONArray result = null;
+
+        try {
+            object = new JSONObject();
+            object.put("name", user);
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/getFriends", "POST", object.toString()).get();
+            result = new JSONArray(data);
+        } catch (JSONException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @SuppressLint("RestrictedApi")
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(3000);

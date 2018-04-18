@@ -139,6 +139,8 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="profilePicUpdateGood">Successfully changed profile picture!</string>
     <string name="profilePicUpdateFail">Profile picture upload failed!</string>
     <string name="profilePicLocation">_profile_picture</string>
+    <string name="_0_0_km">0.0 km</string>
+    <string name="_00_00_00">00:00:00</string>
 
     <!-- strings related to settings -->
     <string name="settings">Settings</string>
@@ -175,7 +177,11 @@ The main goal is to collect information about rides and use that data for cyclin
 
     <!-- strings related to friends -->
     <string name="friends">Friends</string>
-    <string name="searchForFriends">Search for friends...</string>
+    <string name="searchForFriends">Search for friends…</string>
     <string name="defaultFriendName">First Last</string>
-    <string name="back">Back</string>
+    <string name="addFriend">Add Friend</string>
+    <string name="removeFriend">Remove Friend</string>
+    <string name="friendAdded">Friend added!</string>
+    <string name="friendRemoved">Friend removed!</string>
+    <string name="add_remove_friend">Add/Remove Friend</string>
 </resources>
