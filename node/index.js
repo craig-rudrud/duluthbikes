@@ -207,7 +207,6 @@ app.post('/postgloballeaderboard', function(request,response) {
     response.sendStatus(200);
 });
 
-
 app.post('/postroute', function(request, response) {
     if(!req.session.login) res.sendStatus(403)
     if (!request.body) response.sendStatus(400);
@@ -264,7 +263,8 @@ app.post('/newAccount', function(req,res){
     if(!req.body.name || !req.body.pass) return res.sendStatus(400);
     var userObj = { 'name':req.body.name,
 		    'pass':req.body.pass,
-		    'email':req.body.email}
+		    'email':req.body.email,
+		    'friends':[]}
     insertUser(userObj, (err, docs)=>{
 	if(err) res.send(err)
 	else res.send(docs)})})
