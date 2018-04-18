@@ -9,7 +9,6 @@ var collections = ['rides', 'users', 'RideHistory', 'FullRidesRecorded'];
 
 var mongojs = require('mongojs');
 var assert = require('assert');
-var sha256 = require('js-sha256');
 
 console.log("MongoDB is active.");
 
@@ -53,9 +52,7 @@ module.exports = function () {
     };
 
     printRides = function (colName, callback) {
-
 	var cursor = mongodb.collection(colName).find(function (err, docs) {
-
 	    if (err || !docs) {
 		console.log("database empty\n");
 	    }
@@ -135,8 +132,7 @@ module.exports = function () {
 	    else if(docs.length == 0) callback("user not found", null)
 	    else if(docs.length > 1 ) callback("username collision", null)
 	    else {
-		token = sha256(user.pass+Math.random())
-		callback(null, "dummy login token")
+		callback(null, docs[0]._id)
 	    }
 	})
     }
@@ -150,9 +146,12 @@ module.exports = function () {
 		if(err) callback("database error on insert", null)
 		else callback(null, "Account created sucessfullly")})})}
 
-    logout = (token, logout)=>{
+    getFriends = (username, callback) =>{
+	mongodb.collection('users').find({name:username}, (err, docs)=>{
+	    if(err) callback(err, null)
+	    callback(null, docs[0].friends)
+	})}
 
-    }
 
 
     printUsers = function (collectionName, callback) {

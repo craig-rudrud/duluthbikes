@@ -9,11 +9,13 @@
 var bodyParser = require('body-parser');
 // require express
 var express = require('express');
-
+var session = require('express-session');
 // express framework for handling http requests
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+
+
 /*
  * varaible area for any required varaibles we might use
  */
@@ -30,7 +32,10 @@ app.use(bodyParser.urlencoded({
     limit: '50mb',
     extended: true
 }));
+
 app.use(bodyParser.json({limit: '50mb'}));
+
+app.use(session({secret: "TODO: figure out what a secret is"}));
 
 
 //Include all files in the public folder to serve to the website
@@ -61,6 +66,7 @@ app.get('/fullRide',function(req,res){
 });
 
 app.get('/fulllatlng',function(req,res){
+    if(!req.session.login) res.sendStatus(403);
     var rides = printRides('FullLatLngsRecorded',function(result){
         res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
                   +'<H1>Full Rides.</H1>');
@@ -75,7 +81,7 @@ app.get('/fulllatlng',function(req,res){
 // the first one is the default dashboard route
 //
 app.get('/raw', function(request, response) {
-
+    if(!req.session.login) res.sendStatus(403);
     //when using Mongo
     var str = printDatabase('RideHistory', function(result) {
 	response.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
@@ -95,6 +101,14 @@ app.get('/rides',function(request,response){
     });
 });
 
+app.post('/friends',(req,res) => {
+    if(!req.body.name) res.sendStatus(400)
+    getFriends(req.body.name, (err, doc) =>{
+	if(err) res.send(err)
+	res.send(doc)
+    })
+})
+
 app.get('/maps',function(req,res){
     res.sendFile(__dirname + '/public/maps.html');
     printRides('FullRidesRecorded',function(doc){
@@ -103,7 +117,6 @@ app.get('/maps',function(req,res){
 });
 
 app.get('/',function(req,res){
-
     res.sendFile(__dirname + '/public/duluthBikesBootstrap.html');
 });
 
@@ -134,7 +147,9 @@ app.get('/globalleaderboard', function(req, res) {
 });
 
 app.get('/logout', (req, res)=>{
-    res.write("logout");
+    if(!req.session.login) res.sendStatus(403)
+    req.session.login = false
+    res.send ("logout");
 });
 
 
@@ -157,8 +172,8 @@ app.get('/pictures',function(req,res){
 
 
 app.post('/postlocalleaderboard', function(request,response) {
-
-    if (!request.body) return response.sendStatus(400);
+    if(!req.session.login) res.sendStatus(403)
+    if (!request.body) response.sendStatus(400);
 
     var position = {
 	'pos':request.body.pos
@@ -175,7 +190,8 @@ app.post('/postlocalleaderboard', function(request,response) {
 });
 
 app.post('/postgloballeaderboard', function(request,response) {
-    if (!request.body) return response.sendStatus(400);
+    if (!request.body) response.sendStatus(400);
+    if(!req.session.login) res.sendStatus(403)
 
     var position = {
 	'pos':request.body.pos
@@ -193,8 +209,8 @@ app.post('/postgloballeaderboard', function(request,response) {
 
 
 app.post('/postroute', function(request, response) {
-
-    if (!request.body)return response.sendStatus(400);
+    if(!req.session.login) res.sendStatus(403)
+    if (!request.body) response.sendStatus(400);
 
     var routeData = {'lat':request.body.lat,
 		     'lng':request.body.lang};
@@ -210,7 +226,7 @@ app.post('/postroute', function(request, response) {
 });
 
 app.post('/postfinish',function(req,res){
-
+    if(!req.session.login) res.send(403)
     if(!req.body)return res.sendStatus(400);
 
     var arr = [];
@@ -231,11 +247,16 @@ app.post('/postfinish',function(req,res){
 
 
 app.post('/loginAttempt', function(req,res){
+    if(req.session.login) res.sendStatus(403)
     if(!req.body.name || !req.body.pass) return res.sendStatus(400)
     var userObj = { 'name':req.body.name, 'pass':req.body.pass}
-    loginAttempt(userObj, (err, token) =>{
+    loginAttempt(userObj, (err, uid) =>{
 	if(err) res.send(err)
-	else res.send(token)
+	else {
+	    req.session.login = true
+	    req.session.uid = uid
+	    res.sendStatus(200)
+	}
     })
 })
 
@@ -249,30 +270,27 @@ app.post('/newAccount', function(req,res){
 	else res.send(docs)})})
 
 app.post('/postpicture', function(req,res){
+    if(!req.session.login) res.sendStatus(403)
     //if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
     var picObj = {
         'location':req.body.loc,
-		'description':req.body.description,
-		'picture':req.body.picture };
+	'description':req.body.description,
+	'picture':req.body.picture };
     insertPicture(picObj);
     console.log('Post Picture');
     res.send();
 });
 
 app.get('/getpicture', function(req, res){
+    if(!req.session.login) res.sendStatus(403)
     if(!req.body.description) {
         return res.sendStatus(400)
     }
 
     var picObj = {'description': req.body.description}
-
     getPicture(picObj, (err, docs)=>{
-        if(err) {
-            res.send(err)
-        }
-        else {
-            res.send(docs)
-        }
+        if(err) res.send(err)
+        else res.send(docs)
     })
 });
 
