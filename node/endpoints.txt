@@ -37,6 +37,16 @@ get:
     ends the session
 
 post:
+  /getFriends
+    requires in req.body:
+      name
+    returns a list of friends of the given user
+
+  /addFriend
+    requires in req.body:
+      name
+    adds given user to the logged in users friend list
+
   /postlocalleaderboard
     requires in req.body:
       pos
@@ -86,3 +96,4 @@ post:
       description
       picture
     adds the picture to the database
+
