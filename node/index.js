@@ -66,7 +66,7 @@ app.get('/fullRide',function(req,res){
 });
 
 app.get('/fulllatlng',function(req,res){
-    if(!req.session.login) res.sendStatus(403);
+    if(!req.session.login) return res.sendStatus(403);
     var rides = printRides('FullLatLngsRecorded',function(result){
         res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
                   +'<H1>Full Rides.</H1>');
@@ -81,7 +81,7 @@ app.get('/fulllatlng',function(req,res){
 // the first one is the default dashboard route
 //
 app.get('/raw', function(request, response) {
-    if(!req.session.login) res.sendStatus(403);
+    if(!req.session.login) return res.sendStatus(403);
     //when using Mongo
     var str = printDatabase('RideHistory', function(result) {
 	response.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
@@ -102,11 +102,31 @@ app.get('/rides',function(request,response){
 });
 
 app.post('/friends',(req,res) => {
-    if(!req.body.name) res.sendStatus(400)
+    if(!req.body.name) return res.sendStatus(400)
     getFriends(req.body.name, (err, doc) =>{
 	if(err) res.send(err)
-	res.send(doc)
+	else res.send(doc)
     })
+})
+
+app.post('/addFriend', (req,res) =>{
+    if(!req.body.name || !req.session.uid) return res.sendStatus(400)
+    obj = {user:mongodb.ObjectId(req.session.uid),
+	   friend: req.body.name}
+    addFriend(obj, (err, docs)=>{
+	if(err) res.send(err)
+	else res.sendStatus(200)
+    })
+})
+
+app.post('/removeFriend', (req,res) =>{
+    if(!req.body.name || !req.session.uid) return res.sendStatus(400)
+    obj = {user:mongodb.ObjectId(req.session.uid),
+	   friend: req.body.name}
+    removeFriend(obj, (err, docs)=>{
+	if(err) res.send(err)
+	else res.sendStatus(200)
+    })    
 })
 
 app.get('/maps',function(req,res){
@@ -121,9 +141,7 @@ app.get('/',function(req,res){
 });
 
 app.get('/usernames', function(req,res){
-    var users = printUsers('UsersSaved',function(result){
-        res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
-		  +'<H1>Users </H1>');
+    var users = printUsers(function(result){
         res.write(JSON.stringify(result));
         res.send();
     });
@@ -147,32 +165,15 @@ app.get('/globalleaderboard', function(req, res) {
 });
 
 app.get('/logout', (req, res)=>{
-    if(!req.session.login) res.sendStatus(403)
+    if(!req.session.login) return res.send("You must log in to logout")
     req.session.login = false
+    delete req.session.uid
     res.send ("logout");
 });
 
 
-app.get('/pictures',function(req,res){
-    // 1.// THE FOLLOWING IS FOR ACCESSING DB. ( CURRENTLY DOES NOT ACCESS - PICS HARDCODED.)
-    res.sendFile(__dirname +'/public/threepics.html'); // Will try and use if we can use Canvas element - HTML5
-    printPictures('PicturesSaved',function(doc){
-	io.emit('PicturesSaved',doc);
-    });
-
-    // 2.// THE FOLLOWING WILL PRINT THE RAW PICTURE DATA STORED IN DB
-    //var pics = printPictures('PicturesSaved',function(result){
-    //    res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
-    //        +'<H1>Pictures.</H1>');
-    //        res.write(JSON.stringify(result));
-    //        res.send();
-    //    });
-    console.log('picture request');
-});
-
-
 app.post('/postlocalleaderboard', function(request,response) {
-    if(!req.session.login) res.sendStatus(403)
+    if(!req.session) return res.sendStatus(403)
     if (!request.body) response.sendStatus(400);
 
     var position = {
@@ -190,7 +191,7 @@ app.post('/postlocalleaderboard', function(request,response) {
 });
 
 app.post('/postgloballeaderboard', function(request,response) {
-    if (!request.body) response.sendStatus(400);
+    if (!request.body) return response.sendStatus(400);
     if(!req.session.login) res.sendStatus(403)
 
     var position = {
@@ -208,7 +209,7 @@ app.post('/postgloballeaderboard', function(request,response) {
 });
 
 app.post('/postroute', function(request, response) {
-    if(!req.session.login) res.sendStatus(403)
+    if(!req.session.login) return res.sendStatus(403)
     if (!request.body) response.sendStatus(400);
 
     var routeData = {'lat':request.body.lat,
@@ -225,9 +226,8 @@ app.post('/postroute', function(request, response) {
 });
 
 app.post('/postfinish',function(req,res){
-    if(!req.session.login) res.send(403)
-    if(!req.body)return res.sendStatus(400);
-
+    if(!req.session.login) return res.send(403)
+    if(!req.body) return res.sendStatus(400);
     var arr = [];
     arr = req.body.ride;
     insertFullRide(arr);
@@ -235,18 +235,16 @@ app.post('/postfinish',function(req,res){
 	var latlng = [];
 	latlng = req.body.heat;
 	insertLatLng(latlng);
-
 	io.emit('FullRidesRecorded',doc);
     }
     console.log('Post Full Ride');
-
     res.sendStatus(200);
 });
 
 
 
 app.post('/loginAttempt', function(req,res){
-    if(req.session.login) res.sendStatus(403)
+    //if(req.session.login) return res.send("you must logout before you log in")
     if(!req.body.name || !req.body.pass) return res.sendStatus(400)
     var userObj = { 'name':req.body.name, 'pass':req.body.pass}
     loginAttempt(userObj, (err, uid) =>{
@@ -270,7 +268,7 @@ app.post('/newAccount', function(req,res){
 	else res.send(docs)})})
 
 app.post('/postpicture', function(req,res){
-    if(!req.session.login) res.sendStatus(403)
+    if(!req.session.login) return res.sendStatus(403)
     //if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
     var picObj = {
         'location':req.body.loc,
@@ -282,7 +280,7 @@ app.post('/postpicture', function(req,res){
 });
 
 app.get('/getpicture', function(req, res){
-    if(!req.session.login) res.sendStatus(403)
+    if(!req.session.login) return res.sendStatus(403)
     if(!req.body.description) {
         return res.sendStatus(400)
     }
