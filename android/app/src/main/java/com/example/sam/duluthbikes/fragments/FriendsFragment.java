@@ -1,11 +1,9 @@
 package com.example.sam.duluthbikes.fragments;
 
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +22,7 @@ import com.example.sam.duluthbikes.Friend;
 import com.example.sam.duluthbikes.FriendsAdapter;
 import com.example.sam.duluthbikes.Model;
 import com.example.sam.duluthbikes.R;
+import com.example.sam.duluthbikes.SearchFriendAdapter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
@@ -32,7 +31,6 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,10 +48,13 @@ public class FriendsFragment extends Fragment {
     private File profile;
     private String personId;
     private int loginStatus;
+    private Model model;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_friends, container, false);
+
+        model = new Model();
 
         profile = new File("sdcard/Profile.txt");
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
@@ -75,6 +76,10 @@ public class FriendsFragment extends Fragment {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     Friend friend = getFriend(mSearchBar.getText().toString());
                     if (friend != null) {
+                        friendList.clear();
+                        friendList.add(friend);
+                        mFriendsView.setAdapter(new SearchFriendAdapter(getContext(), friendList));
+                        mFriendsView.setLayoutManager(new LinearLayoutManager(getContext()));
                         handled = true;
                     }
                 }
@@ -96,9 +101,22 @@ public class FriendsFragment extends Fragment {
         return myView;
     }
 
-    // TODO: Implement
     private Friend getFriend(String friendName) {
         Friend friend = null;
+        JSONArray array = model.getUsernames();
+        if (array != null) {
+            for (int i = 0; i < array.length(); i++) {
+                try {
+                    if (friendName.equals(array.getString(i))) {
+                        String result = array.getString(i);
+                        friend = new Friend(result, BitmapFactory.decodeResource(getResources(), R.drawable.default_profile_pic));
+                        break;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         return friend;
     }
@@ -107,8 +125,7 @@ public class FriendsFragment extends Fragment {
         ArrayList<Friend> list = new ArrayList<>();
 
         try {
-            Model model = new Model();
-            JSONArray array = model.getFriends("test2");
+            JSONArray array = model.getFriends(getUsername());
             if (array != null) {
                 for (int i = 0; i < array.length(); i++) {
                     Log.d("name: ", array.getString(i));

@@ -143,7 +143,7 @@ public class LoginActivity extends AppCompatActivity
                     } else if (stringHasInvalidChar(user)) {
                         Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
                     } else if (pass.length() < 6) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.usernameLengthReq), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.passwordLengthReq), Toast.LENGTH_SHORT).show();
                     } else if (stringHasInvalidChar(pass)) {
                         Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
                     } else {

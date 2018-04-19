@@ -2,7 +2,6 @@ package com.example.sam.duluthbikes;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -18,7 +17,7 @@ import com.example.sam.duluthbikes.fragments.FriendViewFragment;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
+public class SearchFriendAdapter extends RecyclerView.Adapter<SearchFriendAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView friendName;
@@ -40,7 +39,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     b.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                     bundle.putByteArray("image", stream.toByteArray());
 
-                    bundle.putString("isFriend", "true");
+                    bundle.putString("isFriend", "false");
 
                     FriendViewFragment friendViewFragment = new FriendViewFragment();
                     friendViewFragment.setArguments(bundle);
@@ -58,13 +57,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     private List<Friend> mFriends;
     private Context mContext;
 
-    public FriendsAdapter(Context context, List<Friend> friends) {
+    public SearchFriendAdapter(Context context, List<Friend> friends) {
         mContext = context;
         mFriends = friends;
     }
 
     @Override
-    public FriendsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SearchFriendAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
@@ -74,7 +73,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(FriendsAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(SearchFriendAdapter.ViewHolder viewHolder, int position) {
         Friend friend = mFriends.get(position);
 
         TextView textView = viewHolder.friendName;

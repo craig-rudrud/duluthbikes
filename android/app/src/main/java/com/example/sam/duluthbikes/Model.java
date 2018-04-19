@@ -318,6 +318,19 @@ public class Model
         return result;
     }
 
+    public JSONArray getUsernames() {
+        String data;
+        JSONArray result = null;
+        try {
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/usernames", "GET").get();
+            result = new JSONArray(data);
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     @SuppressLint("RestrictedApi")
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
