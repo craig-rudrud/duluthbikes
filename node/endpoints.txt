@@ -47,6 +47,11 @@ post:
       name
     adds given user to the logged in users friend list
 
+  /removeFriend
+    requires in req.body:
+      name
+    removes given user to the logged in users friend list
+
   /postlocalleaderboard
     requires in req.body:
       pos

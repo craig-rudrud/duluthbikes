@@ -172,24 +172,6 @@ app.get('/logout', (req, res)=>{
 });
 
 
-app.get('/pictures',function(req,res){
-    // 1.// THE FOLLOWING IS FOR ACCESSING DB. ( CURRENTLY DOES NOT ACCESS - PICS HARDCODED.)
-    res.sendFile(__dirname +'/public/threepics.html'); // Will try and use if we can use Canvas element - HTML5
-    printPictures('PicturesSaved',function(doc){
-	io.emit('PicturesSaved',doc);
-    });
-
-    // 2.// THE FOLLOWING WILL PRINT THE RAW PICTURE DATA STORED IN DB
-    //var pics = printPictures('PicturesSaved',function(result){
-    //    res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
-    //        +'<H1>Pictures.</H1>');
-    //        res.write(JSON.stringify(result));
-    //        res.send();
-    //    });
-    console.log('picture request');
-});
-
-
 app.post('/postlocalleaderboard', function(request,response) {
     if(!req.session) return res.sendStatus(403)
     if (!request.body) response.sendStatus(400);
@@ -246,7 +228,6 @@ app.post('/postroute', function(request, response) {
 app.post('/postfinish',function(req,res){
     if(!req.session.login) return res.send(403)
     if(!req.body) return res.sendStatus(400);
-
     var arr = [];
     arr = req.body.ride;
     insertFullRide(arr);
@@ -254,18 +235,16 @@ app.post('/postfinish',function(req,res){
 	var latlng = [];
 	latlng = req.body.heat;
 	insertLatLng(latlng);
-
 	io.emit('FullRidesRecorded',doc);
     }
     console.log('Post Full Ride');
-
     res.sendStatus(200);
 });
 
 
 
 app.post('/loginAttempt', function(req,res){
-    if(req.session.login) return res.send("you must logout before you log in")
+    //if(req.session.login) return res.send("you must logout before you log in")
     if(!req.body.name || !req.body.pass) return res.sendStatus(400)
     var userObj = { 'name':req.body.name, 'pass':req.body.pass}
     loginAttempt(userObj, (err, uid) =>{
