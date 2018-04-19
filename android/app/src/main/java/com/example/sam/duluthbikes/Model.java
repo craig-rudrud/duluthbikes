@@ -67,6 +67,7 @@ public class Model
 
     public Model(){}
 
+    @SuppressLint("RestrictedApi")
     public Model(Context context, Presenter presenter){
         mContext = context;
         //mGSO = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
@@ -308,7 +309,7 @@ public class Model
         try {
             object = new JSONObject();
             object.put("name", user);
-            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/getFriends", "POST", object.toString()).get();
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/friends", "POST", object.toString()).get();
             result = new JSONArray(data);
         } catch (JSONException | InterruptedException | ExecutionException e) {
             e.printStackTrace();

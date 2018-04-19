@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,9 +108,10 @@ public class FriendsFragment extends Fragment {
 
         try {
             Model model = new Model();
-            JSONArray array = model.getFriends(personId);
+            JSONArray array = model.getFriends("test2");
             if (array != null) {
                 for (int i = 0; i < array.length(); i++) {
+                    Log.d("name: ", array.getString(i));
                     list.add(new Friend(array.getString(i), BitmapFactory.decodeResource(getResources(), R.drawable.default_profile_pic)));
                 }
             }
