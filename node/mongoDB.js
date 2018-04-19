@@ -174,12 +174,12 @@ module.exports = function () {
 	mongodb.collection('users').find({_id:obj.user}, (err,docs)=>{
 	    if(err) callback(err, null)
 	    else if(docs.length != 1) callback("you do not exist", null)
-	    else if(!obj.friend in docs[0].friends) callback("friend must be in friends", null)
+	    else if(!obj.friend in docs[0].friends) callback("friend not in list", null)
 	    else mongodb.collection("users").find({name:obj.friend}, (err, docs) =>{
 		if(err) callback(err, null)
 		else if(docs.length != 1) callback(obj.freind + " does not exist", null)
 		else mongodb.collection("users").update({_id:obj.user},
-						   {$push: {friends:obj.friend}},
+						   {$pull: {friends:obj.friend}},
 						   (err, docs) =>{
 		    if(err) callback(err, null)
 		    else callback(null, "success")
@@ -189,8 +189,8 @@ module.exports = function () {
     }
     
     
-    printUsers = function (collectionName, callback) {
-	var cursor = mongodb.collection(collectionName).find(function (err, docs) {
+    printUsers = function (callback) {
+	var cursor = mongodb.collection('users').find({},function (err, docs) {
 	    if (err || !docs) {
 		console.log("Cannot print database or database is empty\n");}
 	    else {callback(docs);}});};
