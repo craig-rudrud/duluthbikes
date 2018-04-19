@@ -156,15 +156,15 @@ module.exports = function () {
 	mongodb.collection('users').find({_id:obj.user}, (err,docs)=>{
 	    if(err) callback(err, null)
 	    else if(docs.length != 1) callback("you do not exist", null)
-	    else if(obj.friend in docs[0].friends) callback("friend already added", null)
+	    else if(docs[0].friends.indexOf(obj.friend)!=-1) callback("friend already added", null)
 	    else mongodb.collection("users").find({name:obj.friend}, (err, docs) =>{
 		if(err) callback(err, null)
-		else if(docs.length != 1) callback(obj.freind + " does not exist", null)
+		else if(docs.length != 1) callback(obj.friend + " does not exist", null)
 		else mongodb.collection("users").update({_id:obj.user},
 						   {$push: {friends:obj.friend}},
 						   (err, docs) =>{
 		    if(err) callback(err, null)
-		    else callback(null, "success")
+						       else {callback(null, "success")}
 						   })
 	    })
 	})
@@ -174,10 +174,10 @@ module.exports = function () {
 	mongodb.collection('users').find({_id:obj.user}, (err,docs)=>{
 	    if(err) callback(err, null)
 	    else if(docs.length != 1) callback("you do not exist", null)
-	    else if(!obj.friend in docs[0].friends) callback("friend not in list", null)
+	    else if(docs[0].friends.indexOf(obj.friend)==-1) callback("friend not in list", null)
 	    else mongodb.collection("users").find({name:obj.friend}, (err, docs) =>{
 		if(err) callback(err, null)
-		else if(docs.length != 1) callback(obj.freind + " does not exist", null)
+		else if(docs.length != 1) callback(obj.friend + " does not exist", null)
 		else mongodb.collection("users").update({_id:obj.user},
 						   {$pull: {friends:obj.friend}},
 						   (err, docs) =>{
@@ -193,7 +193,11 @@ module.exports = function () {
 	var cursor = mongodb.collection('users').find({},function (err, docs) {
 	    if (err || !docs) {
 		console.log("Cannot print database or database is empty\n");}
-	    else {callback(docs);}});};
+	    else {
+		lst = []
+		for(e of docs)
+		    lst.push(e.name)
+		callback(lst);}});};
 
     printLocalLeaderboard = function (collectionName, callback) {
 

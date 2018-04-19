@@ -111,13 +111,22 @@ app.post('/friends',(req,res) => {
 
 app.post('/addFriend', (req,res) =>{
     if(!req.body.name || !req.session.uid) return res.sendStatus(400)
-    console.log(req.session.uid)
     obj = {user:mongodb.ObjectId(req.session.uid),
 	   friend: req.body.name}
     addFriend(obj, (err, docs)=>{
 	if(err) res.send(err)
 	else res.sendStatus(200)
     })
+})
+
+app.post('/removeFriend', (req,res) =>{
+    if(!req.body.name || !req.session.uid) return res.sendStatus(400)
+    obj = {user:mongodb.ObjectId(req.session.uid),
+	   friend: req.body.name}
+    removeFriend(obj, (err, docs)=>{
+	if(err) res.send(err)
+	else res.sendStatus(200)
+    })    
 })
 
 app.get('/maps',function(req,res){
@@ -132,9 +141,7 @@ app.get('/',function(req,res){
 });
 
 app.get('/usernames', function(req,res){
-    var users = printUsers('UsersSaved',function(result){
-        res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
-		  +'<H1>Users </H1>');
+    var users = printUsers(function(result){
         res.write(JSON.stringify(result));
         res.send();
     });

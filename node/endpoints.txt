@@ -25,7 +25,7 @@ get:
     ???
     
   /usernames
-    sends html of all usernames
+    sends list of all usernames
 
   /localleaderbords
     sends a string that represents the local leaderboards
