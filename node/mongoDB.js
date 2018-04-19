@@ -127,7 +127,6 @@ module.exports = function () {
     loginAttempt = function (user, callback) {
 	mongodb.collection('users').find({name:user.name,pass:user.pass}, (err,docs)=>{
 	    console.log("login attempt")
-	    console.log(docs[0])
 	    if(err) callback(err, null)
 	    else if(docs.length == 0) callback("user not found", null)
 	    else if(docs.length > 1 ) callback("username collision", null)
@@ -149,11 +148,47 @@ module.exports = function () {
     getFriends = (username, callback) =>{
 	mongodb.collection('users').find({name:username}, (err, docs)=>{
 	    if(err) callback(err, null)
-	    callback(null, docs[0].friends)
+	    else if(docs.length != 1) callback("user does not exist")
+	    else callback(null, docs[0].friends)
 	})}
 
-
-
+    addFriend = (obj, callback) =>{
+	mongodb.collection('users').find({_id:obj.user}, (err,docs)=>{
+	    if(err) callback(err, null)
+	    else if(docs.length != 1) callback("you do not exist", null)
+	    else if(obj.friend in docs[0].friends) callback("friend already added", null)
+	    else mongodb.collection("users").find({name:obj.friend}, (err, docs) =>{
+		if(err) callback(err, null)
+		else if(docs.length != 1) callback(obj.freind + " does not exist", null)
+		else mongodb.collection("users").update({_id:obj.user},
+						   {$push: {friends:obj.friend}},
+						   (err, docs) =>{
+		    if(err) callback(err, null)
+		    else callback(null, "success")
+						   })
+	    })
+	})
+    }
+    
+    removeFriend = (obj, callback) =>{
+	mongodb.collection('users').find({_id:obj.user}, (err,docs)=>{
+	    if(err) callback(err, null)
+	    else if(docs.length != 1) callback("you do not exist", null)
+	    else if(!obj.friend in docs[0].friends) callback("friend must be in friends", null)
+	    else mongodb.collection("users").find({name:obj.friend}, (err, docs) =>{
+		if(err) callback(err, null)
+		else if(docs.length != 1) callback(obj.freind + " does not exist", null)
+		else mongodb.collection("users").update({_id:obj.user},
+						   {$push: {friends:obj.friend}},
+						   (err, docs) =>{
+		    if(err) callback(err, null)
+		    else callback(null, "success")
+						   })
+	    })
+	})
+    }
+    
+    
     printUsers = function (collectionName, callback) {
 	var cursor = mongodb.collection(collectionName).find(function (err, docs) {
 	    if (err || !docs) {

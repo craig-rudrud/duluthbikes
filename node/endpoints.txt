@@ -37,7 +37,7 @@ get:
     ends the session
 
 post:
-  /getFriends
+  /friends
     requires in req.body:
       name
     returns a list of friends of the given user
