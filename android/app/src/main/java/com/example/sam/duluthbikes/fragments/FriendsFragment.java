@@ -1,5 +1,6 @@
 package com.example.sam.duluthbikes.fragments;
 
+import android.annotation.SuppressLint;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -49,7 +50,10 @@ public class FriendsFragment extends Fragment {
     private String personId;
     private int loginStatus;
     private Model model;
+    private int numberOfFriends;
+    private TextView friendCountView;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_friends, container, false);
@@ -67,6 +71,9 @@ public class FriendsFragment extends Fragment {
         }
 
         friendList = getFriendList();
+        numberOfFriends = friendList.size();
+        friendCountView = myView.findViewById(R.id.friendCount);
+        friendCountView.setText("Friends (" + String.valueOf(numberOfFriends) + "):");
 
         mSearchBar = myView.findViewById(R.id.friendSearchBar);
         mSearchBar.setOnEditorActionListener(new OnEditorActionListener() {

@@ -184,4 +184,5 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="friendAdded">Friend added!</string>
     <string name="friendRemoved">Friend removed!</string>
     <string name="add_remove_friend">Add/Remove Friend</string>
+    <string name="friendsCount">Friends (#):</string>
 </resources>

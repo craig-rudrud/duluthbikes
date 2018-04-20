@@ -13,13 +13,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sam.duluthbikes.Model;
 import com.example.sam.duluthbikes.R;
 
 import java.util.Objects;
 
 public class FriendViewFragment extends Fragment {
 
+    private Model model;
     private View myView;
+    private TextView mName;
     private boolean isFriend;
     private Button friendButton;
 
@@ -29,7 +32,9 @@ public class FriendViewFragment extends Fragment {
         myView = inflater.inflate(R.layout.activity_view_friend, container, false);
         Bundle bundle = getArguments();
 
-        TextView mName = myView.findViewById(R.id.personName);
+        model = new Model();
+
+        mName = myView.findViewById(R.id.personName);
         mName.setText(Objects.requireNonNull(bundle.get("name")).toString());
 
         ImageView mPicture = myView.findViewById(R.id.profilePicture);
@@ -63,14 +68,20 @@ public class FriendViewFragment extends Fragment {
     }
 
     private void addFriend() {
-        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.friendAdded), Toast.LENGTH_SHORT).show();
-        friendButton.setText(getString(R.string.removeFriend));
-        isFriend = true;
+        boolean isFriendAdded = model.addFriend(mName.getText().toString());
+        if(isFriendAdded) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.friendAdded), Toast.LENGTH_SHORT).show();
+            friendButton.setText(getString(R.string.removeFriend));
+            isFriend = true;
+        }
     }
 
     private void removeFriend() {
-        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.friendRemoved), Toast.LENGTH_SHORT).show();
-        friendButton.setText(getString(R.string.addFriend));
-        isFriend = false;
+        boolean isFriendRemoved = model.removeFriend(mName.getText().toString());
+        if(isFriendRemoved) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.friendRemoved), Toast.LENGTH_SHORT).show();
+            friendButton.setText(getString(R.string.addFriend));
+            isFriend = false;
+        }
     }
 }

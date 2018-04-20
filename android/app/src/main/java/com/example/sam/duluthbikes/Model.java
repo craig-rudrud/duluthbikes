@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,12 +31,14 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -329,6 +332,30 @@ public class Model
         }
 
         return result;
+    }
+
+    public boolean addFriend(String friend) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("name", friend);
+            new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/addFriend", "POST", object.toString());
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean removeFriend(String friend) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("name", friend);
+            new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/removeFriend", "POST", object.toString());
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @SuppressLint("RestrictedApi")
