@@ -126,7 +126,7 @@ app.post('/removeFriend', (req,res) =>{
     removeFriend(obj, (err, docs)=>{
 	if(err) res.send(err)
 	else res.sendStatus(200)
-    })    
+    })
 })
 
 app.get('/maps',function(req,res){
