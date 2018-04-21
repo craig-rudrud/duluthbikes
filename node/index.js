@@ -46,6 +46,12 @@ app.use(express.static('public'));
 var mongodb = require('./mongoDB.js')();
 console.log(mongodb);
 
+app.get('/isLoggedIn', (req,res) =>{
+    if(req.session.login) res.send("true")
+    else res.send("false")
+
+})
+
 app.get('/heatmapfiles',function(req,res){
     res.sendFile(__dirname + '/public/node_modules/heatmap.js/build/heatmap.js');
 });

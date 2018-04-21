@@ -2,6 +2,9 @@ get:
   /
     Sends /public/duluthBikesBootstrap.html
 
+  /isLoggedIn
+    send "true" if the user is logged in, "false" otherwise
+
   /heatmapfiles
     Sends heatmap.js
 
