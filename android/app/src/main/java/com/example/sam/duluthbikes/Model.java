@@ -13,10 +13,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -31,16 +27,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 //import retrofit2.http.HTTP;
 
@@ -176,10 +169,9 @@ public class Model
     /**
      * @param user username
      * @param pass password
-     * Attempts to login with given credentials
      */
     @Override
-    public void loginAttempt(String user, String pass) {
+    public boolean loginAttempt(String user, String pass) {
         JSONObject profile = null;
         try{
             profile = new JSONObject();
@@ -189,7 +181,31 @@ public class Model
             e.printStackTrace();
         }
         mode = true;
-        new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt","POST",profile.toString());
+        new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt", "POST", profile.toString());
+//        return getLoginStatus();
+        return true;
+    }
+
+    @Override
+    public boolean logoutAttempt() {
+        String status = null;
+        try {
+            status = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/logout", "GET").get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return status.equals("logout");
+    }
+
+    public boolean getLoginStatus() {
+        String loginStatus;
+        try {
+            loginStatus = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/isLoggedIn", "GET").get();
+            return loginStatus.equals("true");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public void newAccount(String user, String pass, String email){
@@ -304,6 +320,20 @@ public class Model
         return result;
     }
 
+    public JSONArray getUsernames() {
+        String data;
+        JSONArray result = null;
+        try {
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/usernames", "GET").get();
+            result = new JSONArray(data);
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
     public JSONArray getFriends(String user) {
         JSONObject object;
         String data;
@@ -321,23 +351,10 @@ public class Model
         return result;
     }
 
-    public JSONArray getUsernames() {
-        String data;
-        JSONArray result = null;
-        try {
-            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/usernames", "GET").get();
-            result = new JSONArray(data);
-        } catch (InterruptedException | ExecutionException | JSONException e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
-    public boolean addFriend(String friend) {
+    public boolean addFriend(String name) {
         try {
             JSONObject object = new JSONObject();
-            object.put("name", friend);
+            object.put("name", name);
             new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/addFriend", "POST", object.toString());
             return true;
         } catch (JSONException e) {
@@ -346,10 +363,10 @@ public class Model
         }
     }
 
-    public boolean removeFriend(String friend) {
+    public boolean removeFriend(String name) {
         try {
             JSONObject object = new JSONObject();
-            object.put("name", friend);
+            object.put("name", name);
             new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/removeFriend", "POST", object.toString());
             return true;
         } catch (JSONException e) {

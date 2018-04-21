@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.sam.duluthbikes.LoginActivity;
 import com.example.sam.duluthbikes.Model;
+import com.example.sam.duluthbikes.Presenter;
 import com.example.sam.duluthbikes.ProfilePictureViewer;
 import com.example.sam.duluthbikes.R;
 import com.example.sam.duluthbikes.UnitConverter;
@@ -50,6 +52,7 @@ import java.util.Scanner;
 public class SettingsFragment extends Fragment {
 
     View myView;
+    Presenter mPresenter;
     Button loginButton;
     Button mEraseAllRides;
     File profile;
@@ -86,6 +89,8 @@ public class SettingsFragment extends Fragment {
         myView = inflater.inflate(R.layout.activity_settings, container, false);
         DecimalFormat df = new DecimalFormat("#.##");
         UnitConverter converter = new UnitConverter();
+
+        mPresenter = new Presenter();
 
         profile = new File("sdcard/Profile.txt");
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
@@ -213,6 +218,7 @@ public class SettingsFragment extends Fragment {
                                     }
                                     else if (loginStatus == 1) {
                                         profile.delete();
+                                        mPresenter.logoutUser();
                                         Intent login = new Intent(getActivity(), LoginActivity.class);
                                         startActivity(login);
                                     }
@@ -391,8 +397,7 @@ public class SettingsFragment extends Fragment {
                     byte[] bytes = stream.toByteArray();
                     String string = Base64.encodeToString(bytes, Base64.DEFAULT);
 
-                    Model model = new Model();
-                    model.sendPicture("", personId+getString(R.string.profilePicLocation), string);
+                    mPresenter.sendPicture("", personId+getString(R.string.profilePicLocation), string);
 
                     FileOutputStream out = new FileOutputStream(localPath);
                     out.write(bytes);

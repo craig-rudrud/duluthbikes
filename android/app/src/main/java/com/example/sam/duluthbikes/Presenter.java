@@ -7,8 +7,6 @@ import android.support.v4.app.FragmentActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
 
@@ -73,9 +71,18 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
     public void notifyRoute(JSONArray route,JSONArray l){mModel.notifyFinishRoute(route,l);}
 
     @Override
-    public void loginUser(String userName, String passWord) {
+    public boolean loginUser(String username, String password) {
         mModel= new Model(mContext,mActivity,this);
-        mModel.loginAttempt(userName,passWord);
+        return mModel.loginAttempt(username, password);
+    }
+
+    @Override
+    public boolean logoutUser() {
+        return mModel.logoutAttempt();
+    }
+
+    public boolean getLoginStatus() {
+        return mModel.getLoginStatus();
     }
 
     public void newAccount(String userName, String passWord, String email) {
@@ -123,6 +130,14 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
         return data;
     }
 
+    public JSONArray getUsernames() {
+        return mModel.getUsernames();
+    }
+
+    public JSONArray getFriends(String user) {
+        return mModel.getFriends(user);
+    }
+
     @Override
     public void returnLogin(String result){mView.userResults(result);}
 
@@ -142,7 +157,21 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
     }
 
     @Override
+    public boolean addFriend(String name) {
+        return mModel.addFriend(name);
+    }
+
+    @Override
+    public boolean removeFriend(String name) {
+        return mModel.removeFriend(name);
+    }
+
+    @Override
     public void setClient(GoogleApiClient c) {
         mModel.setGoogleApi(c);
+    }
+
+    public void sendPicture(String location, String description, String encodedImage) {
+        mModel.sendPicture(location, description, encodedImage);
     }
 }

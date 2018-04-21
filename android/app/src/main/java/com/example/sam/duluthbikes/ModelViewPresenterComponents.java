@@ -5,7 +5,6 @@ import android.location.Location;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Created by Sam on 3/26/2017.
@@ -29,6 +28,10 @@ public interface ModelViewPresenterComponents {
 
     interface PresenterContract {
 
+        boolean addFriend(String name);
+
+        boolean removeFriend(String name);
+
         void setClient(GoogleApiClient c);
 
         Location getLocationForCamera();
@@ -45,7 +48,9 @@ public interface ModelViewPresenterComponents {
 
         void notifyRoute(JSONArray fullRide,JSONArray l);
 
-        void loginUser(String userName,String passWord);
+        boolean loginUser(String username, String password);
+
+        boolean logoutUser();
 
         void sendPictureToServer(String loc, String description, String encodedImage);
 
@@ -88,13 +93,25 @@ public interface ModelViewPresenterComponents {
 
         void notifyFinishRoute(JSONArray r,JSONArray l);
 
-        void loginAttempt(String user,String pass);
+        boolean loginAttempt(String user, String pass);
 
         void newAccount(String user, String pass, String email);
 
         void sendPicture(String loc, String description, String encodedImage);
 
         GoogleApiClient getGoogleApi();
+
+        boolean getLoginStatus();
+
+        JSONArray getUsernames();
+
+        JSONArray getFriends(String user);
+
+        boolean addFriend(String name);
+
+        boolean removeFriend(String name);
+
+        boolean logoutAttempt();
     }
 
 }

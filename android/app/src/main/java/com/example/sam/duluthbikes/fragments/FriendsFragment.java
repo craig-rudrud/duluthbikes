@@ -1,8 +1,10 @@
 package com.example.sam.duluthbikes.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,7 +24,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.example.sam.duluthbikes.Friend;
 import com.example.sam.duluthbikes.FriendsAdapter;
-import com.example.sam.duluthbikes.Model;
+import com.example.sam.duluthbikes.Presenter;
 import com.example.sam.duluthbikes.R;
 import com.example.sam.duluthbikes.SearchFriendAdapter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -36,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class FriendsFragment extends Fragment {
@@ -49,16 +53,16 @@ public class FriendsFragment extends Fragment {
     private File profile;
     private String personId;
     private int loginStatus;
-    private Model model;
+    private Presenter mPresenter;
     private int numberOfFriends;
     private TextView friendCountView;
 
     @SuppressLint("SetTextI18n")
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_friends, container, false);
 
-        model = new Model();
+        mPresenter = new Presenter();
 
         profile = new File("sdcard/Profile.txt");
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
@@ -73,7 +77,12 @@ public class FriendsFragment extends Fragment {
         friendList = getFriendList();
         numberOfFriends = friendList.size();
         friendCountView = myView.findViewById(R.id.friendCount);
-        friendCountView.setText("Friends (" + String.valueOf(numberOfFriends) + "):");
+        if(mPresenter.getLoginStatus()) {
+            friendCountView.setText("You are logged in");
+        }
+        else {
+            friendCountView.setText("You are not logged in");
+        }
 
         mSearchBar = myView.findViewById(R.id.friendSearchBar);
         mSearchBar.setOnEditorActionListener(new OnEditorActionListener() {
@@ -81,6 +90,7 @@ public class FriendsFragment extends Fragment {
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 boolean handled = false;
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
+                    hideKeyboard();
                     Friend friend = getFriend(mSearchBar.getText().toString());
                     if (friend != null) {
                         friendList.clear();
@@ -110,7 +120,7 @@ public class FriendsFragment extends Fragment {
 
     private Friend getFriend(String friendName) {
         Friend friend = null;
-        JSONArray array = model.getUsernames();
+        JSONArray array = mPresenter.getUsernames();
         if (array != null) {
             for (int i = 0; i < array.length(); i++) {
                 try {
@@ -132,7 +142,7 @@ public class FriendsFragment extends Fragment {
         ArrayList<Friend> list = new ArrayList<>();
 
         try {
-            JSONArray array = model.getFriends(getUsername());
+            JSONArray array = mPresenter.getFriends(getUsername());
             if (array != null) {
                 for (int i = 0; i < array.length(); i++) {
                     Log.d("name: ", array.getString(i));
@@ -180,5 +190,12 @@ public class FriendsFragment extends Fragment {
         }
 
         return username;
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager input = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (input != null) {
+            input.hideSoftInputFromWindow(Objects.requireNonNull(getActivity().getCurrentFocus()).getWindowToken(), 0);
+        }
     }
 }
