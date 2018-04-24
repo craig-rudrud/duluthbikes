@@ -2,7 +2,7 @@
 //database url
 
 
-//var url = 'mongodb://127.0.0.1:50432/db'; 
+//var url = 'mongodb://127.0.0.1:50432/db';
 
 //var url = 'mongodb://127.0.0.1:23406/db';
 var url = 'mongodb://127.0.0.1:27017/db';
@@ -12,7 +12,6 @@ var mongojs = require('mongojs');
 var assert = require('assert');
 
 console.log("MongoDB is active.");
-
 
 
 module.exports = function () {
@@ -33,11 +32,11 @@ module.exports = function () {
      */
     printDatabase = function (collectionName, callback) {
 
-	// 
-	// Collection look ups with find return a 
+	//
+	// Collection look ups with find return a
 	// MongoDB 'cursor'. More info can be found here
 	// https://docs.mongodb.com/v3.2/reference/glossary/#term-cursor
-	// 
+	//
 
 	var cursor = mongodb.collection(collectionName).find(function (err, docs) {
 
@@ -54,9 +53,7 @@ module.exports = function () {
     };
 
     printRides = function (colName, callback) {
-
 	var cursor = mongodb.collection(colName).find(function (err, docs) {
-
 	    if (err || !docs) {
 		console.log("database empty\n");
 	    }
@@ -125,39 +122,83 @@ module.exports = function () {
     insertLatLng = function (LatLng) {
 	mongodb.collection('FullLatLngsRecorded').save(
 	    { latlng: LatLng }, function (err, result) {
-		if (err || !result) console.log("latlng not saved");
-		else console.log("latlng loged in DB");
-	    });
-    };
+		if (err || !result) console.log("latlng not saved")
+		else console.log("latlng loged in DB")})}
 
-    checkCreds = function (user) {
-	console.log("checkCreds");
-	results = mongodb.collection('users').find({name:user.name}).toArray();
-	console.log("query success");
-	ret = results && results.length() == 1 && results[0].pass === user.pass;
-	console.log("ret");
-	return ret;
-    };
-
-    newAccount = function (user){
-	console.log('newAccount');
-	results = mongodb.collection('users').find({name:user.name});
-	if(results.count() != 0) return false;
-	return mongodb.collection('users').insert(user).nInserted == 1 ? true : false;
-    };
-
-    printUsers = function (collectionName, callback) {
-
-	var cursor = mongodb.collection(collectionName).find(function (err, docs) {
-	    if (err || !docs) {
-		console.log("Cannot print database or database is empty\n");
-	    }
+    loginAttempt = function (user, callback) {
+	mongodb.collection('users').find({name:user.name,pass:user.pass}, (err,docs)=>{
+	    console.log("login attempt")
+	    if(err) callback(err, null)
+	    else if(docs.length == 0) callback("user not found", null)
+	    else if(docs.length > 1 ) callback("username collision", null)
 	    else {
-		callback(docs);
+		callback(null, docs[0]._id)
 	    }
-	});
+	})
+    }
 
-    };
+    insertUser = function (user, callback){
+	mongodb.collection('users').find({name:user.name}, (err,docs)=>{
+	    console.log("insertUser")
+	    if(err) callback("database error on find", null)
+	    else if(docs.length > 0) callback("user already exists", null)
+	    else mongodb.collection('users').insert(user, (err, docs)=>{
+		if(err) callback("database error on insert", null)
+		else callback(null, "Account created sucessfullly")})})}
+
+    getFriends = (username, callback) =>{
+	mongodb.collection('users').find({name:username}, (err, docs)=>{
+	    if(err) callback(err, null)
+	    else if(docs.length != 1) callback("user does not exist")
+	    else callback(null, docs[0].friends)
+	})}
+
+    addFriend = (obj, callback) =>{
+	mongodb.collection('users').find({_id:obj.user}, (err,docs)=>{
+	    if(err) callback(err, null)
+	    else if(docs.length != 1) callback("you do not exist", null)
+	    else if(docs[0].friends.indexOf(obj.friend)!=-1) callback("friend already added", null)
+	    else mongodb.collection("users").find({name:obj.friend}, (err, docs) =>{
+		if(err) callback(err, null)
+		else if(docs.length != 1) callback(obj.friend + " does not exist", null)
+		else mongodb.collection("users").update({_id:obj.user},
+						   {$push: {friends:obj.friend}},
+						   (err, docs) =>{
+		    if(err) callback(err, null)
+						       else {callback(null, "success")}
+						   })
+	    })
+	})
+    }
+    
+    removeFriend = (obj, callback) =>{
+	mongodb.collection('users').find({_id:obj.user}, (err,docs)=>{
+	    if(err) callback(err, null)
+	    else if(docs.length != 1) callback("you do not exist", null)
+	    else if(docs[0].friends.indexOf(obj.friend)==-1) callback("friend not in list", null)
+	    else mongodb.collection("users").find({name:obj.friend}, (err, docs) =>{
+		if(err) callback(err, null)
+		else if(docs.length != 1) callback(obj.friend + " does not exist", null)
+		else mongodb.collection("users").update({_id:obj.user},
+						   {$pull: {friends:obj.friend}},
+						   (err, docs) =>{
+		    if(err) callback(err, null)
+		    else callback(null, "success")
+						   })
+	    })
+	})
+    }
+    
+    
+    printUsers = function (callback) {
+	var cursor = mongodb.collection('users').find({},function (err, docs) {
+	    if (err || !docs) {
+		console.log("Cannot print database or database is empty\n");}
+	    else {
+		lst = []
+		for(e of docs)
+		    lst.push(e.name)
+		callback(lst);}});};
 
     printLocalLeaderboard = function (collectionName, callback) {
 
@@ -173,7 +214,7 @@ module.exports = function () {
     };
 
     printGlobalLeaderboard = function (collectionName, callback) {
-	
+
 	var cursor = mongodb.collection(collectionName).find(function (err, docs) {
 	    if (err || !docs) {
 		console.log("Cannot print database or database is empty\n");
@@ -182,7 +223,7 @@ module.exports = function () {
 		callback(docs);
 	    }
 	});
-	
+
     };
     /////////////////////////////////////
     /*
@@ -215,25 +256,35 @@ module.exports = function () {
 
 
     insertPicture = function (pic) {
-	mongodb.collection('PicturesSaved').save(
-	    { pictures: pic }, function (err, result) {
-		if (err || !result) console.log("Picture not saved");
-		else console.log("picture saves in picture DB")
-	    });
+        mongodb.collection('PicturesSaved').save({ pictures: pic }, function (err, result) {
+            if (err || !result)
+                console.log("Picture not saved");
+            else
+                console.log("picture saves in picture DB")
+        });
+    };
+
+    getPicture = function (pic, callback) {
+        mongodb.collection('PicturesSaved').find({description:pic.description}, function (err,docs) {
+            if(err) {
+                callback(err, null);
+            }
+            else {
+                callback(null, docs.picture);
+            }
+        });
     };
 
     printPictures = function (collectionName, callback) {
-	var cursor = mongodb.collection(collectionName).find(function (err, docs) {
-
-	    if (err || !docs) {
-		console.log("Cannot print database or database is empty\n");
-	    }
-	    else {
-		callback(docs);
-	    }
-	});
-
-    };
+       var cursor = mongodb.collection(collectionName).find(function (err, docs) {
+           if (err || !docs) {
+               console.log("Cannot print database or database is empty\n");
+           }
+           else {
+               callback(docs);
+           }
+       });
+   };
 
     deleteAll = function (colName, callback) {
 	mongodb.collection(colName).remove({});

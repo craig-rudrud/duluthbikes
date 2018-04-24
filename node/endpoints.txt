@@ -1,0 +1,107 @@
+get:
+  /
+    Sends /public/duluthBikesBootstrap.html
+
+  /isLoggedIn
+    send "true" if the user is logged in, "false" otherwise
+
+  /heatmapfiles
+    Sends heatmap.js
+
+  /heatmapfilesgmaps
+    Sends gmaps-heatmap.js
+
+  /fullRide
+    Pulls ride data from database
+    Sends hard-coded html
+		
+  /fulllatlng
+    Same as /fullRide
+		
+  /raw
+    sends html containing everything in RideHistory
+
+  /rides
+    ???
+
+  /maps
+    ???
+    
+  /usernames
+    sends list of all usernames
+
+  /localleaderbords
+    sends a string that represents the local leaderboards
+
+  /globalleaderboard
+    sends a string that represents the global leaderboards
+    
+  /logout
+    ends the session
+
+post:
+  /friends
+    requires in req.body:
+      name
+    returns a list of friends of the given user
+
+  /addFriend
+    requires in req.body:
+      name
+    adds given user to the logged in users friend list
+
+  /removeFriend
+    requires in req.body:
+      name
+    removes given user to the logged in users friend list
+
+  /postlocalleaderboard
+    requires in req.body:
+      pos
+      date
+      distance
+      time
+      name
+    Puts data into local leaderboard
+
+  /postgloballeaderboard
+    requires in req.body
+      pos
+      date
+      distance
+      time
+      name
+    Puts data in global leaderboard
+
+  /postroute
+    requires in req.body:
+      lat
+      lang
+      time
+
+  /postFinish
+    requires in req.body:
+      ride
+      heat
+    inserts ride into database?
+
+  /loginAttempt
+    requires in req.body:
+      name
+      pass
+    if successfull, starts a session //TODO
+
+  /newAccount
+    requires in req.body:
+      name
+      pass
+      email(optional)
+    if successfull, add user to database
+
+  /postpicture
+    requires in req.body:
+      loc
+      description
+      picture
+    adds the picture to the database
+

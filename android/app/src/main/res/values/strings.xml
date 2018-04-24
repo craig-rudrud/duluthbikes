@@ -81,9 +81,13 @@
     <string name="sTimeLabel">Start:</string>
     <string name="fTimeLabel">Finish:</string>
     <string name="totDistLabel">Total\nDistance (km):</string>
+    <string name="totDistLabelNoBreak">Total Distance:</string>
     <string name="avgDistLabel">Average\nDistance (km):</string>
+    <string name="avgDistLabelNoBreak">Average Distance:</string>
     <string name="totTimeLabel">Total Time:</string>
     <string name="avgTimeLabel">Average Time:</string>
+    <string name="total">Total: </string>
+    <string name="average">Average: </string>
     <string name="rideHistoryLabel">Ride History:</string>
     <string name="DONE">DONE</string>
     <string name="shareRideLabel">Share Ride</string>
@@ -131,10 +135,16 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="eraseAllRides">Erase All Rides</string>
     <string name="eraseAllRidesToast">All rides have been erased!</string>
     <string name="eraseAllRidesPopup">Are you sure you want to erase all your rides?</string>
-    <string name="uploadImageFrom">Upload image from...</string>
+    <string name="uploadImageFrom">Upload image from…</string>
+    <string name="profilePicUpdateGood">Successfully changed profile picture!</string>
+    <string name="profilePicUpdateFail">Profile picture upload failed!</string>
+    <string name="profilePicLocation">_profile_picture</string>
+    <string name="_0_0_km">0.0 km</string>
+    <string name="_00_00_00">00:00:00</string>
 
     <!-- strings related to settings -->
     <string name="settings">Settings</string>
+    <string name="profile_settings">Profile / Settings</string>
     <string name="resetStats">Reset Stats</string>
     <string name="dialog_reset_confirmation">Are you sure you would like to reset your local stats?</string>
     <string name="yes">Yes</string>
@@ -166,7 +176,20 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="sign_in_with_google">Sign in with Google</string>
 
 
+
     <!-- strings related to suggested places -->
     <string name="bridge">The Aerial Lift Bridge is a landmark in the Duluth. </string>
+
+
+    <!-- strings related to friends -->
+    <string name="friends">Friends</string>
+    <string name="searchForFriends">Search for friends…</string>
+    <string name="defaultFriendName">First Last</string>
+    <string name="addFriend">Add Friend</string>
+    <string name="removeFriend">Remove Friend</string>
+    <string name="friendAdded">Friend added!</string>
+    <string name="friendRemoved">Friend removed!</string>
+    <string name="add_remove_friend">Add/Remove Friend</string>
+    <string name="friendsCount">Friends (#):</string>
 
 </resources>

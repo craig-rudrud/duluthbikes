@@ -28,6 +28,10 @@ public interface ModelViewPresenterComponents {
 
     interface PresenterContract {
 
+        boolean addFriend(String name);
+
+        boolean removeFriend(String name);
+
         void setClient(GoogleApiClient c);
 
         Location getLocationForCamera();
@@ -44,7 +48,9 @@ public interface ModelViewPresenterComponents {
 
         void notifyRoute(JSONArray fullRide,JSONArray l);
 
-        void loginUser(String userName,String passWord);
+        boolean loginUser(String username, String password);
+
+        boolean logoutUser();
 
         void sendPictureToServer(String loc, String description, String encodedImage);
 
@@ -93,7 +99,7 @@ public interface ModelViewPresenterComponents {
 
         void notifyFinishRoute(JSONArray r,JSONArray l);
 
-        void loginAttempt(String user,String pass);
+        boolean loginAttempt(String user, String pass);
 
         void newAccount(String user, String pass, String email);
 
@@ -106,6 +112,18 @@ public interface ModelViewPresenterComponents {
         JSONArray getClicks();
 
         GoogleApiClient getGoogleApi();
+
+        boolean getLoginStatus();
+
+        JSONArray getUsernames();
+
+        JSONArray getFriends(String user);
+
+        boolean addFriend(String name);
+
+        boolean removeFriend(String name);
+
+        boolean logoutAttempt();
     }
 
 }

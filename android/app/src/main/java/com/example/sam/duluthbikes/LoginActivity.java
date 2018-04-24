@@ -37,7 +37,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -92,7 +91,7 @@ public class LoginActivity extends AppCompatActivity
         // Build a GoogleSignInClient with the options specified by gso.
         final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        findViewById(R.id.sign_in_button).setOnClickListener(new OnClickListener() {
+        findViewById(R.id.google_sign_in_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -108,7 +107,7 @@ public class LoginActivity extends AppCompatActivity
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
+        Button mSignInButton = findViewById(R.id.sign_in_button);
         Button registerButton = findViewById(R.id.needAccountButton);
 
         requestStoragePermission();
@@ -126,7 +125,7 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
@@ -143,14 +142,17 @@ public class LoginActivity extends AppCompatActivity
                     } else if (stringHasInvalidChar(user)) {
                         Toast.makeText(LoginActivity.this, getString(R.string.Username)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
                     } else if (pass.length() < 6) {
-                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.usernameLengthReq), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.passwordLengthReq), Toast.LENGTH_SHORT).show();
                     } else if (stringHasInvalidChar(pass)) {
                         Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
                     } else {
                         if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
-                            mPresenter.loginUser(user, pass);
+                            if(mPresenter.loginUser(user, pass)) {
+                                startMenu(user, pass);
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Login failed!", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        startMenu(user, pass);
                     }
                 } else {
                     requestStoragePermission();
@@ -167,10 +169,6 @@ public class LoginActivity extends AppCompatActivity
             out.write((user+"\n").getBytes());
             out.write(("\n").getBytes());
             out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

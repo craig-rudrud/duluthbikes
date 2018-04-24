@@ -9,11 +9,13 @@
 var bodyParser = require('body-parser');
 // require express
 var express = require('express');
-
+var session = require('express-session');
 // express framework for handling http requests
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+
+
 /*
  * varaible area for any required varaibles we might use
  */
@@ -30,7 +32,10 @@ app.use(bodyParser.urlencoded({
     limit: '50mb',
     extended: true
 }));
+
 app.use(bodyParser.json({limit: '50mb'}));
+
+app.use(session({secret: "TODO: figure out what a secret is"}));
 
 
 //Include all files in the public folder to serve to the website
@@ -40,6 +45,12 @@ app.use(express.static('public'));
 // Connect to the mongo module
 var mongodb = require('./mongoDB.js')();
 console.log(mongodb);
+
+app.get('/isLoggedIn', (req,res) =>{
+    if(req.session.login) res.send("true")
+    else res.send("false")
+
+})
 
 app.get('/heatmapfiles',function(req,res){
     res.sendFile(__dirname + '/public/node_modules/heatmap.js/build/heatmap.js');
@@ -61,6 +72,7 @@ app.get('/ful lRide',function(req,res){
 });
 
 app.get('/fulllatlng',function(req,res){
+    if(!req.session.login) return res.sendStatus(403);
     var rides = printRides('FullLatLngsRecorded',function(result){
         res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
                   +'<H1>Full Rides.</H1>');
@@ -75,7 +87,7 @@ app.get('/fulllatlng',function(req,res){
 // the first one is the default dashboard route
 //
 app.get('/raw', function(request, response) {
-
+    if(!req.session.login) return res.sendStatus(403);
     //when using Mongo
     var str = printDatabase('RideHistory', function(result) {
 	response.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
@@ -95,6 +107,34 @@ app.get('/rides',function(request,response){
     });
 });
 
+app.post('/friends',(req,res) => {
+    if(!req.body.name) return res.sendStatus(400)
+    getFriends(req.body.name, (err, doc) =>{
+	if(err) res.send(err)
+	else res.send(doc)
+    })
+})
+
+app.post('/addFriend', (req,res) =>{
+    if(!req.body.name || !req.session.uid) return res.sendStatus(400)
+    obj = {user:mongodb.ObjectId(req.session.uid),
+	   friend: req.body.name}
+    addFriend(obj, (err, docs)=>{
+	if(err) res.send(err)
+	else res.sendStatus(200)
+    })
+})
+
+app.post('/removeFriend', (req,res) =>{
+    if(!req.body.name || !req.session.uid) return res.sendStatus(400)
+    obj = {user:mongodb.ObjectId(req.session.uid),
+	   friend: req.body.name}
+    removeFriend(obj, (err, docs)=>{
+	if(err) res.send(err)
+	else res.sendStatus(200)
+    })
+})
+
 app.get('/maps',function(req,res){
     res.sendFile(__dirname + '/public/maps.html');
     printRides('FullRidesRecorded',function(doc){
@@ -103,14 +143,8 @@ app.get('/maps',function(req,res){
 });
 
 app.get('/',function(req,res){
-
     res.sendFile(__dirname + '/public/duluthBikesBootstrap.html');
 });
-
-
-
-
-
 
 
 app.get('/clickPlaces', function (req, res) {
@@ -162,25 +196,6 @@ app.post('/postClickPlaces', function(request,response) {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.post('/postlocalleaderboard', function(request,response) {
 
     if (!request.body) return response.sendStatus(400);
@@ -197,103 +212,9 @@ app.post('/postlocalleaderboard', function(request,response) {
     insertLocalLeaderboard(position,statData);
     console.log('Post Request: postlocalleaderboard');
     response.sendStatus(200);
-});
-
-app.post('/postgloballeaderboard', function(request,response) {
-
-    if (!request.body) return response.sendStatus(400);
-
-    var position = {
-	'pos':request.body.pos
-    }
-    var statData = {
-	'date':request.body.date,
-	'distance':request.body.distance,
-	'time':request.body.time,
-	'name':request.body.name
-    }
-    insertGlobalLeaderboard(position,statData);
-    console.log('Post Request: postgloballeaderboard');
-    response.sendStatus(200);
-});
-
-app.post('/postlocalleaderboard', function(request,response) {
-
-    if (!request.body) return response.sendStatus(400);
-
-    var position = {
-	'pos':request.body.pos
-    }
-    var statData = {
-	'date':request.body.date,
-	'distance':request.body.distance,
-	'time':request.body.time,
-	'name':request.body.name
-    }
-    insertLocalLeaderboard(position,statData);
-    console.log('Post Request: postlocalleaderboard');
-    response.sendStatus(200);
-});
-
-app.post('/postgloballeaderboard', function(request,response) {
-
-    if (!request.body) return response.sendStatus(400);
-
-    var position = {
-	'pos':request.body.pos
-    }
-    var statData = {
-	'date':request.body.date,
-	'distance':request.body.distance,
-	'time':request.body.time,
-	'name':request.body.name
-    }
-    insertGlobalLeaderboard(position,statData);
-    console.log('Post Request: postgloballeaderboard');
-    response.sendStatus(200);
-});
-
-app.post('/postroute', function(request, response) {
-
-    if (!request.body)return response.sendStatus(400);
-
-    var routeData = {'lat':request.body.lat,
-		     'lng':request.body.lang};
-
-    var date = {'Date':request.body.time};
-
-    //Mongo
-    insertRoute(routeData);
-
-    console.log('Post Request: postroute');
-
-    response.sendStatus(200);
-});
-
-app.post('/postfinish',function(req,res){
-
-    if(!req.body)return res.sendStatus(400);
-
-    var arr = [];
-    arr = req.body.ride;
-    insertFullRide(arr);
-    if(req.body.heat){
-	var latlng = [];
-	latlng = req.body.heat;
-	insertLatLng(latlng);
-
-	io.emit('FullRidesRecorded',doc);
-    }
-    console.log('Post Full Ride');
-
-    res.sendStatus(200);
-});
-
 
 app.get('/usernames', function(req,res){
-    var users = printUsers('UsersSaved',function(result){
-        res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
-		  +'<H1>Users </H1>');
+    var users = printUsers(function(result){
         res.write(JSON.stringify(result));
         res.send();
     });
@@ -316,47 +237,132 @@ app.get('/globalleaderboard', function(req, res) {
     console.log('global leaderboard request');
 });
 
-app.post('/loginAttempt', function(req,res){
-    if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
-    var userObj = { 'user':req.body.userName,
-		    'pass':req.body.passWord };
-    console.log('loginAttempt');
-    if(checkCreds(userObj))
-    {   console.log("wtf")
-	res.sendStatus(200);
-    }
-    else {
-	res.sendStatus(300);
-	console.log("help")
-    }
-    console.log("success")
+app.get('/logout', (req, res)=>{
+    if(!req.session.login) return res.send("You must log in to logout")
+    req.session.login = false
+    delete req.session.uid
+    res.send ("logout");
 });
+
+
+app.post('/postlocalleaderboard', function(request,response) {
+    if(!req.session) return res.sendStatus(403)
+    if (!request.body) response.sendStatus(400);
+
+    var position = {
+	'pos':request.body.pos
+    }
+    var statData = {
+	'date':request.body.date,
+	'distance':request.body.distance,
+	'time':request.body.time,
+	'name':request.body.name
+    }
+    insertLocalLeaderboard(position,statData);
+    console.log('Post Request: postlocalleaderboard');
+    response.sendStatus(200);
+});
+
+app.post('/postgloballeaderboard', function(request,response) {
+    if (!request.body) return response.sendStatus(400);
+    if(!req.session.login) res.sendStatus(403)
+
+    var position = {
+	'pos':request.body.pos
+    }
+    var statData = {
+	'date':request.body.date,
+	'distance':request.body.distance,
+	'time':request.body.time,
+	'name':request.body.name
+    }
+    insertGlobalLeaderboard(position,statData);
+    console.log('Post Request: postgloballeaderboard');
+    response.sendStatus(200);
+});
+
+app.post('/postroute', function(request, response) {
+    if(!req.session.login) return res.sendStatus(403)
+    if (!request.body) response.sendStatus(400);
+
+    var routeData = {'lat':request.body.lat,
+		     'lng':request.body.lang};
+
+    var date = {'Date':request.body.time};
+
+    //Mongo
+    insertRoute(routeData);
+
+    console.log('Post Request: postroute');
+
+    response.sendStatus(200);
+});
+
+app.post('/postfinish',function(req,res){
+    if(!req.session.login) return res.send(403)
+    if(!req.body) return res.sendStatus(400);
+    var arr = [];
+    arr = req.body.ride;
+    insertFullRide(arr);
+    if(req.body.heat){
+	var latlng = [];
+	latlng = req.body.heat;
+	insertLatLng(latlng);
+	io.emit('FullRidesRecorded',doc);
+    }
+    console.log('Post Full Ride');
+    res.sendStatus(200);
+});
+
+
+
+app.post('/loginAttempt', function(req,res){
+    //if(req.session.login) return res.send("you must logout before you log in")
+    if(!req.body.name || !req.body.pass) return res.sendStatus(400)
+    var userObj = { 'name':req.body.name, 'pass':req.body.pass}
+    loginAttempt(userObj, (err, uid) =>{
+	if(err) res.send(err)
+	else {
+	    req.session.login = true
+	    req.session.uid = uid
+	    res.sendStatus(200)
+	}
+    })
+})
 
 app.post('/newAccount', function(req,res){
-    if(!req.body) return res.sendStatus(400);
-    var userObj = { 'user':req.body.userName,
-		    'pass':req.body.passWord,
-		    'email':req.body.email};
-    if(newAccount(userObj))
-    {   console.log("wtf")
-	res.sendStatus(200);
-    }
-    else {
-	res.sendStatus(300);
-	console.log("help")
-    }
-    console.log("success")
-});
+    if(!req.body.name || !req.body.pass) return res.sendStatus(400);
+    var userObj = { 'name':req.body.name,
+		    'pass':req.body.pass,
+		    'email':req.body.email,
+		    'friends':[]}
+    insertUser(userObj, (err, docs)=>{
+	if(err) res.send(err)
+	else res.send(docs)})})
 
 app.post('/postpicture', function(req,res){
-    if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
-    var picObj = { 'location':req.body.loc,
-		   'description':req.body.description,
-		   'picture':req.body.picture };
+    if(!req.session.login) return res.sendStatus(403)
+    //if(!req.body.userName || !req.body.passWord) return res.sendStatus(400);
+    var picObj = {
+        'location':req.body.loc,
+	'description':req.body.description,
+	'picture':req.body.picture };
     insertPicture(picObj);
     console.log('Post Picture');
     res.send();
+});
 
+app.get('/getpicture', function(req, res){
+    if(!req.session.login) return res.sendStatus(403)
+    if(!req.body.description) {
+        return res.sendStatus(400)
+    }
+
+    var picObj = {'description': req.body.description}
+    getPicture(picObj, (err, docs)=>{
+        if(err) res.send(err)
+        else res.send(docs)
+    })
 });
 
 app.get('/pictures',function(req,res){
@@ -376,52 +382,6 @@ app.get('/pictures',function(req,res){
     console.log('picture request');
 });
 
-app.get('/deleteallthepictures',function(res,req) {
-    console.log('deleted all pictures attempt');
-
-    deleteAll('PicturesSaved', function(result) {
-	if(result==true)console.log("deleted all pictures");
-	else console.log("Did not work");
-    });
-});
-
-
-app.get('/deletealltherides',function(res,req){
-    console.log('deleted all rides atempt');
-
-    deleteAll('FullLatLngsRecorded',function(result){
-	if(result==true)console.log("deleted all");
-	else console.log("didnt work");
-    });
-});
-
-app.get('/deleteAllUsers',function(res,req){
-    console.log('deleted all users atempt');
-
-    deleteAll('UsersSaved',function(result){
-	if(result==true)console.log("deleted all");
-	else console.log("didnt work");
-    });
-});
-
-app.get('/resetLocalLeaderboard',function(res,req){
-    console.log('deleted all local leaderboard atempt');
-
-    deleteAll('localLeaderboard',function(result){
-	if(result==true)console.log("deleted all");
-	else console.log("didnt work");
-    });
-});
-
-app.get('/resetGlobalLeaderboard',function(res,req){
-    console.log('deleted all global leaderboard atempt');
-
-    deleteAll('globalLeaderboard',function(result){
-	if(result==true)console.log("deleted all");
-	else console.log("didnt work");
-    });
-});
-
 
 io.on('connection',function(socket){
     console.log('a socket io connection');
@@ -434,10 +394,6 @@ io.on('connection',function(socket){
 function convertBase64ToImage(){
 
 }
-
-app.get('/logout', (req, res)=>{
-    res.write("logout");
-});
 
 
 

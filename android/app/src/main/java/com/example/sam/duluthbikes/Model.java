@@ -1,6 +1,7 @@
 package com.example.sam.duluthbikes;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -32,6 +33,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import java.util.concurrent.ExecutionException;
+
+//import retrofit2.http.HTTP;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -61,6 +67,7 @@ public class Model
 
     public Model(){}
 
+    @SuppressLint("RestrictedApi")
     public Model(Context context, Presenter presenter){
         mContext = context;
         //mGSO = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
@@ -166,10 +173,9 @@ public class Model
     /**
      * @param user username
      * @param pass password
-     * Attempts to login with given credentials
      */
     @Override
-    public void loginAttempt(String user, String pass) {
+    public boolean loginAttempt(String user, String pass) {
         JSONObject profile = null;
         try{
             profile = new JSONObject();
@@ -179,7 +185,31 @@ public class Model
             e.printStackTrace();
         }
         mode = true;
-        new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt","POST",profile.toString());
+        new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt", "POST", profile.toString());
+//        return getLoginStatus();
+        return true;
+    }
+
+    @Override
+    public boolean logoutAttempt() {
+        String status = null;
+        try {
+            status = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/logout", "GET").get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return status.equals("logout");
+    }
+
+    public boolean getLoginStatus() {
+        String loginStatus;
+        try {
+            loginStatus = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/isLoggedIn", "GET").get();
+            return loginStatus.equals("true");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public void newAccount(String user, String pass, String email){
@@ -216,6 +246,18 @@ public class Model
         }
         new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/postpicture","POST",pictureObj.toString());
         //mGoogleApiClient.disconnect();
+    }
+
+    public String getPicture(String description) {
+        String data = null;
+
+        try {
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/getpicture", "GET", description).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return data;
     }
 
     @Override
@@ -320,6 +362,62 @@ public class Model
         return result;
     }
 
+    public JSONArray getUsernames() {
+        String data;
+        JSONArray result = null;
+        try {
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/usernames", "GET").get();
+            result = new JSONArray(data);
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public JSONArray getFriends(String user) {
+        JSONObject object;
+        String data;
+        JSONArray result = null;
+
+        try {
+            object = new JSONObject();
+            object.put("name", user);
+            data = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/friends", "POST", object.toString()).get();
+            result = new JSONArray(data);
+        } catch (JSONException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public boolean addFriend(String name) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("name", name);
+            new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/addFriend", "POST", object.toString());
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean removeFriend(String name) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("name", name);
+            new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/removeFriend", "POST", object.toString());
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(3000);

@@ -1,16 +1,22 @@
 package com.example.sam.duluthbikes.fragments;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +25,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sam.duluthbikes.ProfilePictureViewer;
 import com.example.sam.duluthbikes.LoginActivity;
+import com.example.sam.duluthbikes.Model;
+import com.example.sam.duluthbikes.Presenter;
+import com.example.sam.duluthbikes.ProfilePictureViewer;
 import com.example.sam.duluthbikes.R;
+import com.example.sam.duluthbikes.UnitConverter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -34,22 +43,31 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public class SettingsFragment extends Fragment {
 
     View myView;
+    Presenter mPresenter;
     Button loginButton;
     Button mEraseAllRides;
     File profile;
     TextView username;
     TextView email;
     ImageView profilePicture;
+    TextView totalDistance;
+    TextView avgDistance;
+    TextView totalTime;
+    TextView avgTime;
 
     GoogleSignInClient mGoogleSignInClient;
     String personName;
     String personEmail;
+    String personId;
     Uri personPhoto;
 
     /*
@@ -60,21 +78,32 @@ public class SettingsFragment extends Fragment {
      */
     int loginStatus;
 
+    static final int UPLOAD_IMAGE = 1;
+
+    String localPath;
+
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_settings, container, false);
+        DecimalFormat df = new DecimalFormat("#.##");
+        UnitConverter converter = new UnitConverter();
+
+        mPresenter = new Presenter();
 
         profile = new File("sdcard/Profile.txt");
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (acct != null) {
             personName = acct.getDisplayName();
             personEmail = acct.getEmail();
+            personId = acct.getId();
             personPhoto = acct.getPhotoUrl();
             loginStatus = 2;
         }
         else {
             loginStatus = (profile.exists()) ? 1 : 0;
+            personId = getUsername();
         }
 
         username = myView.findViewById(R.id.usernameTextView);
@@ -85,11 +114,33 @@ public class SettingsFragment extends Fragment {
         email.setText(getEmail());
         setProfilePicture();
 
+        SharedPreferences totalStats = getContext().getSharedPreferences(getString(R.string.lifetimeStats_file_key), 0);
+        totalDistance = myView.findViewById(R.id.totalDistanceAmt);
+        avgDistance = myView.findViewById(R.id.avgDistanceAmt);
+        totalTime = myView.findViewById(R.id.totalTimeAmt);
+        avgTime = myView.findViewById(R.id.avgTimeAmt);
+
+        Float totDist = totalStats.getFloat(getString(R.string.lifetimeStats_totDist), 0);
+        Double mTotDist = Double.valueOf(df.format(converter.getDistInKm(totDist.doubleValue())));
+        totalDistance.setText(getString(R.string.total)+"  "+String.valueOf(mTotDist) + " km");
+
+        Float avgDist = totalStats.getFloat(getString(R.string.lifetimeStats_avgDist), 0);
+        Double mAvgDist = Double.valueOf(df.format(converter.getDistInKm(avgDist.doubleValue())));
+        avgDistance.setText(getString(R.string.average)+"  "+String.valueOf(mAvgDist) + " km");
+
+        Long totTime = totalStats.getLong(getString(R.string.lifetimeStats_totTime), 0);
+        totalTime.setText(getString(R.string.total)+"  "+converter.convertHoursMinSecToString(totTime));
+
+        Long mAvgTime = totalStats.getLong(getString(R.string.lifetimeStats_avgTime), 0);
+        avgTime.setText(getString(R.string.average)+"  "+converter.convertHoursMinSecToString(mAvgTime));
+
         loginButton = myView.findViewById(R.id.loginButton);
         makeLoginButton();
 
         mEraseAllRides = myView.findViewById(R.id.button_eraseAllRides);
         makeEraseAllRidesButton();
+
+        localPath = getLocalPath();
 
         return myView;
     }
@@ -167,6 +218,7 @@ public class SettingsFragment extends Fragment {
                                     }
                                     else if (loginStatus == 1) {
                                         profile.delete();
+                                        mPresenter.logoutUser();
                                         Intent login = new Intent(getActivity(), LoginActivity.class);
                                         startActivity(login);
                                     }
@@ -252,22 +304,52 @@ public class SettingsFragment extends Fragment {
 
     private void setProfilePicture() {
 
-        if (loginStatus == 2) {
-            String url = "https:/lh5.googleusercontent.com" + personPhoto.getPath();
-            Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
-                    .error(R.drawable.default_profile_pic)
-                    .into(profilePicture, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                        }
-
-                        @Override
-                        public void onError() {
-                        }
-                    });
+        if (loginStatus == 0) {
+            profilePicture.setImageResource(R.drawable.default_profile_pic);
         }
         else {
-            profilePicture.setImageResource(R.drawable.default_profile_pic);
+            File file = new File(getLocalPath());
+            if (!file.exists()) {
+                // Retrieve the image from the server
+                Model model = new Model();
+                String image = model.getPicture(personId+getString(R.string.profilePicLocation));
+                if(image == null) {
+                    byte[] data = Base64.decode(image, Base64.DEFAULT);
+                    Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    profilePicture.setImageBitmap(bm);
+                }
+                else {
+                    if (loginStatus == 2) {
+                        String url = "https:/lh5.googleusercontent.com" + personPhoto.getPath();
+                        Picasso.with(getContext()).load(url).placeholder(R.drawable.default_profile_pic)
+                                .error(R.drawable.default_profile_pic)
+                                .into(profilePicture, new com.squareup.picasso.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                    }
+                                });
+                    } else if (loginStatus == 1) {
+                        profilePicture.setImageResource(R.drawable.default_profile_pic);
+                    }
+                }
+            }
+            else {
+                Picasso.with(getContext()).load(file).placeholder(R.drawable.default_profile_pic)
+                        .error(R.drawable.default_profile_pic)
+                        .into(profilePicture, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                            }
+
+                            @Override
+                            public void onError() {
+                            }
+                        });
+            }
         }
 
         // Allow the user to VIEW their profile picture when they tap on it
@@ -277,6 +359,7 @@ public class SettingsFragment extends Fragment {
                 Intent viewIntent = new Intent(getActivity(), ProfilePictureViewer.class);
 
                 Bitmap b = ((BitmapDrawable)profilePicture.getDrawable()).getBitmap();
+
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 b.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
@@ -292,8 +375,62 @@ public class SettingsFragment extends Fragment {
         profilePicture.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                startActivityForResult(new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI),
+                        UPLOAD_IMAGE);
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == UPLOAD_IMAGE) {
+            if(resultCode == Activity.RESULT_OK) {
+                Uri image = data.getData();
+                try {
+                    Bitmap bm = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), image);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] bytes = stream.toByteArray();
+                    String string = Base64.encodeToString(bytes, Base64.DEFAULT);
+
+                    mPresenter.sendPicture("", personId+getString(R.string.profilePicLocation), string);
+
+                    FileOutputStream out = new FileOutputStream(localPath);
+                    out.write(bytes);
+                    out.close();
+
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getString(R.string.profilePicUpdateGood), Toast.LENGTH_SHORT)
+                            .show();
+
+                    profilePicture.setImageBitmap(bm);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getString(R.string.profilePicUpdateFail), Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        }
+    }
+
+    private String getLocalPath() {
+        String path = null;
+        switch(loginStatus) {
+            case 2:
+                path = "sdcard/" + personId + getString(R.string.profilePicLocation) + ".jpeg";
+                break;
+            case 1:
+                path = "sdcard/" + getUsername() + getString(R.string.profilePicLocation) + ".jpeg";
+                break;
+            case 0:
+                path = "sdcard/" + getUsername() + getString(R.string.profilePicLocation) + ".jpeg";
+                break;
+        }
+        return path;
     }
 }

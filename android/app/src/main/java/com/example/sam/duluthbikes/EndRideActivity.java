@@ -2,7 +2,6 @@ package com.example.sam.duluthbikes;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,10 +9,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.net.Uri;
-
 import android.location.Location;
-
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -21,18 +18,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -110,7 +104,7 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
             }
         });
 
-        updateLocalLeaderboard();
+        //updateLocalLeaderboard();
     }
 
 
@@ -121,7 +115,7 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
     }
 
     public void doneWithRide(View view){
-        updateLocalLeaderboard();
+        //updateLocalLeaderboard();
         Intent menu = new Intent(this.getApplicationContext(), MenuActivity.class);
         startActivity(menu);
     }
@@ -264,8 +258,6 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -279,47 +271,35 @@ public class EndRideActivity extends AppCompatActivity implements ModelViewPrese
 
     /**
      * @author Android Guys
-     * Source URL: https://androidluckyguys.wordpress.com/2017/08/14/add-watermark-to-captured-image/
+     * https://androidluckyguys.wordpress.com/2017/08/14/add-watermark-to-captured-image/
      *
-     * Embeds an image watermark over a source image to produce
-     * a watermarked one.
+     * Embeds an image watermark over a source image to produce a watermarked one.
      * @param res The image file used as the watermark.
      * @param source The source image file.
-     *
-     * Adds a watermark on the given image.
      */
     public static Bitmap addWatermark(Resources res, Bitmap source) {
-        int w, h;
-        Canvas c;
-        Paint paint;
-        Bitmap bmp, watermark;
-        Matrix matrix;
-        float scale;
-        RectF r;
-        w = source.getWidth();
-        h = source.getHeight();
-        // Create the new bitmap
-        bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
-        // Copy the original bitmap into the new one
-        c = new Canvas(bmp);
-        c.drawBitmap(source, 0, 0, paint);
-        // Load the watermark
-        watermark = BitmapFactory.decodeResource(res, R.drawable.duluth_bikes_logo);
-        // Scale the watermark to be approximately 40% of the source image height
-        scale = (float) (((float) h * 0.25) / (float) watermark.getHeight());
-        // Create the matrix
-        matrix = new Matrix();
+
+        int width = source.getWidth();
+        int height = source.getHeight();
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
+
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawBitmap(source, 0, 0, paint);
+
+        Bitmap watermark = BitmapFactory.decodeResource(res, R.drawable.duluth_bikes_logo);
+        float scale = (float) (((float) height * 0.25) / (float) watermark.getHeight());
+
+        Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
-        // Determine the post-scaled size of the watermark
-        r = new RectF(0, 0, watermark.getWidth(), watermark.getHeight());
+
+        RectF r = new RectF(0, 0, watermark.getWidth(), watermark.getHeight());
         matrix.mapRect(r);
-        // Move the watermark to the bottom right corner
-        matrix.postTranslate(w - r.width(), h - r.height());
-        // Draw the watermark
-        c.drawBitmap(watermark, matrix, paint);
-        // Free up the bitmap memory
+        matrix.postTranslate(width - r.width(), height - r.height());
+        canvas.drawBitmap(watermark, matrix, paint);
         watermark.recycle();
-        return bmp;
+
+        return bitmap;
     }
 }

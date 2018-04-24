@@ -20,6 +20,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.sam.duluthbikes.fragments.FriendViewFragment;
+import com.example.sam.duluthbikes.fragments.FriendsFragment;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import org.json.JSONArray;
+
+
+//app:headerLayout="@layout/nav_header"
+
+
+
 import com.example.sam.duluthbikes.fragments.AboutFragment;
 import com.example.sam.duluthbikes.fragments.DiscountFragment;
 import com.example.sam.duluthbikes.fragments.EventsFragment;
@@ -28,7 +39,6 @@ import com.example.sam.duluthbikes.fragments.ReportAppFragment;
 import com.example.sam.duluthbikes.fragments.ReportFragment;
 import com.example.sam.duluthbikes.fragments.RideHistoryFragment;
 import com.example.sam.duluthbikes.fragments.SettingsFragment;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
@@ -182,6 +192,10 @@ public class MenuActivity extends AppCompatActivity
         } else if (id == R.id.nav_ride_history) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new RideHistoryFragment())
+                    .commit();
+        } else if (id == R.id.nav_friends) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new FriendsFragment())
                     .commit();
         } else if (id == R.id.nav_events) {
             fragmentManager.beginTransaction()
