@@ -4,8 +4,9 @@
 
 //var url = 'mongodb://127.0.0.1:50432/db'; 
 
-var url = 'mongodb://127.0.0.1:23406/db';
-var collections = ['rides', 'users', 'RideHistory', 'FullRidesRecorded'];
+//var url = 'mongodb://127.0.0.1:23406/db';
+var url = 'mongodb://127.0.0.1:27017/db';
+var collections = ['rides', 'users', 'RideHistory', 'FullRidesRecorded','clicks'];//////////////////////////////////
 
 var mongojs = require('mongojs');
 var assert = require('assert');
@@ -183,6 +184,35 @@ module.exports = function () {
 	});
 	
     };
+    /////////////////////////////////////
+    /*
+    insertClickPlaces = function(clicks){
+    	mongodb.collection('clicks').save(
+	    { click: clicks.placeName, clicks }, function (err, result) {
+		if (err || !result) console.log("clicks not saved");
+		else console.log("click Places saves in picture DB")
+	    });
+
+    };*/
+
+
+    insertClickPlaces = function (clicks) {
+	mongodb.collection('clicks').save(
+	    { click: clicks.placeName, clicks}, function (err, result) {
+		if (err || !result) console.log("clicks not saved");
+		else console.log("clicks is saved");
+	    });
+    };
+
+
+    deleteClicks = function(placeName, callback){
+    	mongodb.collection('clicks').remove({click: placeName},function(err, result){
+		if(err || !result) console.log("ClickPlaces failed to delete.");
+		else console.log("Delete.");
+		});
+    };
+
+
 
     insertPicture = function (pic) {
 	mongodb.collection('PicturesSaved').save(

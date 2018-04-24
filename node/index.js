@@ -49,7 +49,7 @@ app.get('/heatmapfilesgmaps',function(req,res){
     res.sendFile(__dirname + '/public/node_modules/heatmap.js/plugins/gmaps-heatmap/gmaps-heatmap.js');
 });
 
-app.get('/fullRide',function(req,res){
+app.get('/ful lRide',function(req,res){
     var rides = printRides('FullRidesRecorded',function(result){
 	res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
 		  +'<H1>Full Rides.</H1>');
@@ -106,6 +106,80 @@ app.get('/',function(req,res){
 
     res.sendFile(__dirname + '/public/duluthBikesBootstrap.html');
 });
+
+
+
+
+
+
+
+app.get('/clickPlaces', function (req, res) {
+   var users = printDatabase('clicks',function(result){
+	res.write(JSON.stringify(result));
+	res.send();
+    });
+    console.log('local leaderboard request');
+
+});
+
+
+app.get('/deleteClicks/:placeName', function (req, res) {
+    console.log('deleted clicks for Places '+req.params.placeName);
+
+    deleteClicks(req.params.placeName, function(result) {
+	if(result==true){
+		console.log("delete clicks");}
+	else {
+		console.log("Did not work");}
+    });
+    
+    var jsonResponse = {
+            id: '123', status: 'updated'
+        };
+        res.json(jsonResponse);
+
+
+});
+
+
+
+
+app.post('/postClickPlaces', function(request,response) {
+
+    if (!request.body) return response.sendStatus(400);
+
+   
+    var clickData = {
+	'placeName':request.body.placeName,
+	'clickTimes':request.body.clickTimes
+    }
+    
+    insertClickPlaces(clickData);
+    console.log("placeName: " + request.body.placeName);
+    console.log("clickTimes: " + request.body.clickTimes);
+    console.log('Post Request: postClickPlaces');
+    response.sendStatus(200);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.post('/postlocalleaderboard', function(request,response) {
 

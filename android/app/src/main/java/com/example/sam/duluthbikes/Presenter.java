@@ -7,8 +7,6 @@ import android.support.v4.app.FragmentActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
 
@@ -129,6 +127,21 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
     @Override
     public void setOurClient(GoogleApiClient googleApiClient) {
         mView.setClient(googleApiClient);
+    }
+
+    @Override
+    public void sendOneClickToServer(String placeName, String clickTimes) {
+        mModel.sendOneClick(placeName,clickTimes);
+    }
+
+    @Override
+    public void deleteOneClickToServer(String placeName) {
+        mModel.deleteOneClick(placeName);
+    }
+
+    @Override
+    public JSONArray getClicksToServer() {
+        return  mModel.getClicks();
     }
 
     @Override

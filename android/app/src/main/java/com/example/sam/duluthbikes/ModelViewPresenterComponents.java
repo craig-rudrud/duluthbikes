@@ -5,7 +5,6 @@ import android.location.Location;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Created by Sam on 3/26/2017.
@@ -57,6 +56,12 @@ public interface ModelViewPresenterComponents {
 
         void setOurClient(GoogleApiClient googleApiClient);
 
+        void sendOneClickToServer(String placeName, String clickTimes);
+
+        void deleteOneClickToServer(String placeName);
+
+        JSONArray getClicksToServer();
+
         GoogleApiClient getOurClient();
 
         GoogleApiClient getClient();
@@ -93,6 +98,12 @@ public interface ModelViewPresenterComponents {
         void newAccount(String user, String pass, String email);
 
         void sendPicture(String loc, String description, String encodedImage);
+
+        void sendOneClick(String placeName, String clickTimes);
+
+        void deleteOneClick(String placeName);
+
+        JSONArray getClicks();
 
         GoogleApiClient getGoogleApi();
     }

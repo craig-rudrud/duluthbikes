@@ -166,4 +166,7 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="sign_in_with_google">Sign in with Google</string>
 
 
+    <!-- strings related to suggested places -->
+    <string name="bridge">The Aerial Lift Bridge is a landmark in the Duluth. </string>
+
 </resources>
