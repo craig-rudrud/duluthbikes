@@ -175,6 +175,12 @@ The main goal is to collect information about rides and use that data for cyclin
 
     <string name="sign_in_with_google">Sign in with Google</string>
 
+
+
+    <!-- strings related to suggested places -->
+    <string name="bridge">The Aerial Lift Bridge is a landmark in the Duluth. </string>
+
+
     <!-- strings related to friends -->
     <string name="friends">Friends</string>
     <string name="searchForFriends">Search for friends…</string>
@@ -185,4 +191,5 @@ The main goal is to collect information about rides and use that data for cyclin
     <string name="friendRemoved">Friend removed!</string>
     <string name="add_remove_friend">Add/Remove Friend</string>
     <string name="friendsCount">Friends (#):</string>
+
 </resources>

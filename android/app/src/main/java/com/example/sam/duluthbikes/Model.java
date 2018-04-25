@@ -33,12 +33,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import java.util.concurrent.ExecutionException;
 
 //import retrofit2.http.HTTP;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+//import retrofit2.http.HTTP;
 
 /**
  * Created by Sam on 3/26/2017.
@@ -59,6 +62,7 @@ public class Model
     private FragmentActivity mActivity;
     private int mRequestCode;
     private boolean mode;
+    private String serverAddress="http://10.0.2.2:23405";//23405
 
 
     public Model(){}
@@ -255,6 +259,44 @@ public class Model
         }
 
         return data;
+    }
+
+    @Override
+    public void sendOneClick(String placeName, String clickTimes) {
+        JSONObject clicksObj = null;
+        try {
+            clicksObj = new JSONObject();
+            clicksObj.put("placeName",placeName);   // pictureObj.put("loc",getLocation());
+            clicksObj.put("clickTimes", clickTimes);
+            new HTTPAsyncTask().execute(serverAddress+"/postClickPlaces","POST", clicksObj.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void deleteOneClick(String placeName) {
+        try {
+            new HTTPAsyncTask().execute(serverAddress+"/deleteClicks/"+placeName,"GET");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public JSONArray getClicks() {
+        String data="";
+        JSONArray jsonArray=null;
+        try {
+            data = new HTTPAsyncTask().execute(serverAddress + "/clickPlaces" ,"GET").get();
+            jsonArray = new JSONArray(data);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonArray;
+
     }
 
     @Override
