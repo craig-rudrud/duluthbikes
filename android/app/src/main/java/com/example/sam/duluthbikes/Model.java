@@ -182,8 +182,8 @@ public class Model
         }
         mode = true;
         new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt", "POST", profile.toString());
-//        return getLoginStatus();
-        return true;
+        return getLoginStatus();
+//        return true;
     }
 
     @Override
@@ -201,6 +201,7 @@ public class Model
         String loginStatus;
         try {
             loginStatus = new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/isLoggedIn", "GET").get();
+            Log.d("Login status: ", loginStatus);
             return loginStatus.equals("true");
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
