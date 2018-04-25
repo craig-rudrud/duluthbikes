@@ -5,9 +5,8 @@
 //var url = 'mongodb://127.0.0.1:50432/db';
 
 //var url = 'mongodb://127.0.0.1:23406/db';
-var url = 'mongodb://127.0.0.1:27017/db';
-var collections = ['rides', 'users', 'RideHistory', 'FullRidesRecorded','clicks'];//////////////////////////////////
-
+var url = 'mongodb://127.0.0.1:23406/db';
+var collections = ['rides', 'users', 'RideHistory', 'FullRidesRecorded','clicks'];
 var mongojs = require('mongojs');
 var assert = require('assert');
 
@@ -188,6 +187,44 @@ module.exports = function () {
 	    })
 	})
     }
+
+    //same as addFriend but without knowing uid
+    addFriendByUser = (obj, callback) =>{
+	mongodb.collection('users').find({name:obj.user}, (err,docs)=>{
+	    if(err) callback(err, null)
+	    else if(docs.length != 1) callback("you do not exist", null)
+	    else if(docs[0].friends.indexOf(obj.friend)!=-1) callback("friend already added", null)
+	    else mongodb.collection("users").find({name:obj.friend}, (err, docs) =>{
+		if(err) callback(err, null)
+		else if(docs.length != 1) callback(obj.friend + " does not exist", null)
+		else mongodb.collection("users").update({name:obj.user},
+							{$push: {friends:obj.friend}},
+							(err, docs) =>{
+							    if(err) callback(err, null)
+							    else {callback(null, "success")}
+							})
+	    })
+	})
+    }
+    
+    //same as removeFriend but without knowing uid
+    removeFriendByUser = (obj, callback) =>{
+	mongodb.collection('users').find({name:obj.user}, (err,docs)=>{
+	    if(err) callback(err, null)
+	    else if(docs.length != 1) callback("you do not exist", null)
+	    else if(docs[0].friends.indexOf(obj.friend)==-1) callback("friend not in list", null)
+	    else mongodb.collection("users").find({name:obj.friend}, (err, docs) =>{
+		if(err) callback(err, null)
+		else if(docs.length != 1) callback(obj.friend + " does not exist", null)
+		else mongodb.collection("users").update({name:obj.user},
+							{$pull: {friends:obj.friend}},
+							(err, docs) =>{
+							    if(err) callback(err, null)
+							    else callback(null, "success")
+							})
+	    })
+	})
+    }
     
     
     printUsers = function (callback) {
@@ -225,17 +262,6 @@ module.exports = function () {
 	});
 
     };
-    /////////////////////////////////////
-    /*
-    insertClickPlaces = function(clicks){
-    	mongodb.collection('clicks').save(
-	    { click: clicks.placeName, clicks }, function (err, result) {
-		if (err || !result) console.log("clicks not saved");
-		else console.log("click Places saves in picture DB")
-	    });
-
-    };*/
-
 
     insertClickPlaces = function (clicks) {
 	mongodb.collection('clicks').save(

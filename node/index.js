@@ -47,6 +47,7 @@ var mongodb = require('./mongoDB.js')();
 console.log(mongodb);
 
 app.get('/isLoggedIn', (req,res) =>{
+    console.log(req.session)
     if(req.session.login) res.send("true")
     else res.send("false")
 
@@ -60,7 +61,7 @@ app.get('/heatmapfilesgmaps',function(req,res){
     res.sendFile(__dirname + '/public/node_modules/heatmap.js/plugins/gmaps-heatmap/gmaps-heatmap.js');
 });
 
-app.get('/ful lRide',function(req,res){
+app.get('/fullRide',function(req,res){
     var rides = printRides('FullRidesRecorded',function(result){
 	res.write('<HTML><head><title>Duluth Bikes DashBoard</title></head><BODY>'
 		  +'<H1>Full Rides.</H1>');
@@ -135,6 +136,47 @@ app.post('/removeFriend', (req,res) =>{
     })
 })
 
+
+//this exists because we don't have cookies working in app
+app.post('/addfriendbyuser', (req,res) =>{
+    //req.body.uid is acutally a name, sorry
+    if(!req.body.name || !req.body.uid) return res.sendStatus(400)
+    obj = {user:req.body.uid,
+	   friend: req.body.name}
+    addFriendByUser(obj, (err, docs)=>{
+	if(err) res.send(err)
+	else res.sendStatus(200);
+    })
+    // //adds to both friends list
+    // obj = {user:req.body.name,
+    // 	   friend: req.body.uid}
+    // addFriendByUser(obj, (err, docs)=>{
+    // 	if(err) res.write("\n"+err)
+    // 	else res.write("OK")
+    // })
+    // res.send();
+})
+//This is bad because we present tomorrow
+app.post('/removefriendbyuser', (req,res) =>{
+    if(!req.body.name || !req.body.uid) return res.sendStatus(400)
+    obj = {user:req.body.uid,
+	   friend: req.body.name}
+    removeFriendByUser(obj, (err, docs)=>{
+	if(err) res.send(err)
+	else res.sendStatus(200)
+    })
+    // //removes from both friends list
+    // obj = {user:req.body.name,
+    // 	   friend: req.body.uid}
+    // addFriendByUser(obj, (err, docs)=>{
+    // 	if(err) res.write("\n"+err)
+    // 	else res.write("OK")
+    // })
+    // res.send();
+})
+
+
+
 app.get('/maps',function(req,res){
     res.sendFile(__dirname + '/public/maps.html');
     printRides('FullRidesRecorded',function(doc){
@@ -152,37 +194,28 @@ app.get('/clickPlaces', function (req, res) {
 	res.write(JSON.stringify(result));
 	res.send();
     });
-    console.log('local leaderboard request');
-
+    console.log('get clickPlaces');
 });
-
 
 app.get('/deleteClicks/:placeName', function (req, res) {
     console.log('deleted clicks for Places '+req.params.placeName);
 
     deleteClicks(req.params.placeName, function(result) {
-	if(result==true){
-		console.log("delete clicks");}
+	if(result){
+	    console.log("delete clicks");}
 	else {
-		console.log("Did not work");}
+	    console.log("Did not work");}
     });
-    
     var jsonResponse = {
-            id: '123', status: 'updated'
-        };
-        res.json(jsonResponse);
+        id: '123', status: 'updated'
+    };
+    res.json(jsonResponse);
 
 
 });
 
-
-
-
 app.post('/postClickPlaces', function(request,response) {
-
     if (!request.body) return response.sendStatus(400);
-
-   
     var clickData = {
 	'placeName':request.body.placeName,
 	'clickTimes':request.body.clickTimes
@@ -212,6 +245,7 @@ app.post('/postlocalleaderboard', function(request,response) {
     insertLocalLeaderboard(position,statData);
     console.log('Post Request: postlocalleaderboard');
     response.sendStatus(200);
+})
 
 app.get('/usernames', function(req,res){
     var users = printUsers(function(result){
@@ -325,6 +359,7 @@ app.post('/loginAttempt', function(req,res){
 	else {
 	    req.session.login = true
 	    req.session.uid = uid
+	    console.log(req.session)
 	    res.sendStatus(200)
 	}
     })
