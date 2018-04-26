@@ -147,6 +147,21 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
     }
 
     @Override
+    public void sendOneClickToServer(String placeName, String clickTimes) {
+        mModel.sendOneClick(placeName,clickTimes);
+    }
+
+    @Override
+    public void deleteOneClickToServer(String placeName) {
+        mModel.deleteOneClick(placeName);
+    }
+
+    @Override
+    public JSONArray getClicksToServer() {
+        return  mModel.getClicks();
+    }
+
+    @Override
     public GoogleApiClient getOurClient() {
         return mView.getClient();
     }
