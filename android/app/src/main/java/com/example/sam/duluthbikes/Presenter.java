@@ -177,8 +177,18 @@ public class Presenter implements ModelViewPresenterComponents.PresenterContract
     }
 
     @Override
+    public boolean addFriendByUser(String uid, String name) {
+        return mModel.addFriendByUser(uid, name);
+    }
+
+    @Override
     public boolean removeFriend(String name) {
         return mModel.removeFriend(name);
+    }
+
+    @Override
+    public boolean removeFriendByUser(String uid, String name) {
+        return mModel.removeFriendByUser(uid, name);
     }
 
     @Override
