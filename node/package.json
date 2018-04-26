@@ -15,9 +15,10 @@
   "author": "clark",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.17.1",
-    "express": "^4.15.2",
-    "mongojs": "^2.4.0",
-    "socket.io": "^1.7.3"
+      "body-parser": "^1.17.1",
+      "express": "^4.15.2",
+      "mongojs": "^2.4.0",
+      "socket.io": "^1.7.3",
+      "express-session": "^1.15.6"
   }
 }
