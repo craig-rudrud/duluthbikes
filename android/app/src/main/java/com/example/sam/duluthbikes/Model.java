@@ -37,13 +37,10 @@ import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import java.util.concurrent.ExecutionException;
-
-//import retrofit2.http.HTTP;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 //import retrofit2.http.HTTP;
 
@@ -53,9 +50,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class Model
         implements ModelViewPresenterComponents.Model,
-            GoogleApiClient.ConnectionCallbacks,
-            GoogleApiClient.OnConnectionFailedListener,
-            LocationListener{
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener{
 
     private ModelViewPresenterComponents.PresenterContract mPresenter;
     private Location mLastLocation;
@@ -66,8 +63,7 @@ public class Model
     private FragmentActivity mActivity;
     private int mRequestCode;
     private boolean mode;
-    private String serverAddress="http://10.0.2.2:23405";//23405
-
+//    private CookieManager cookieManager;
 
     public Model(){}
 
@@ -258,6 +254,21 @@ public class Model
         //mGoogleApiClient.disconnect();
     }
 
+    @Override
+    public void sendOneClick(String placeName, String clickTimes) {
+
+    }
+
+    @Override
+    public void deleteOneClick(String placeName) {
+
+    }
+
+    @Override
+    public JSONArray getClicks() {
+        return null;
+    }
+
     public String getPicture(String description) {
         String data = null;
 
@@ -268,44 +279,6 @@ public class Model
         }
 
         return data;
-    }
-
-    @Override
-    public void sendOneClick(String placeName, String clickTimes) {
-        JSONObject clicksObj = null;
-        try {
-            clicksObj = new JSONObject();
-            clicksObj.put("placeName",placeName);   // pictureObj.put("loc",getLocation());
-            clicksObj.put("clickTimes", clickTimes);
-            new HTTPAsyncTask().execute(serverAddress+"/postClickPlaces","POST", clicksObj.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public void deleteOneClick(String placeName) {
-        try {
-            new HTTPAsyncTask().execute(serverAddress+"/deleteClicks/"+placeName,"GET");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public JSONArray getClicks() {
-        String data="";
-        JSONArray jsonArray=null;
-        try {
-            data = new HTTPAsyncTask().execute(serverAddress + "/clickPlaces" ,"GET").get();
-            jsonArray = new JSONArray(data);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return jsonArray;
-
     }
 
     @Override

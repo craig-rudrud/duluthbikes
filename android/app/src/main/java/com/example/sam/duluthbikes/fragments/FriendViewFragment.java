@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.sam.duluthbikes.Presenter;
 import com.example.sam.duluthbikes.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +31,9 @@ public class FriendViewFragment extends Fragment {
     private boolean isFriend;
     private Button friendButton;
     private Presenter mPresenter;
-    private int loginStatus = 1;
+    private int loginStatus;
+    private File profile;
+    private String personId;
 
     @Nullable
     @Override
@@ -38,6 +42,16 @@ public class FriendViewFragment extends Fragment {
         Bundle bundle = getArguments();
 
         mPresenter = new Presenter();
+
+        profile = new File("sdcard/Profile.txt");
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        if (acct != null) {
+            loginStatus = 2;
+            personId = acct.getId();
+        } else {
+            loginStatus = (profile.exists()) ? 1 : 0;
+            personId = getCurrentUser();
+        }
 
         mName = myView.findViewById(R.id.personName);
         mName.setText(Objects.requireNonNull(bundle.get("name")).toString());
@@ -96,11 +110,11 @@ public class FriendViewFragment extends Fragment {
 
         switch(loginStatus) {
             case 2:
-//                username = personName;
+                username = personId;
                 break;
             case 1:
                 try {
-                    FileInputStream in = new FileInputStream(new File("sdcard/Profile.txt"));
+                    FileInputStream in = new FileInputStream(profile);
                     Scanner s = new Scanner(in);
                     username = s.nextLine();
                     s.close();
