@@ -2,13 +2,14 @@ To the next group that works on this app: I am sorry, so terribly sorry.
 
 Here are some things to work on that we couldn't get done:
      Store a profile picture in the database with each user
-     Connect our login with google login
+     Connect our login with google login (in addition to sign in with facebook, twitter, etc.)
      Make friends accept friend requests, then update both friends lists
-     	  The current system followers, not friends.
+     	  The current system uses followers, not friends.
      Figure out how to use cookies client-side
-     setup a self-signed certificate to use https for our web traffic so we aren't sending
+     Setup a self-signed certificate to use https for our web traffic so we aren't sending
      	   everything unencrypted over the air
-
+     Refactor the Google sign-in protocol by moving it to the model
+     Store a user's/friend's ride statistics with their profile in the server (in addition to retrieving it)
 
 Passwords are hashed client side with sha256(password + username)
 but the hashes are sent unencrypted to the server in a login attempt
@@ -19,6 +20,8 @@ The cookie looks encrypted, and I think the cookie secret has something to do wi
 but i'm not sure, and it probably isn't secure
 If someone can edit their cookie, they could pretend to be anyone.
 Also our client-side code dosen't support cookies
+
+Currently, adding/removing friends while signed in with Google doesn't update the friends list.
 
 If you are wondering why my functions hit the database 3 times, it is because
 I don't know a better way to do it.
