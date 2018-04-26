@@ -1,0 +1,26 @@
+To the next group that works on this app: I am sorry, so terribly sorry.
+
+Here are some things to work on that we couldn't get done:
+     Store a profile picture in the database with each user
+     Connect our login with google login
+     Make friends accept friend requests, then update both friends lists
+     	  The current system followers, not friends.
+     Figure out how to use cookies client-side
+     setup a self-signed certificate to use https for our web traffic so we aren't sending
+     	   everything unencrypted over the air
+
+
+Passwords are hashed client side with sha256(password + username)
+but the hashes are sent unencrypted to the server in a login attempt
+
+Being "Logged in" just means sending a cookie with your _id.
+but we don't do anything to prevent cookie stealing.
+The cookie looks encrypted, and I think the cookie secret has something to do with it,
+but i'm not sure, and it probably isn't secure
+If someone can edit their cookie, they could pretend to be anyone.
+Also our client-side code dosen't support cookies
+
+If you are wondering why my functions hit the database 3 times, it is because
+I don't know a better way to do it.
+
+Good luck!
