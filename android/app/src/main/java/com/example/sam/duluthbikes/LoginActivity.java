@@ -147,11 +147,8 @@ public class LoginActivity extends AppCompatActivity
                         Toast.makeText(LoginActivity.this, getString(R.string.Password)+" "+getString(R.string.charReq), Toast.LENGTH_SHORT).show();
                     } else {
                         if (!Objects.equals(user, "") && !Objects.equals(pass, "")) {
-                            if(mPresenter.loginUser(user, pass)) {
-                                startMenu(user, pass);
-                            } else {
-                                Toast.makeText(LoginActivity.this, "Login failed!", Toast.LENGTH_SHORT).show();
-                            }
+                            mPresenter.loginUser(user, pass);
+                            startMenu(user, pass);
                         }
                     }
                 } else {

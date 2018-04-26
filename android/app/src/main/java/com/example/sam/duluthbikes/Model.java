@@ -30,15 +30,19 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookieStore;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 //import retrofit2.http.HTTP;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by Sam on 3/26/2017.
@@ -59,7 +63,7 @@ public class Model
     private FragmentActivity mActivity;
     private int mRequestCode;
     private boolean mode;
-
+//    private CookieManager cookieManager;
 
     public Model(){}
 
@@ -108,6 +112,8 @@ public class Model
             mGoogleApiClient.connect();
         }
         createLocationRequest();
+//        cookieManager = new CookieManager();
+//        CookieHandler.setDefault(cookieManager);
     }
 
     /**
@@ -181,9 +187,12 @@ public class Model
             e.printStackTrace();
         }
         mode = true;
-        new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt", "POST", profile.toString());
+        try {
+            Log.d("LOGIN: ", new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/loginAttempt", "POST", profile.toString()).get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
         return getLoginStatus();
-//        return true;
     }
 
     @Override
@@ -364,11 +373,37 @@ public class Model
         }
     }
 
+    public boolean addFriendByUser(String uid, String name) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("uid", uid);
+            object.put("name", name);
+            new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/addfriendbyuser", "POST", object.toString());
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean removeFriend(String name) {
         try {
             JSONObject object = new JSONObject();
             object.put("name", name);
             new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/removeFriend", "POST", object.toString());
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean removeFriendByUser(String uid, String name) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("uid", uid);
+            object.put("name", name);
+            new HTTPAsyncTask().execute("http://ukko.d.umn.edu:23405/removefriendbyuser", "POST", object.toString());
             return true;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -448,6 +483,8 @@ public class Model
 
                 /* We can open a connection to this URL now */
                 serverConnection = (HttpURLConnection) url.openConnection();
+//                CookieStore cstore = cookieManager.getCookieStore();
+//                List<HttpCookie> lcook = cstore.getCookies();
 
                 /* The second parameter, params[1] contains the TYPE of the HTTP
                  * request. It can be GET, POST, PUT or DELETE.
@@ -522,6 +559,7 @@ public class Model
                  * contains valid JSON data.  We need to return this string out of this
                  * function and the onPostExecute function will process it.
                  */
+                Log.d("Sb: ", sb.toString());
                 return sb.toString();
 
             }catch (MalformedURLException e){

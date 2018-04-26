@@ -30,7 +30,11 @@ public interface ModelViewPresenterComponents {
 
         boolean addFriend(String name);
 
+        boolean addFriendByUser(String uid, String name);
+
         boolean removeFriend(String name);
+
+        boolean removeFriendByUser(String uid, String name);
 
         void setClient(GoogleApiClient c);
 
@@ -109,7 +113,11 @@ public interface ModelViewPresenterComponents {
 
         boolean addFriend(String name);
 
+        boolean addFriendByUser(String uid, String name);
+
         boolean removeFriend(String name);
+
+        boolean removeFriendByUser(String uid, String name);
 
         boolean logoutAttempt();
     }

@@ -77,12 +77,7 @@ public class FriendsFragment extends Fragment {
         friendList = getFriendList();
         numberOfFriends = friendList.size();
         friendCountView = myView.findViewById(R.id.friendCount);
-        if(mPresenter.getLoginStatus()) {
-            friendCountView.setText("You are logged in");
-        }
-        else {
-            friendCountView.setText("You are not logged in");
-        }
+        friendCountView.setText("Friends (" + String.valueOf(friendList.size()) + "):");
 
         mSearchBar = myView.findViewById(R.id.friendSearchBar);
         mSearchBar.setOnEditorActionListener(new OnEditorActionListener() {
@@ -93,6 +88,7 @@ public class FriendsFragment extends Fragment {
                     hideKeyboard();
                     Friend friend = getFriend(mSearchBar.getText().toString());
                     if (friend != null) {
+                        friendCountView.setText("Results: ");
                         friendList.clear();
                         friendList.add(friend);
                         mFriendsView.setAdapter(new SearchFriendAdapter(getContext(), friendList));

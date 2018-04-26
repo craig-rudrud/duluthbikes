@@ -15,7 +15,12 @@ import android.widget.Toast;
 import com.example.sam.duluthbikes.Presenter;
 import com.example.sam.duluthbikes.R;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class FriendViewFragment extends Fragment {
 
@@ -24,6 +29,7 @@ public class FriendViewFragment extends Fragment {
     private boolean isFriend;
     private Button friendButton;
     private Presenter mPresenter;
+    private int loginStatus = 1;
 
     @Nullable
     @Override
@@ -67,7 +73,7 @@ public class FriendViewFragment extends Fragment {
     }
 
     private void addFriend() {
-        boolean isFriendAdded = mPresenter.addFriend(mName.getText().toString());
+        boolean isFriendAdded = mPresenter.addFriendByUser(getCurrentUser(), mName.getText().toString());
         if(isFriendAdded) {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.friendAdded), Toast.LENGTH_SHORT).show();
             friendButton.setText(getString(R.string.removeFriend));
@@ -76,11 +82,38 @@ public class FriendViewFragment extends Fragment {
     }
 
     private void removeFriend() {
-        boolean isFriendRemoved = mPresenter.removeFriend(mName.getText().toString());
+        boolean isFriendRemoved = mPresenter.removeFriendByUser(getCurrentUser(), mName.getText().toString());
         if(isFriendRemoved) {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.friendRemoved), Toast.LENGTH_SHORT).show();
             friendButton.setText(getString(R.string.addFriend));
             isFriend = false;
         }
+    }
+
+    private String getCurrentUser() {
+
+        String username = "";
+
+        switch(loginStatus) {
+            case 2:
+//                username = personName;
+                break;
+            case 1:
+                try {
+                    FileInputStream in = new FileInputStream(new File("sdcard/Profile.txt"));
+                    Scanner s = new Scanner(in);
+                    username = s.nextLine();
+                    s.close();
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 0:
+                username = getString(R.string.noUsername);
+                break;
+        }
+
+        return username;
     }
 }
