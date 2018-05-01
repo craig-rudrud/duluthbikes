@@ -107,7 +107,6 @@ public class EndRideActivity extends AppCompatActivity{
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
         String path = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpeg";
 
-        //View v1 = getWindow().getDecorView().getRootView();
         View v1 = findViewById(R.id.statsLayout);
         v1.setDrawingCacheEnabled(true);
         Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
